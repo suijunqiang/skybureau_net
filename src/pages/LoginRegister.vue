@@ -44,6 +44,7 @@ import { computed } from "vue";
 import { login } from "../api/users";
 import { LocalStorage, SessionStorage } from "quasar";
 import { useCounterStore } from "../stores/counter";
+import { API } from "../api/api";
 
 export default {
   name: "loginRegister",
@@ -75,7 +76,8 @@ export default {
         self
           .$axios({
             method: "post",
-            url: "http://www.suijunqiang.top:1337/api/auth/local",
+            url: API.USER.LOGIN,
+            //url: "http://www.suijunqiang.top:1337/api/auth/local",
             //url: "http://192.168.0.111:1337/api/auth/local",
             contentType: "application/x-www-form-urlencoded",
             data: {
@@ -114,7 +116,8 @@ export default {
         self
           .$axios({
             method: "post",
-            url: "http://www.suijunqiang.top:1337/api/auth/local/register",
+            url: API>USER.REGISTER,
+            //url: "http://www.suijunqiang.top:1337/api/auth/local/register",
             //url: "http://192.168.0.111:1337/api/auth/local/register",
             contentType: "application/x-www-form-urlencoded",
             data: {
