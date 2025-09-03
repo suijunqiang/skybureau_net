@@ -37,25 +37,56 @@
         behavior="menu"
       />
     </div>
-    <!--
-    <div class="el-menu-item" href="#">
-      {{ userName ? userName : "未登录" }}
+    <div class="el-menu-item user-name">
+      {{ displayUserName }}
     </div>
-    -->
+    <!-- 退出按钮，仅在登录状态下显示 -->
+    <div
+      v-if="userInfoStore.hasUserInfo"
+      class="el-menu-item logout-button"
+      @click="handleLogout"
+    >
+      <q-icon name="logout" class="mr-1" /> 
+      {{ $t("logout") }}
+    </div>
   </nav>
 </template>
 <script>
 import { useI18n } from "vue-i18n";
-import { LocalStorage } from "quasar";
+import { useUserInfoStore } from "../stores/userInfo";
+import { useTokenStore } from "../stores/myToken";
+import { computed } from "vue";
+import { useRouter } from "vue-router";
 export default {
   setup() {
-    //console.log("SJQ:" + LocalStorage.getItem("userInfo").user.username);
-    const { locale } = useI18n({ useScope: "global" });
-    console.log("SJQ: local " + locale.value);
+    const { locale, t } = useI18n({ useScope: "global" });
+    const userInfoStore = useUserInfoStore();
+    const tokenStore = useTokenStore();
+    const router = useRouter();
+
+    // 计算显示的用户名：未登录时显示多语言的"游客"，登录后显示用户名
+    const displayUserName = computed(() => {
+      if (userInfoStore.hasUserInfo && userInfoStore.userInfo?.user?.username) {
+        return userInfoStore.userInfo.user.username;
+      }
+      return t('visitor');
+    });
+
+    // 处理退出登录
+    const handleLogout = () => {
+      // 清除用户信息
+      userInfoStore.clearUserInfo();
+      // 清除token
+      tokenStore.removeToken();
+      // 跳转到首页
+      router.push('/');
+    };
 
     return {
       locale,
-      //userName: LocalStorage.getItem("userInfo").user.username || "",
+      displayUserName,
+      userInfoStore,
+      handleLogout,
       localeOptions: [
         { label: "中文", value: "zh-CN" },
         { label: "English", value: "en-US" },
@@ -79,11 +110,31 @@ nav .el-menu-item {
   text-align: center;
   border-bottom: transparent;
   display: flex;
+  align-items: center;
   transition: 0.4s;
   font-size: larger;
   font-weight: bold;
 }
 nav .el-menu-item:hover {
+  background-color: blue;
+  border-bottom: solid 1px;
+  border-bottom-color: brown;
+  height: 30px;
+}
+
+.user-name {
+  margin-left: auto;
+  color: #ffffff;
+  font-weight: bold;
+}
+
+.logout-button {
+  color: #ffffff;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.logout-button:hover {
   background-color: blue;
   border-bottom: solid 1px;
   border-bottom-color: brown;

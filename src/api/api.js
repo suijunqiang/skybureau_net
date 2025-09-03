@@ -1,28 +1,30 @@
 // src/config/api.js
-const BASE_URL = 'http://www.suijunqiang.top:1337/api';
+export const BASE_URL = 'http://www.suijunqiang.top:1337';
 
 export const API = {
   USER: {
-    LOGIN: `${BASE_URL}/auth/local`,
-    REGISTER: `${BASE_URL}/auth/local/register`,
-    PROFILE: `${BASE_URL}/user/profile`,
-    UPDATE_PROFILE: (id) => `${BASE_URL}/user/${id}/profile`
+    LOGIN: `${BASE_URL}/api/auth/local`,
+    REGISTER: `${BASE_URL}/api/auth/local/register`,
+    PROFILE: `${BASE_URL}/api/user/profile`,
+    UPDATE_PROFILE: (id) => `${BASE_URL}/api/user/${id}/profile`,
+    POSITIONS: `${BASE_URL}/api/positions`,
+    MENU: `${BASE_URL}/api/menus`
   },
 
    PRODUCT: {
-    LIST: `${BASE_URL}/products`,
-    DETAIL: (id) => `${BASE_URL}/products/${id}`,
-    CREATE: `${BASE_URL}/products`,
-    UPDATE: (id) => `${BASE_URL}/products/${id}`,
-    DELETE: (id) => `${BASE_URL}/products/${id}`
+    LIST: `${BASE_URL}/api/products`,
+    DETAIL: (id) => `${BASE_URL}/api/products/${id}`,
+    CREATE: `${BASE_URL}/api/products`,
+    UPDATE: (id) => `${BASE_URL}/api/products/${id}`,
+    DELETE: (id) => `${BASE_URL}/api/products/${id}`
   },
 
   ORDER: {
-    LIST: `${BASE_URL}/orders`,
-    DETAIL: (id) => `${BASE_URL}/orders/${id}`,
-    CREATE: `${BASE_URL}/orders`
+    LIST: `${BASE_URL}/api/orders`,
+    DETAIL: (id) => `${BASE_URL}/api/orders/${id}`,
+    CREATE: `${BASE_URL}/api/orders`
   },
 
-  UPLOAD: `${BASE_URL}/upload`,
-  SETTINGS: `${BASE_URL}/settings`
+  UPLOAD: `${BASE_URL}/api/upload`,
+  SETTINGS: `${BASE_URL}/api/settings`
 };

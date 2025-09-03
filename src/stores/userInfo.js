@@ -1,28 +1,42 @@
-import { store } from "quasar/wrappers";
-import { createPinia } from "pinia";
+import { defineStore } from "pinia";
 
-/*
- * If not building with SSR mode, you can
- * directly export the Store instantiation;
- *
- * The function below can be async too; either use
- * async/await or return a Promise which resolves
- * with the Store instance.
- */
+export const useUserInfoStore = defineStore("userInfo", {
+  state: () => {
+    try {
+      const savedUserInfo = window.localStorage.getItem("userInfo");
+      // 检查是否是Quasar的序列化格式
+      if (savedUserInfo && savedUserInfo.startsWith("__q_objt|")) {
+        // 提取实际的JSON部分
+        const jsonPart = savedUserInfo.substring(9);
+        return {
+          userInfo: jsonPart ? JSON.parse(jsonPart) : null
+        };
+      }
+      return {
+        userInfo: savedUserInfo ? JSON.parse(savedUserInfo) : null
+      };
+    } catch (error) {
+      console.error("Error parsing userInfo from localStorage:", error);
+      return {
+        userInfo: null
+      };
+    }
+  },
 
-export default store((/* { ssrContext } */) => {
-  const userInfo = createPinia();
+  getters: {
+    hasUserInfo: (state) => {
+      return !!state.userInfo;
+    }
+  },
 
-  // You can add Pinia plugins here
-  // pinia.use(SomePiniaPlugin)
-  const setUserInfo = (userInfo) => {
-    userInfo.value = userInfo;
-  };
-  const getUserInfo = () => {
-    return userInfo.value;
-  };
-  userInfo.setUserInfo = setUserInfo;
-  userInfo.getUserInfo = getUserInfo;
-
-  return userInfo;
+  actions: {
+    setUserInfo(userData) {
+      this.userInfo = userData;
+      window.localStorage.setItem("userInfo", JSON.stringify(userData));
+    },
+    clearUserInfo() {
+      this.userInfo = null;
+      window.localStorage.removeItem("userInfo");
+    }
+  },
 });

@@ -25,7 +25,11 @@
       <q-list>
         <q-item-label header> Essential Links </q-item-label>
 
-        <QMFilterNode v-bind="link" />
+        <EssentialLink
+          v-for="link in essentialLinks"
+          :key="link.title"
+          v-bind="link"
+        />
         <!--
         <EssentialLink
           v-for="link in essentialLinks"
@@ -44,7 +48,7 @@
 
 <script>
 import { defineComponent, ref } from "vue";
-//import EssentialLink from "components/EssentialLink.vue";
+import EssentialLink from "components/EssentialLink.vue";
 import HeadBar from "components/HeadBar.vue";
 import QMFilterNode from "components/QMFilterNode.vue";
 //import MenuTree from "components/myMenu.vue";
@@ -53,46 +57,40 @@ import LoginRegister from "src/pages/LoginRegister.vue";
 
 const linksList = [
   {
-    title: "Docs",
-    caption: "quasar.dev",
-    icon: "school",
-    link: "https://quasar.dev",
+    title: "Skybureau",
+    caption: "Skybureau Net",
+    icon: "home",
+    link: "/",
   },
   {
     title: "Github",
-    caption: "github.com/quasarframework",
+    caption: "https://github.com/suijunqiang/skybureau_quassar",
     icon: "code",
-    link: "https://github.com/quasarframework",
+    link: "https://github.com/suijunqiang/skybureau_quassar",
   },
   {
     title: "Discord Chat Channel",
-    caption: "chat.quasar.dev",
+    caption: "chat.skybureau.net",
     icon: "chat",
-    link: "https://chat.quasar.dev",
+    link: "http://www.skybureau.net:9000",
   },
   {
     title: "Forum",
-    caption: "forum.quasar.dev",
+    caption: "Forum.skybureau.net",
     icon: "record_voice_over",
-    link: "https://forum.quasar.dev",
+    link: "http://www.skybureau.net:9000",
   },
   {
     title: "Twitter",
-    caption: "@quasarframework",
+    caption: "Skybureau Net",
     icon: "rss_feed",
-    link: "https://twitter.quasar.dev",
+    link: "http://www.skybureau.net:9000",
   },
   {
     title: "Facebook",
-    caption: "@QuasarFramework",
+    caption: "Skybureau Net",
     icon: "public",
-    link: "https://facebook.quasar.dev",
-  },
-  {
-    title: "Quasar Awesome",
-    caption: "Community Quasar projects",
-    icon: "favorite",
-    link: "https://awesome.quasar.dev",
+    link: "http://www.skybureau.net:9000",
   },
   {
     title: "Login / Register",
@@ -106,9 +104,9 @@ export default defineComponent({
   name: "MainLayout",
 
   components: {
-    //EssentialLink,
+    EssentialLink,
     HeadBar,
-    QMFilterNode,
+    //QMFilterNode,
   },
 
   setup() {
@@ -122,9 +120,8 @@ export default defineComponent({
       },
 
       toLogin() {
-        alert("Login");
-        this.router.push("/#/LoginRegister");
-        //self.$router.push("/LoginRegister");
+        //alert("Login");
+        this.$router.push("/loginRegister");
       },
     };
   },

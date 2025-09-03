@@ -5,20 +5,20 @@
         <div class="big-contain" key="bigContainLogin" v-if="isLogin">
           <div class="btitle">{{ $t("user_name") }}</div>
           <div class="bform">
-            <input type="email" placeholder= "$t('email')" v-model="form.useremail" />
+            <input ref="emailInput" type="email" :placeholder="$t('email')" v-model="form.useremail" autofocus />
             <span class="errTips" v-if="emailError">{{$t('email_format_error')}}</span>
-            <input type="password" placeholder="$t('password')" v-model="form.userpwd" />
-            <span class="errTips" v-if="emailError">{{ $t("password_format_error") }}</span>
+            <input type="password" :placeholder="$t('password')" v-model="form.userpwd" @keyup.enter="login" />
+            <span class="errTips" v-if="passwordError">{{ $t("password_format_error") }}</span>
           </div>
           <button class="bbutton" @click="login">{{ $t("login") }}</button>
         </div>
         <div class="big-contain" key="bigContainRegister" v-else>
           <div class="btitle">{{ $t("create_new_account") }}</div>
           <div class="bform">
-            <input type="text" placeholder="$t('user_name')" v-model="form.username" />
+            <input type="text" :placeholder="$t('user_name')" v-model="form.username" />
             <span class="errTips" v-if="existed">{{$t('user_name_exist')}}</span>
-            <input type="email" placeholder="$t('email')" v-model="form.useremail" />
-            <input type="password" placeholder="$t('password')" v-model="form.userpwd" />
+            <input type="email" :placeholder="$t('email')" v-model="form.useremail" />
+            <input type="password" :placeholder="$t('password')" v-model="form.userpwd" />
           </div>
           <button class="bbutton" @click="register">{{ $t("register") }}</button>
         </div>
@@ -45,12 +45,15 @@ import { login } from "../api/users";
 import { LocalStorage, SessionStorage } from "quasar";
 import { useCounterStore } from "../stores/counter";
 import { API } from "../api/api";
+import { useTokenStore } from "../stores/myToken";
+import { useUserInfoStore } from "../stores/userInfo";
+import { getUserPosition } from "../api/positions.js";
 
 export default {
   name: "loginRegister",
   data() {
     return {
-      isLogin: false,
+      isLogin: true,
       emailError: false,
       passwordError: false,
       existed: false,
@@ -61,6 +64,12 @@ export default {
       },
     };
   },
+  mounted() {
+    // 确保输入框获取焦点
+    if (this.isLogin && this.$refs.emailInput) {
+      this.$refs.emailInput.focus();
+    }
+  },
   methods: {
     changeType() {
       this.isLogin = !this.isLogin;
@@ -70,8 +79,8 @@ export default {
     },
     login() {
       const self = this;
-      //const store = useCounterStore();
-      //const storeUserInfo = store();
+      const tokenStore = useTokenStore();
+      const userInfoStore = useUserInfoStore();
       if (self.form.useremail != "" && self.form.userpwd != "") {
         self
           .$axios({
@@ -88,26 +97,36 @@ export default {
           })
           .then((res) => {
             if (isNull(res.data.jwt)) {
-              alert("Error！");
+              // alert("Error！");
             } else {
-              alert("succses！\r\n" + JSON.stringify(res.data));
+              // 等待用户点击确定后再跳转
+              // alert("succses！\r\n" + JSON.stringify(res.data));
               console.log("userInfo:" + JSON.stringify(res.data));
-              LocalStorage.set("userInfo", res.data);
-              //store.setToken(res.data.jwt);
-              self.$router.push("/");
+              // 存储token
+              tokenStore.saveToken(res.data.jwt);
+              // 存储用户信息
+              userInfoStore.setUserInfo(res.data);
+
+              // 查询用户职位信息
+              getUserPosition();
+
+              // 跳转到用户管理页面
+              self.$router.push("/system/userManagement");
             }
 
           })
           .catch((err) => {
-            alert("Error \r\n Login faild！");
+            // alert("Error \r\n Login faild！");
             console.log(err);
           });
       } else {
-        alert("填写不能为空！");
+        // alert("填写不能为空！");
       }
     },
     register() {
       const self = this;
+      const tokenStore = useTokenStore();
+      const userInfoStore = useUserInfoStore();
       if (
         self.form.username != "" &&
         self.form.useremail != "" &&
@@ -116,7 +135,7 @@ export default {
         self
           .$axios({
             method: "post",
-            url: API>USER.REGISTER,
+            url: API.USER.REGISTER,
             //url: "http://www.suijunqiang.top:1337/api/auth/local/register",
             //url: "http://192.168.0.111:1337/api/auth/local/register",
             contentType: "application/x-www-form-urlencoded",
@@ -127,28 +146,29 @@ export default {
             },
           })
           .then((res) => {
-            switch (res.data.jwt) {
-              case 0:
-                alert("注册成功！");
-                self.$router.push("/");
-                //this.login();
-                break;
-              case -1:
-                this.existed = true;
-                break;
+            if (isNull(res.data.jwt)) {
+              // alert("Error！");
+            } else {
+              // alert("注册成功！\r\n" + JSON.stringify(res.data));
+              console.log("userInfo:" + JSON.stringify(res.data));
+              // 存储token
+              tokenStore.saveToken(res.data.jwt);
+              // 存储用户信息
+              userInfoStore.setUserInfo(res.data);
+              self.$router.push("/system/userManagement");
             }
           })
           .catch((err) => {
             if (!isNull(err.response.data.error)) {
               console.log(err.response.data);
-              alert("Error！" + err.response.data.error.message);
+              // alert("Error！" + err.response.data.error.message);
               self.$router.push("/");
             }
 
             console.log(err);
           });
       } else {
-        alert("填写不能为空！");
+        // alert("填写不能为空！");
       }
     },
   },

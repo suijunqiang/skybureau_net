@@ -2,24 +2,23 @@ import { defineStore } from "pinia";
 
 export const useTokenStore = defineStore("myToken", {
   state: () => ({
-    counter: 0,
-    token: null,
-    //token: ref(window.localStorage.getItem("myToken") || ""),
+    token: window.localStorage.getItem("myToken") || null
   }),
 
   getters: {
-    doubleCount(state) {
-      return token, state.counter * 2;
-    },
+    isAuthenticated: (state) => {
+      return !!state.token;
+    }
   },
 
   actions: {
-    increment() {
-      this.counter++;
+    saveToken(token) {
+      this.token = token;
+      window.localStorage.setItem("myToken", token);
     },
-    saveToken(str) {
-      this.token = str; // 假设token是一个字符串
-      window.localStorage.setItem("myToken", str);
-    },
+    removeToken() {
+      this.token = null;
+      window.localStorage.removeItem("myToken");
+    }
   },
 });

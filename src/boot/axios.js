@@ -1,24 +1,37 @@
 import { boot } from 'quasar/wrappers'
 import axios from 'axios'
+import { useTokenStore } from '../stores/myToken'
+import { BASE_URL } from '../api/api.js'
 
-// Be careful when using SSR for cross-request state pollution
-// due to creating a Singleton instance here;
-// If any client changes this (global) instance, it might be a
-// good idea to move this instance creation inside of the
-// "export default () => {}" function below (which runs individually
-// for each client)
-const api = axios.create({ baseURL: 'https://api.example.com' })
-
+// 添加请求拦截器到全局axios
 export default boot(({ app }) => {
-  // for use inside Vue files (Options API) through this.$axios and this.$api
+  // 设置全局axios默认配置
+  axios.defaults.baseURL = BASE_URL
 
+  // 添加请求拦截器
+  axios.interceptors.request.use(
+    config => {
+      // 获取token
+      const tokenStore = useTokenStore()
+      const token = tokenStore.token
+
+      // 如果token存在，添加Authorization头
+      if (token) {
+        config.headers['Authorization'] = `Bearer ${token}`
+      }
+
+      return config
+    },
+    error => {
+      return Promise.reject(error)
+    }
+  )
+
+  // 为Vue实例添加全局属性
   app.config.globalProperties.$axios = axios
-  // ^ ^ ^ this will allow you to use this.$axios (for Vue Options API form)
-  //       so you won't necessarily have to import axios in each vue file
-
-  app.config.globalProperties.$api = api
-  // ^ ^ ^ this will allow you to use this.$api (for Vue Options API form)
-  //       so you can easily perform requests against your app's API
 })
 
-export { api }
+// 创建一个带授权的api实例
+export const api = axios.create({
+  baseURL: BASE_URL
+})

@@ -24,13 +24,13 @@
       <q-list>
         <q-item-label header> Essential Links </q-item-label>
 
-        <QMFilterNode v-bind="link" />
-        <!--
         <EssentialLink
           v-for="link in essentialLinks"
           :key="link.title"
           v-bind="link"
         />
+        <!--
+        <QMFilterNode v-bind="link" />
         -->
       </q-list>
     </q-drawer>
@@ -53,10 +53,10 @@
 
 <script>
 import { defineComponent, ref } from "vue";
-//import EssentialLink from "components/EssentialLink.vue";
+import EssentialLink from "components/EssentialLink.vue";
 import HeadBar from "components/HeadBar.vue";
 import FootBar from "components/FootBar.vue";
-import QMFilterNode from "components/QMFilterNode.vue";
+//import QMFilterNode from "components/QMFilterNode.vue";
 //import MenuTree from "components/myMenu.vue";
 //import MenuTree from "components/my-q-menu-item.vue";
 import LoginRegister from "src/pages/LoginRegister.vue";
@@ -116,10 +116,10 @@ export default defineComponent({
   name: "MainLayout",
 
   components: {
-    //EssentialLink,
+    EssentialLink,
     HeadBar,
     FootBar,
-    QMFilterNode,
+    //QMFilterNode,
   },
 
   setup() {
@@ -133,9 +133,8 @@ export default defineComponent({
       },
 
       toLogin() {
-        alert("Login");
-        this.router.push("/#/LoginRegister");
-        //self.$router.push("/LoginRegister");
+        //alert("Login");
+        this.$router.push("/loginRegister");
       },
     };
   },

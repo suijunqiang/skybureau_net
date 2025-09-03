@@ -17,7 +17,7 @@
       :filter="filter"
       v-model:selected="selected"
       default-expand-all
-      @click="handleClick(props)"
+      @click="handleClick"
     />
   </div>
 </template>
@@ -78,9 +78,9 @@ export default {
         filterRef.value.focus();
       },
       toLogin() {
-        router.push("/login");
+        router.push("/loginRegister");
       },
-      handleClick(props) {
+      handleClick() {
         console.log("您当前所选择的是：", selected.value);
         switch (selected.value) {
           case 1:

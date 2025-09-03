@@ -61,9 +61,8 @@ export default defineComponent({
       },
 
       toLogin() {
-        alert("Login");
-        this.router.push("/#/LoginRegister");
-        //self.$router.push("/LoginRegister");
+        //alert("Login");
+        this.$router.push("/loginRegister");
       },
     };
   },
