@@ -52,7 +52,7 @@ export const getUserPosition = async () => {
 
     // 获取并输出用户菜单信息
     try {
-      const menuResponse = await axios.get(API.USER.MENU);
+      const menuResponse = await axios.get(API.USER.MENU.LIST);
       console.log('用户菜单信息查询结果:', menuResponse.data);
     } catch (menuError) {
       console.error('查询用户菜单信息失败:', menuError);

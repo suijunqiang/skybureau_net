@@ -119,4 +119,11 @@ export default {
   menu_property_2: "Control user permission access",
   menu_property_3: "Configure route and page association",
   menu_property_4: "Set menu display priority",
+  
+  // Common status messages
+  save_success: "Saved successfully",
+  save_failed: "Save failed",
+  unknown_error: "Unknown error",
+  confirm_delete_menu: "Confirm delete menu",
+  add_menu: "Add menu"
 };

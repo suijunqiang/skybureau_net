@@ -114,4 +114,11 @@ export default {
   menu_property_2: "控制用户权限访问",
   menu_property_3: "配置路由和页面关联",
   menu_property_4: "设置菜单显示优先级",
+  
+  // 通用状态消息
+  save_success: "保存成功",
+  save_failed: "保存失败",
+  unknown_error: "未知错误",
+  confirm_delete_menu: "确认删除菜单",
+  add_menu: "添加菜单"
 };

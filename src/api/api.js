@@ -8,7 +8,12 @@ export const API = {
     PROFILE: `${BASE_URL}/api/user/profile`,
     UPDATE_PROFILE: (id) => `${BASE_URL}/api/user/${id}/profile`,
     POSITIONS: `${BASE_URL}/api/positions`,
-    MENU: `${BASE_URL}/api/menus`
+    MENU: {
+      LIST: `${BASE_URL}/api/menus`,
+      CREATE: `${BASE_URL}/api/menus`,
+      UPDATE: (id) => `${BASE_URL}/api/menus/${id}`,
+      DELETE: (id) => `${BASE_URL}/api/menus/${id}`
+    }
   },
 
    PRODUCT: {

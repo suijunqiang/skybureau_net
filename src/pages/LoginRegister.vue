@@ -41,7 +41,7 @@
 
 <script>
 import { computed } from "vue";
-import { login } from "../api/users";
+import { login, register } from "../api/users";
 import { LocalStorage, SessionStorage } from "quasar";
 import { useCounterStore } from "../stores/counter";
 import { API } from "../api/api";
@@ -82,19 +82,10 @@ export default {
       const tokenStore = useTokenStore();
       const userInfoStore = useUserInfoStore();
       if (self.form.useremail != "" && self.form.userpwd != "") {
-        self
-          .$axios({
-            method: "post",
-            url: API.USER.LOGIN,
-            //url: "http://www.suijunqiang.top:1337/api/auth/local",
-            //url: "http://192.168.0.111:1337/api/auth/local",
-            contentType: "application/x-www-form-urlencoded",
-            data: {
-              email: self.form.useremail,
-              identifier: self.form.useremail,
-              password: self.form.userpwd,
-            },
-          })
+        login({
+          identifier: self.form.useremail,
+          password: self.form.userpwd,
+        })
           .then((res) => {
             if (isNull(res.data.jwt)) {
               // alert("Error！");
@@ -132,19 +123,11 @@ export default {
         self.form.useremail != "" &&
         self.form.userpwd != ""
       ) {
-        self
-          .$axios({
-            method: "post",
-            url: API.USER.REGISTER,
-            //url: "http://www.suijunqiang.top:1337/api/auth/local/register",
-            //url: "http://192.168.0.111:1337/api/auth/local/register",
-            contentType: "application/x-www-form-urlencoded",
-            data: {
-              username: self.form.username,
-              email: self.form.useremail,
-              password: self.form.userpwd,
-            },
-          })
+        register({
+          username: self.form.username,
+          email: self.form.useremail,
+          password: self.form.userpwd
+        })
           .then((res) => {
             if (isNull(res.data.jwt)) {
               // alert("Error！");

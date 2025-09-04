@@ -159,24 +159,24 @@ export default {
       try {
         // 获取职位信息存储
         const positionInfoStore = usePositionInfoStore();
-        
+
         // 从职位信息中获取menu_id
         let menuIds = [];
         if (positionInfoStore.positionInfo && positionInfoStore.positionInfo.menu_id) {
           // 解析以逗号分隔的menu_id字符串
           menuIds = positionInfoStore.positionInfo.menu_id.split(',').map(id => id.trim());
         }
-        
+
         // 构建带过滤条件的URL
-        let menuUrl = API.USER.MENU;
+        let menuUrl = API.USER.MENU.LIST;
         if (menuIds.length > 0) {
           const filters = menuIds.map(id => `filters[menu_id][$in]=${id}`).join('&');
           menuUrl = `${menuUrl}?${filters}`;
         }
-        
+
         // 输出完整URL到控制台方便调试
         console.log('请求菜单的完整URL:', menuUrl);
-        
+
         // 使用构建的URL访问菜单数据
         const response = await axios.get(menuUrl);
         const menuData = response.data.data;
