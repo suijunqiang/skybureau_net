@@ -59,7 +59,7 @@ import { useRouter } from 'vue-router';
 import axios from 'axios';
 import { API } from 'src/api/api.js';
 import { usePositionInfoStore } from 'src/stores/positionInfo.js';
-import { Notify } from 'quasar';
+import { Notify, useQuasar } from 'quasar';
 import MenuEditDialog from './MenuEditDialog.vue';
 
 export default defineComponent({
@@ -70,6 +70,7 @@ export default defineComponent({
   setup() {
     const { t } = useI18n();
     const router = useRouter();
+    const $q = useQuasar();
     const menus = ref([]);
     const loading = ref(false);
     const editDialogVisible = ref(false);
@@ -185,38 +186,68 @@ export default defineComponent({
     };
 
     // 删除菜单
-    const deleteMenu = async (menu) => {
-      // 这里可以实现删除菜单的逻辑
-      if (confirm(t("confirm_delete_menu") + ": " + menu.name + "?")) {
+    const deleteMenu = (menu) => {
+      // 使用Quasar Dialog替代原生confirm
+      $q.dialog({
+        title: t('confirm_delete'),
+        message: t('confirm_delete_menu') + ': ' + menu.name + '?',
+        ok: {
+          push: true,
+          color: 'positive'
+        },
+        cancel: {
+          push: true,
+          color: 'negative'
+        },
+        persistent: true
+      }).onOk(async () => {
         try {
+          // 1. 先查询是否有其他菜单使用此菜单作为父节点
+          const checkUrl = `${API.USER.MENU.LIST}?filters[parent_id][$eq]=${menu.menu_id}`;
+          console.log('检查引用请求URL:', checkUrl);
+
+          const checkResponse = await axios.get(checkUrl);
+          const hasChildren = checkResponse.data.data && checkResponse.data.data.length > 0;
+
+          // 如果有子菜单引用，则不能删除
+          if (hasChildren) {
+            Notify.create({
+              message: t('menu_has_children_cannot_delete'),
+              color: 'warning',
+              timeout: 3000
+            });
+            return;
+          }
+
+          // 2. 没有引用，可以执行删除操作
           // 使用documentId作为参数调用删除接口
-          const url = API.USER.MENU.DELETE(menu.documentId || menu.id);
-          console.log('DELETE请求URL:', url);
-          
+          const deleteUrl = API.USER.MENU.DELETE(menu.documentId || menu.id);
+          console.log('DELETE请求URL:', deleteUrl);
+
           // 调用删除API
-          const response = await axios.delete(url, {
+          const deleteResponse = await axios.delete(deleteUrl, {
             headers: {
               'Content-Type': 'application/json'
             }
           });
-          
-          console.log('删除菜单成功:', response.data);
-          
+
+          console.log('删除菜单成功:', deleteResponse.data);
+
           // 更新前端菜单列表
           menus.value = menus.value.filter(m => m.id !== menu.id);
-          
+
           // 显示成功提示
           Notify.create({
             message: t('delete_success'),
             color: 'positive',
             timeout: 2000
           });
-          
+
           // 重新加载菜单数据以确保同步
           fetchMenus();
         } catch (error) {
           console.error('删除菜单失败:', error);
-          
+
           // 显示错误提示
           Notify.create({
             message: t('delete_failed') + ': ' + (error.message || t('unknown_error')),
@@ -224,7 +255,12 @@ export default defineComponent({
             timeout: 2000
           });
         }
-      }
+      }).onCancel(() => {
+        // 用户取消删除操作
+        console.log('用户取消删除菜单:', menu.name);
+      }).onDismiss(() => {
+        // 对话框关闭的回调，可以在这里执行一些清理操作
+      });
     };
 
     // 生命周期钩子

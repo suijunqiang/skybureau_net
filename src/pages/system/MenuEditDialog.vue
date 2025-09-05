@@ -1,7 +1,7 @@
 <template>
   <q-dialog :model-value="visible" @update:model-value="(value) => $emit('update:visible', value)" persistent>
-    <q-card class="w-full md:w-5/6 lg:w-5/6">
-      <q-card-section class="bg-primary text-white">
+    <q-card class="w-full md:w-4/5 lg:w-4/5 custom-dialog-width">
+      <q-card-section class="bg-primary text-white custom-header-height">
         <div class="flex justify-between items-center">
           <h3 class="text-xl font-semibold">编辑菜单</h3>
           <q-btn icon="close" text-color="white" flat round dense @click="close" />
@@ -20,7 +20,7 @@
                 type="number"
                 :rules="[val => !!val || '菜单ID不能为空']"
                 placeholder="请输入菜单ID"
-                class="w-full"
+                class="w-full custom-input-height"
                 :min="1"
               />
             </div>
@@ -33,7 +33,7 @@
                 required
                 :rules="[val => !!val || '菜单名称不能为空']"
                 placeholder="请输入菜单名称"
-                class="w-full"
+                class="w-full custom-input-height"
               />
             </div>
 
@@ -47,7 +47,7 @@
                 option-label="name"
                 option-value="menu_id"
                 placeholder="请选择上级节点"
-                class="w-full"
+                class="w-full custom-input-height"
               />
             </div>
 
@@ -57,7 +57,7 @@
                 v-model="form.page_url"
                 label="菜单地址"
                 placeholder="请输入菜单地址"
-                class="w-full"
+                class="w-full custom-input-height"
               />
             </div>
 
@@ -67,7 +67,7 @@
                 v-model="form.control_url"
                 label="控件地址"
                 placeholder="请输入控件地址"
-                class="w-full"
+                class="w-full custom-input-height"
               />
             </div>
 
@@ -77,7 +77,7 @@
                 v-model="form.icon"
                 label="图标"
                 placeholder="请输入图标名称（如：home）"
-                class="w-full"
+                class="w-full custom-input-height"
               />
             </div>
 
@@ -88,7 +88,7 @@
                 label="排序"
                 type="number"
                 placeholder="请输入排序号"
-                class="w-full"
+                class="w-full custom-input-height"
                 :min="0"
               />
             </div>
@@ -101,7 +101,7 @@
                 :options="showOptions"
                 option-label="label"
                 option-value="value"
-                class="w-full"
+                class="w-full custom-input-height"
               />
             </div>
 
@@ -113,7 +113,7 @@
                 :options="enableOptions"
                 option-label="label"
                 option-value="value"
-                class="w-full"
+                class="w-full custom-input-height"
               />
             </div>
           </div>
@@ -282,7 +282,7 @@ export default defineComponent({
         // 确保parent_id是有效的menu_id值
         // 处理form.parent_id可能是对象的情况，提取其中的menu_id
         let submitParentId = 0;
-        
+
         // 类型检查和转换
         if (form.parent_id === undefined || form.parent_id === null) {
           submitParentId = 0;
@@ -303,7 +303,7 @@ export default defineComponent({
           // 如果已经是数字，直接使用
           submitParentId = form.parent_id;
         }
-        
+
         console.log('转换后的parent_id值:', submitParentId, '类型:', typeof submitParentId);
 
         const submitData = {
@@ -392,7 +392,38 @@ export default defineComponent({
     margin-bottom: 1rem;
   }
 
-  .q-card {
-    max-width: 600px;
+  /* 调整窗口宽度 - 缩小到之前的1/3 */
+  .custom-dialog-width {
+    max-width: 400px; /* 原来的1/3 (1200px / 3) */
+    width: 90%;
+  }
+
+  /* 缩小标题高度和字号 - 进一步减少padding并缩小字体 */
+  .custom-header-height {
+    padding: 4px 16px; /* 原来的1/4（之前已经是1/2，现在再缩小到一半） */
+  }
+
+  .custom-header-height h3 {
+    font-size: 1rem; /* 原来的一半（之前是1.5rem） */
+    margin: 0;
+  }
+
+  /* 缩小输入项目高度 */
+  .custom-input-height .q-field__control {
+    min-height: 36px; /* 原来的大约一半 */
+    height: 36px;
+  }
+
+  .custom-input-height .q-field__input {
+    min-height: 36px;
+    height: 36px;
+    padding-top: 6px;
+    padding-bottom: 6px;
+  }
+
+  /* 确保选择框也适应新的高度 */
+  .custom-input-height .q-select__control {
+    min-height: 36px;
+    height: 36px;
   }
 </style>
