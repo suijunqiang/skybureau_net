@@ -98,11 +98,11 @@ export default {
               // 存储用户信息
               userInfoStore.setUserInfo(res.data);
 
-              // 查询用户职位信息
-              getUserPosition();
-
-              // 跳转到用户管理页面
-              self.$router.push("/system/userManagement");
+              // 查询用户职位信息并等待完成后再跳转
+              getUserPosition().then(() => {
+                // 跳转到用户管理页面
+                self.$router.push("/system/userManagement");
+              });
             }
 
           })

@@ -46,7 +46,7 @@
       class="el-menu-item logout-button"
       @click="handleLogout"
     >
-      <q-icon name="logout" class="mr-1" /> 
+      <q-icon name="logout" class="mr-1" />
       {{ $t("logout") }}
     </div>
   </nav>
@@ -55,6 +55,7 @@
 import { useI18n } from "vue-i18n";
 import { useUserInfoStore } from "../stores/userInfo";
 import { useTokenStore } from "../stores/myToken";
+import { usePositionInfoStore } from "../stores/positionInfo";
 import { computed } from "vue";
 import { useRouter } from "vue-router";
 export default {
@@ -62,6 +63,7 @@ export default {
     const { locale, t } = useI18n({ useScope: "global" });
     const userInfoStore = useUserInfoStore();
     const tokenStore = useTokenStore();
+    const positionInfoStore = usePositionInfoStore();
     const router = useRouter();
 
     // 计算显示的用户名：未登录时显示多语言的"游客"，登录后显示用户名
@@ -78,6 +80,8 @@ export default {
       userInfoStore.clearUserInfo();
       // 清除token
       tokenStore.removeToken();
+      // 清除职位信息
+      positionInfoStore.clearPositionInfo();
       // 跳转到首页
       router.push('/');
     };

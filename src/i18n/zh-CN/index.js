@@ -21,6 +21,7 @@ export default {
   skybureau: "天局网",
   // 用户管理页面
   user_management: "用户管理",
+  users_page_title: "用户管理",
   system_settings: "系统设置",
   device_management: "设备管理",
   personal_information: "个人信息",

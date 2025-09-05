@@ -5,8 +5,7 @@ import { BASE_URL } from '../api/api.js'
 
 // 添加请求拦截器到全局axios
 export default boot(({ app }) => {
-  // 设置全局axios默认配置
-  axios.defaults.baseURL = BASE_URL
+  // 不设置全局baseURL，因为API常量中已经包含了完整URL
 
   // 添加请求拦截器
   axios.interceptors.request.use(

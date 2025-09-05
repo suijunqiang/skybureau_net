@@ -80,6 +80,7 @@ import UserStatistics from "./UserStatistics.vue";
 import BranchPage from "./BranchPage.vue";
 import PositionPage from "./PositionPage.vue";
 import MenuPage from "./MenuPage.vue";
+import UsersPage from "./UsersPage.vue";
 
 export default {
   name: "UserManagement",
@@ -90,7 +91,8 @@ export default {
     UserStatistics,
     BranchPage,
     PositionPage,
-    MenuPage
+    MenuPage,
+    UsersPage
   },
   setup() {
     const { t } = useI18n();
@@ -246,6 +248,7 @@ export default {
         case 'branch': return 'BranchPage';
         case 'position': return 'PositionPage';
         case 'menu': return 'MenuPage';
+        case 'users': return 'UsersPage';
         default: return 'UserList';
       }
     });
@@ -277,7 +280,7 @@ export default {
     }));
 
     // 切换页面
-    const switchPage = (pageName) => {
+    const switchPage = async (pageName) => {
       activePage.value = pageName;
       // 更新浏览器地址栏
       router.push(`/system/userManagement/${pageName}`);
@@ -285,6 +288,8 @@ export default {
       if (isMobile.value) {
         mobileDrawerOpen.value = false;
       }
+      // 重新获取菜单数据，确保用户切换后显示正确的菜单
+      await fetchMenus();
     };
 
     // 处理节点点击事件

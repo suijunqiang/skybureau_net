@@ -34,7 +34,7 @@ export const getUserPosition = async () => {
     }
 
     // 构建请求URL
-    const url = `${API.USER.POSITIONS}?filters[position_id][$eq]=${positionId}`;
+    const url = `${API.USER.POSITION.LIST}?filters[position_id][$eq]=${positionId}`;
 
     // 发送请求
     const response = await axios.get(url);
@@ -50,20 +50,14 @@ export const getUserPosition = async () => {
       console.log('用户职位信息已保存到本地存储');
     }
 
-    // 获取并输出用户菜单信息
-    try {
-      const menuResponse = await axios.get(API.USER.MENU.LIST);
-      console.log('用户菜单信息查询结果:', menuResponse.data);
-    } catch (menuError) {
-      console.error('查询用户菜单信息失败:', menuError);
-    }
+    // 移除无条件获取所有菜单的代码，菜单数据应该在组件中根据职位信息按需获取
 
     return response.data;
   } catch (error) {
     console.error('查询用户职位信息失败:', error);
     return null;
   }
-};
+}
 
 // 导出函数，便于在其他组件中使用
 export default {

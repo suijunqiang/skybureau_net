@@ -56,6 +56,7 @@ component: () => import("layouts/MainLayout.vue"),
       { path: "branch", component: () => import("pages/system/UserManagement.vue") },
       { path: "position", component: () => import("pages/system/UserManagement.vue") },
       { path: "menu", component: () => import("pages/system/UserManagement.vue") },
+      { path: "users", component: () => import("pages/system/UserManagement.vue") },
     ],  },
 
   /*
