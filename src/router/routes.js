@@ -44,20 +44,19 @@ component: () => import("layouts/MainLayout.vue"),
         },
     ],
   },
-  {
-    path: "/system/userManagement",
-    component: () => import("layouts/MainBackendLayout.vue"),
-    children: [
-      { path: "", component: () => import("pages/system/UserManagement.vue") },
-      { path: "userList", component: () => import("pages/system/UserManagement.vue") },
-      { path: "addUser", component: () => import("pages/system/UserManagement.vue") },
-      { path: "userSettings", component: () => import("pages/system/UserManagement.vue") },
-      { path: "userStatistics", component: () => import("pages/system/UserManagement.vue") },
-      { path: "branch", component: () => import("pages/system/UserManagement.vue") },
-      { path: "position", component: () => import("pages/system/UserManagement.vue") },
-      { path: "menu", component: () => import("pages/system/UserManagement.vue") },
-      { path: "users", component: () => import("pages/system/UserManagement.vue") },
-    ],  },
+  {    path: "/system/userManagement",
+       component: () => import("layouts/MainBackendLayout.vue"),
+       children: [
+        { path: "", component: () => import("pages/system/UserManagement.vue") },
+        { path: "welcome", component: () => import("pages/system/UserManagement.vue") },
+        { path: "addUser", component: () => import("pages/system/UserManagement.vue") },
+        { path: "userSettings", component: () => import("pages/system/UserManagement.vue") },
+        { path: "userStatistics", component: () => import("pages/system/UserManagement.vue") },
+        { path: "branch", component: () => import("pages/system/UserManagement.vue") },
+        { path: "position", component: () => import("pages/system/UserManagement.vue") },
+        { path: "menu", component: () => import("pages/system/UserManagement.vue") },
+        { path: "users", component: () => import("pages/system/UserManagement.vue") },
+      ],  },
 
   /*
   {

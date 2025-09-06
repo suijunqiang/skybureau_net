@@ -37,7 +37,14 @@
         behavior="menu"
       />
     </div>
-    <div class="el-menu-item user-name">
+    <div 
+      v-if="userInfoStore.hasUserInfo"
+      class="el-menu-item user-name cursor-pointer"
+      @click="navigateToWelcome"
+    >
+      {{ displayUserName }}
+    </div>
+    <div v-else class="el-menu-item user-name">
       {{ displayUserName }}
     </div>
     <!-- 退出按钮，仅在登录状态下显示 -->
@@ -86,11 +93,17 @@ export default {
       router.push('/');
     };
 
+    // 导航到欢迎页面
+    const navigateToWelcome = () => {
+      router.push('/system/userManagement/welcome');
+    };
+
     return {
       locale,
       displayUserName,
       userInfoStore,
       handleLogout,
+      navigateToWelcome,
       localeOptions: [
         { label: "中文", value: "zh-CN" },
         { label: "English", value: "en-US" },

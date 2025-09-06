@@ -50,8 +50,8 @@
         <div class="flex-1 p-6 overflow-auto">
           <component
             :is="currentComponentName"
-            v-bind="activePage === 'userList' ? userListProps.value : {}"
-            v-on="activePage === 'userList' ? handleUserListEvents : (activePage === 'addUser' ? handleAddUserEvents : {})"
+            v-bind="activePage === 'addUser' ? {} : {}"
+            v-on="activePage === 'addUser' ? handleAddUserEvents : {}"
           />
         </div>
       </div>
@@ -73,7 +73,7 @@ import { useRouter } from "vue-router";
 import axios from 'axios';
 import { API } from "src/api/api.js";
 import { usePositionInfoStore } from "src/stores/positionInfo.js";
-import UserList from "./UserList.vue";
+import WelcomePage from "./WelcomePage.vue";
 import AddUser from "./AddUser.vue";
 import UserSettings from "./UserSettings.vue";
 import UserStatistics from "./UserStatistics.vue";
@@ -85,7 +85,7 @@ import UsersPage from "./UsersPage.vue";
 export default {
   name: "UserManagement",
   components: {
-    UserList,
+    WelcomePage,
     AddUser,
     UserSettings,
     UserStatistics,
@@ -241,7 +241,7 @@ export default {
     // 定义当前页面组件名称
     const currentComponentName = computed(() => {
       switch (activePage.value) {
-        case 'userList': return 'UserList';
+        case 'welcome': return 'WelcomePage';
         case 'addUser': return 'AddUser';
         case 'userSettings': return 'UserSettings';
         case 'userStatistics': return 'UserStatistics';
@@ -249,7 +249,7 @@ export default {
         case 'position': return 'PositionPage';
         case 'menu': return 'MenuPage';
         case 'users': return 'UsersPage';
-        default: return 'UserList';
+        default: return 'WelcomePage';
       }
     });
 
@@ -272,12 +272,7 @@ export default {
       return findPageTitle(menuTree.value);
     });
 
-    // 用户列表组件属性 - 使用computed实现响应式
-    const userListProps = computed(() => ({
-      users: users.value,
-      columns: columns.value,
-      pagination: pagination.value
-    }));
+
 
     // 切换页面
     const switchPage = async (pageName) => {
@@ -370,13 +365,36 @@ export default {
       // 加载菜单数据
       await fetchMenus();
 
+      // 初始化页面
+      initializePageFromUrl();
+
+      // 监听路由变化（使用Vue Router的路由变化事件）
+      const routeListener = () => {
+        initializePageFromUrl();
+      };
+
+      // 添加Vue Router的路由变化监听
+      router.afterEach(routeListener);
+
+      // 同时保留popstate事件监听以处理浏览器前进/后退
+      window.addEventListener('popstate', routeListener);
+
+      // 在组件卸载时清理监听器
+      onUnmounted(() => {
+        router.afterEach(() => {}); // 移除路由监听
+        window.removeEventListener('popstate', routeListener);
+      });
+    });
+
+    // 从URL初始化页面
+    const initializePageFromUrl = () => {
       // 从URL解析当前页面
       const path = window.location.pathname;
       const pathParts = path.split('/');
-      // 当路径以/userManagement结尾时，使用默认页面userList
+      // 当路径以/userManagement结尾时，使用默认页面welcome
       let pageName = pathParts[pathParts.length - 1];
       if (pageName === 'userManagement') {
-        pageName = 'userList';
+        pageName = 'welcome';
       }
 
       // 如果有页面名称，则尝试找到匹配的菜单项
@@ -407,7 +425,7 @@ export default {
         // 设置默认活动菜单
         setDefaultActiveMenu();
       }
-    });
+    };
 
     // 设置默认活动菜单
     const setDefaultActiveMenu = () => {
@@ -471,15 +489,7 @@ export default {
       }
     };
 
-    // 处理用户列表事件
-    const handleUserListEvents = {
-      'edit-user': editUser,
-      'delete-user': deleteUser,
-      'switch-to-add-user': () => { switchPage('addUser'); },
-      'update-pagination': (newPagination) => {
-        Object.assign(pagination.value, newPagination);
-      }
-    };
+
 
     // 处理添加用户事件
     const handleAddUserEvents = {
@@ -496,8 +506,6 @@ export default {
       selectedNode,
       currentComponentName,
       currentPageTitle,
-      userListProps,
-      handleUserListEvents,
       handleAddUserEvents,
       switchPage,
       toggleDrawer,

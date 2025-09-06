@@ -83,7 +83,7 @@ export default {
   about_us_title_1_content: "At skybureau.net, our name is more than just a web address. The Sky in our domain name symbolizes the vast expanse that both aerospace and drone technologies strive to conquer. It represents the limitless possibilities of the heavens, from the outer reaches of space to the lower altitudes where drones soar. The Bureau implies a place of knowledge, a hub where information about these advanced technologies is curated and shared, making skybureau.net a one - stop destination for all things related to aerospace and drones.",
   about_us_title_2_content: "Aerospace technology is the cornerstone of our understanding of the universe. It enables us to break free from the bounds of Earth and venture into the unknown. Through the development of powerful rockets, advanced satellites, and state - of - the - art spacecraft, we have been able to map the cosmos, study distant planets like Mars and Jupiter, and gain invaluable insights into the origins and evolution of the universe. These efforts not only expand our scientific knowledge but also drive technological advancements here on Earth. For example, the materials developed for space missions have found applications in various industries, from automotive to healthcare, improving the quality of our daily lives. At skybureau.net, we are dedicated to bringing you the latest news, research, and developments in aerospace, highlighting its crucial role in shaping our future.",
   about_us_title_3_content: "Drone technology has emerged as a game - changer in multiple sectors. In the low - altitude sky, drones are revolutionizing the way we work and live. Their ability to access hard - to - reach areas with ease, combined with high - resolution imaging and sensor capabilities, has made them invaluable in fields such as agriculture, construction, and environmental monitoring. In agriculture, drones equipped with special sensors can detect crop health issues early, allowing farmers to take targeted actions and increase yields. In construction, they provide real - time aerial views of large - scale projects, improving project management and safety. During natural disasters, drones can quickly survey damaged areas, helping rescue teams plan their operations more effectively. Skybureau.net is committed to exploring and sharing the diverse applications of drone technology, emphasizing how it is making our world more efficient, safer, and connected.​  Whether you are a technology enthusiast, a professional in the aerospace or drone industry, or simply someone curious about the wonders of the sky, skybureau.net is here to serve as your guide, connecting you to the cutting - edge technologies that are redefining our relationship with the sky.",
-  
+
   // Branch page translations
   branch_page_title: "Branch Information",
   branch_page_description: "This page displays position information related to the branch.",
@@ -102,7 +102,7 @@ export default {
   position_responsibility_3: "Solve technical problems during development",
   position_responsibility_4: "Write relevant technical documentation",
   back_to_list: "Back to List",
-  
+
   // Position page translations
   position_page_title: "Position Management",
   position_page_description: "This page displays detailed position management information.",
@@ -113,7 +113,7 @@ export default {
   position_edit: "Edit Position",
   position_delete: "Delete Position",
   position_search_placeholder: "Search positions...",
-  
+
   // Menu page translations
   menu_page_title: "Menu Management",
   menu_page_description: "This page displays detailed menu management information.",
@@ -131,11 +131,35 @@ export default {
   menu_property_2: "Control user permission access",
   menu_property_3: "Configure route and page association",
   menu_property_4: "Set menu display priority",
-  
+
   // Common status messages
   save_success: "Saved successfully",
   save_failed: "Save failed",
   unknown_error: "Unknown error",
   confirm_delete_menu: "Confirm delete menu",
-  add_menu: "Add menu"
+  add_menu: "Add menu",
+  
+  // MenuPage translations
+  menu_id: "Menu ID",
+  page_url: "Page URL",
+  parent_id: "Parent ID",
+  level: "Level",
+  sort: "Sort",
+  is_show: "Show",
+  is_enable: "Enable",
+  
+  // UsersPage translations
+  id: "ID",
+  username: "Username",
+  position_name: "Position",
+  branch_name: "Branch",
+  confirmed: "Confirmed",
+  blocked: "Blocked",
+  is_enabled: "Enabled",
+  
+  // PositionPage translations
+  position_id: "Position ID",
+  position_name: "Position Name",
+  menu_permissions: "Menu Permissions",
+  add_position: "Add Position"
 };
