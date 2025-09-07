@@ -9,6 +9,22 @@ It is a full-stack application that allows you to create a website with a CMS, f
 - [x] Strapi V5.12.1 (lastest)
 - [x] MySQL
 
+### Features Done
+- [x] Home/Product/Login/Language pages
+- [x] Header/Footer/Content pages
+- [x] i18n support English/Simplified Chinese
+- [x] JWT Authentication by Frontend/Strapi
+- [x] Authorization module implementation
+--- [x] User management module
+--- [x] Menu management module
+--- [x] Branch management module
+--- [x] Position management module
+
+### Features To Do
+- [x] Blog management module Frontend/Backend
+- [x] News pages frontend by Quasar V2
+- [x] News pages backend by Strapi V5
+
 ### Getting Started
 How to start the project and run it locally.
 [INSTALL](./readme/README_INSTALL.md)
@@ -20,17 +36,6 @@ How to start the project and run it locally.
 ### Screen Shot
 - ![image](./readme/home.jpg)
 - ![image](./readme/jwt.jpg)
-
-### Features Done
-- [x] Home/Product/Login/Language pages
-- [x] Header/Footer/Content pages
-- [x] i18n support English/Simplified Chinese
-- [x] JWT Authentication by Strapi
-
-### Features To Do
-- [x] JWT polish
-- [x] News pages frontend by Quasar V2
-- [x] News pages backend by Strapi V5
 
 ### License
 MIT
