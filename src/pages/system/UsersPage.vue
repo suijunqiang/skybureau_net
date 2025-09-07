@@ -1,6 +1,5 @@
 <template>
   <div class="users-container">
-    <q-card>
       <q-card-section>
         <div class="flex justify-between items-center mb-4">
           <h2 class="text-xl font-semibold">{{ $t('users_page_title') }}</h2>
@@ -44,7 +43,6 @@
           <q-btn color="primary" :label="$t('back_to_list')" @click="goBack"/>
         </div>
       </q-card-section>
-    </q-card>
   </div>
 
   <!-- 用户编辑对话框 -->
@@ -75,7 +73,7 @@ export default defineComponent({
     const { t } = useI18n();
     const router = useRouter();
     const $q = useQuasar();
-    
+
     // 用户列表数据 - 添加默认模拟数据以确保页面能正常显示
     const users = ref([
       {
@@ -196,7 +194,7 @@ export default defineComponent({
       // 在UserManagement页面内部，我们不应该导航到同一页面
       // 而是应该通过事件通知父组件切换回欢迎页面
       console.log('在UserManagement页面内部执行返回操作，将切换回欢迎页面');
-      
+
       // 通过emit通知父组件（UserManagement）切换页面
       emit('goBackToWelcome');
     };

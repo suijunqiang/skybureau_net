@@ -107,10 +107,12 @@ export default defineComponent({
 
         // 构建带过滤条件的URL
         let menuUrl = API.USER.MENU.LIST;
+        /*
         if (menuIds.length > 0) {
           const filters = menuIds.map(id => `filters[menu_id][$in]=${id}`).join('&');
           menuUrl = `${menuUrl}?${filters}`;
         }
+          */
 
         // 输出完整URL到控制台方便调试
         console.log('请求菜单的完整URL:', menuUrl);
