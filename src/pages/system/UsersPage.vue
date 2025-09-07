@@ -70,10 +70,13 @@ export default defineComponent({
   components: {
     UserEditDialog
   },
-  setup() {
+  emits: ['goBackToWelcome'],
+  setup(props, { emit }) {
     const { t } = useI18n();
     const router = useRouter();
-    const $q = useQuasar();// 用户列表数据 - 添加默认模拟数据以确保页面能正常显示
+    const $q = useQuasar();
+    
+    // 用户列表数据 - 添加默认模拟数据以确保页面能正常显示
     const users = ref([
       {
           "id": 1,
@@ -190,7 +193,12 @@ export default defineComponent({
 
     // 返回用户列表
     const goBack = () => {
-      router.push('/system/userManagement');
+      // 在UserManagement页面内部，我们不应该导航到同一页面
+      // 而是应该通过事件通知父组件切换回欢迎页面
+      console.log('在UserManagement页面内部执行返回操作，将切换回欢迎页面');
+      
+      // 通过emit通知父组件（UserManagement）切换页面
+      emit('goBackToWelcome');
     };
 
     // 添加用户
