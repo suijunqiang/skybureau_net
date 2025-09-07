@@ -15,10 +15,10 @@ It is a full-stack application that allows you to create a website with a CMS, f
 - [x] i18n support English/Simplified Chinese
 - [x] JWT Authentication by Frontend/Strapi
 - [x] Authorization module implementation
---- [x] User management module
---- [x] Menu management module
---- [x] Branch management module
---- [x] Position management module
+  - [x] User management module
+  - [x] Menu management module
+  - [x] Branch management module
+  - [x] Position management module
 
 ### Features To Do
 - [x] Blog management module Frontend/Backend
