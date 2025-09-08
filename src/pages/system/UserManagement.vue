@@ -1,12 +1,9 @@
 <template>
-  <q-page class="h-screen flex">
+  <q-page class="h-full flex">
     <!-- 左侧导航区域 -->
     <div class="h-full flex relative">
       <!-- 导航菜单 -->
       <div class="bg-white h-full border-r border-grey-200 flex-shrink-0 z-10" :style="{ width: sidebarWidth + 'px', display: sidebarHidden ? 'none' : 'block' }">
-        <div class="p-4 bg-primary text-white">
-          <h3 class="text-center font-semibold">{{ $t('user_management') }}</h3>
-        </div>
         <div class="h-full p-2 overflow-auto">
           <q-list class="h-full">
             <template v-for="node in menuTree" :key="node.label">

@@ -1,7 +1,7 @@
 <template>
-  <div class="users-container">
+  <div class="users-container w-full w-screen">
       <q-card-section>
-        <div class="flex justify-between items-center mb-4">
+        <div class="flex w-full justify-between items-center mb-4">
           <h2 class="text-xl font-semibold">{{ $t('users_page_title') }}</h2>
           <q-btn color="primary" :label="$t('add_user')" @click="addUser" />
         </div>

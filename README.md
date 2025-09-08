@@ -22,8 +22,8 @@ It is a full-stack application that allows you to create a website with a CMS, f
 
 ### Features To Do
 - [x] Blog management module Frontend/Backend
-- [x] News pages frontend by Quasar V2
-- [x] News pages backend by Strapi V5
+- [x] News management module Frontend/Backend
+- [x] Iot management module Frontend/Backend
 
 ### Getting Started
 How to start the project and run it locally.
@@ -34,6 +34,7 @@ How to start the project and run it locally.
 - Backend [Strapi Skybureau](http://www.suijunqiang.top:1337/admin)
 
 ### Screen Shot
+- ![image](http://suijunqiang.top:10000/img/sbn.gif)
 - ![image](./readme/home.jpg)
 - ![image](./readme/jwt.jpg)
 

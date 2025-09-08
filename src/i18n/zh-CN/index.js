@@ -26,6 +26,7 @@ export default {
   device_management: "设备管理",
   personal_information: "个人信息",
   add_user: "新增",
+  edit_user: "编辑用户",
   serial_number: "序号",
   login_name: "登录名",
   real_name: "真实名称",

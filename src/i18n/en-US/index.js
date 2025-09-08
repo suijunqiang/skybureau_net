@@ -30,6 +30,7 @@ export default {
   device_management: "Device Management",
   personal_information: "Personal Information",
   add_user: "Add New",
+  edit_user: "Edit User",
   serial_number: "ID",
   login_name: "Login Name",
   real_name: "Real Name",
