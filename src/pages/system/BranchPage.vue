@@ -1,7 +1,7 @@
 <template>
-  <div class="branch-container">
-    <q-card>
-      <q-card-section>
+  <div class="branch-container full-width full-height">
+    <q-card class="full-width full-height shadow-0">
+      <q-card-section class="q-pa-lg full-width">
         <div class="flex justify-between items-center mb-4">
           <h2 class="text-xl font-semibold">Branch Management</h2>
           <q-btn color="primary" label="ADD BRANCH" @click="addBranch" />
@@ -261,68 +261,68 @@ export default defineComponent({
 
 <style scoped>
   .branch-container {
-    /* 移除最大宽度限制，让容器自适应父元素宽度 */
-    width: 100%;
+    width: 100% !important;
+    height: 100% !important;
     margin: 0;
-    /* 将左右间距缩小为原来的一半 */
-    padding: 1rem 0.5rem;
-    /* 确保内容不会被左侧菜单遮挡 */
+    padding: 0;
     box-sizing: border-box;
-    /* 添加过渡效果，使宽度变化更平滑 */
-    transition: width 0.3s ease;
+    max-width: none !important;
   }
 
-  /* 移除q-card可能存在的宽度限制 */
+  .full-width {
+    width: 100% !important;
+    max-width: none !important;
+  }
+
+  .full-height {
+    height: 100% !important;
+    min-height: 100% !important;
+  }
+
   .q-card {
-    width: 100%;
-    max-width: none;
+    width: 100% !important;
+    max-width: none !important;
+    border-radius: 0 !important;
   }
 
   .q-card-section {
-    width: 100%;
-    /* 确保卡片内容区域没有额外的内边距限制 */
-    padding: 16px;
+    width: 100% !important;
+    max-width: none !important;
   }
 
   .q-table {
-    width: 100%;
-    /* 确保表格在容器中完全填充 */
-    min-width: 100%;
-    /* 允许表格在必要时水平滚动 */
+    width: 100% !important;
+    min-width: 100% !important;
     overflow-x: auto;
-    /* 添加这个属性让表格单元格能够伸缩填充空间 */
-    table-layout: fixed;
+    table-layout: auto !important;
   }
 
-  /* 让表格头部和内容区域完全填充宽度 */
   .q-table__container {
-    width: 100%;
+    width: 100% !important;
     overflow-x: visible;
   }
 
-  /* 确保表格列能够自适应填充宽度 */
   .q-table th,
   .q-table td {
-    width: auto;
+    padding: 8px 16px !important;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
 
-  /* 特别处理name和code列，让它们可以占据更多宽度 */
-  .q-table th:nth-child(2),
-  .q-table td:nth-child(2),
-  .q-table th:nth-child(3),
-  .q-table td:nth-child(3) {
+  /* 让表格列自动填充剩余空间 */
+  .q-table th:not(:last-child),
+  .q-table td:not(:last-child) {
     width: auto;
-    min-width: 180px;
+    min-width: 120px;
   }
 
-  /* 确保操作按钮正确对齐在Operations列下 */
-  .q-table th.col-actions, .q-table td.col-actions {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
+  /* 操作列固定宽度 */
+  .q-table th:last-child,
+  .q-table td:last-child {
+    width: 150px;
+    min-width: 150px;
+    text-align: right;
   }
 
   /* 调整按钮间距 */

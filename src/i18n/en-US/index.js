@@ -162,5 +162,25 @@ export default {
   position_id: "Position ID",
   position_name: "Position Name",
   menu_permissions: "Menu Permissions",
-  add_position: "Add Position"
+  add_position: "Add Position",
+  
+  // Blog related translations
+  create_new_document: "Create New Document",
+  document_title: "Document Title",
+  document_cover_url: "Document Cover URL",
+  document_description: "Document Description", 
+  document_content: "Document Content",
+  category: "Category",
+  tags: "Tags",
+  reading_time_minutes: "Reading Time (Minutes)",
+  view_count: "View Count",
+  save: "Save",
+  document_title_placeholder: "Please enter document title",
+  document_cover_url_placeholder: "Support image URL, or upload image to auto-fill",
+  document_description_placeholder: "Please enter document description...",
+  document_content_placeholder: "Start editing...",
+  category_placeholder: "Please select category (type to create dynamically)",
+  tags_placeholder: "Please select tags (type to create tags dynamically)",
+  document_save_success: "Document saved successfully!",
+  document_save_failed: "Document save failed"
 };

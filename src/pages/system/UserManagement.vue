@@ -17,7 +17,6 @@
                 :header-inset-level="0"
                 :content-inset-level="1"
                 dense-toggle
-                expand-separator
                 @update:model-value="(open) => handleToggleExpand(node.label, open)"
               >
                 <!-- 子菜单 -->
@@ -93,9 +92,9 @@
         </div>
 
         <!-- 内容区域 -->
-      <div class="flex-1 h-full w-full p-6 overflow-auto">
+      <div class="flex-1 h-full w-full overflow-auto content-area" :class="['users', 'userList', 'menu', 'position', 'branch', 'blogCreate', 'create'].includes(activePage) ? 'no-padding' : 'p-6'">
         <!-- 使用渲染函数直接创建组件 -->
-        <div class="h-full w-full">
+        <div class="h-full w-full component-wrapper">
           <component :is="renderCurrentPage()" />
         </div>
       </div>
@@ -126,6 +125,7 @@ import BranchPage from "./BranchPage.vue";
 import PositionPage from "./PositionPage.vue";
 import MenuPage from "./MenuPage.vue";
 import UsersPage from "./UsersPage.vue";
+import BlogCreate from "../blog/BlogCreate.vue";
 
 export default {
   name: "UserManagement",
@@ -137,7 +137,8 @@ export default {
     BranchPage,
     PositionPage,
     MenuPage,
-    UsersPage
+    UsersPage,
+    BlogCreate
   },
   setup() {
     const { t } = useI18n();
@@ -405,7 +406,9 @@ export default {
         'position': 'PositionPage',
         'menu': 'MenuPage',
         'users': 'UsersPage',
-        'userList': 'UsersPage'
+        'userList': 'UsersPage',
+        'blogCreate': 'BlogCreate',
+        'blog': 'BlogCreate'
       };
 
       const result = componentMap[activePage.value] || 'WelcomePage';
@@ -793,6 +796,10 @@ export default {
       if (pageName === 'userManagement') {
         pageName = 'welcome';
       }
+      // 特殊处理博客创建页面
+      if (path.includes('blog/create')) {
+        pageName = 'blogCreate';
+      }
 
       const isProgrammaticNavigation = window.location.hash.includes('fromSwitchPage=true');
       if (isProgrammaticNavigation) {
@@ -1013,6 +1020,10 @@ export default {
         case 'userList':
           console.log('Rendering UsersPage component');
           return h(UsersPage, props, on);
+        case 'blogCreate':
+        case 'create':
+          console.log('Rendering BlogCreate component');
+          return h(BlogCreate, props, on);
         default:
           console.warn(`Unknown page: ${activePage.value}`);
           return h('div', {
@@ -1141,6 +1152,28 @@ export default {
 
 .p-4 {
   padding: 1rem;
+}
+
+.no-padding {
+  padding: 0 !important;
+}
+
+/* 强制内容区域全宽 */
+.content-area {
+  width: 100% !important;
+  max-width: none !important;
+}
+
+/* 强制组件容器全宽 */
+.component-wrapper {
+  width: 100% !important;
+  max-width: none !important;
+}
+
+/* 特别针对BlogCreate组件强制全宽 */
+.component-wrapper > * {
+  width: 100% !important;
+  max-width: none !important;
 }
 
 .mr-2 {

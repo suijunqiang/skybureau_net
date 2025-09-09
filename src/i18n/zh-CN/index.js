@@ -68,7 +68,7 @@ export default {
   about_us_title_1_content: "我们的域名意义非凡。“sky” 代表着航天与无人机技术全力探索的广袤天空，从遥远的宇宙深处，到无人机翱翔的低空领域，蕴含着无限可能。“bureau” 则象征知识汇聚之地，这里精心整理并分享先进技术信息，让skybureau.net成为航天与无人机相关内容的一站式平台。",
   about_us_title_2_content: "航天技术是我们认知宇宙的基石。凭借强大火箭、先进卫星和顶尖航天器，我们冲破地球束缚，迈向未知。得以绘制宇宙地图，研究火星、木星等遥远行星，深入了解宇宙起源与演化。这些探索不仅拓展科学知识，还推动地球科技进步。例如，航天任务研发的材料在汽车、医疗等行业广泛应用，提升日常生活品质。在skybureau.net，我们专注为您带来航天领域最新资讯、研究成果与发展动态，彰显其塑造未来的关键作用。",
   about_us_title_3_content: "无人机技术已成为多领域变革力量。在低空空间，无人机正革新工作与生活方式。其能轻松抵达人难以涉足之处，搭配高分辨率成像与传感器，在农业、建筑、环境监测等领域大显身手。农业中，搭载特殊传感器的无人机可提前察觉作物健康问题，助力农民精准施策、提高产量。建筑项目里，它提供实时高空视角，优化项目管理与安全保障。遭遇自然灾害时，无人机能迅速勘察受灾区域，协助救援团队高效规划救援行动。skybureau.net致力于探索并分享无人机多元应用，展现其如何让世界更高效、安全与紧密相连。​  无论您是科技爱好者、航天或无人机行业专业人士，还是单纯对天空奥秘满怀好奇，skybureau.net都愿成为您的指引，助您接触到重塑人类与天空关系的前沿技术。",
-  
+
   // Branch页面相关翻译
   branch_page_title: "部门信息",
   branch_page_description: "这里展示了部门相关的职位信息。",
@@ -87,7 +87,7 @@ export default {
   position_responsibility_3: "解决开发过程中的技术问题",
   position_responsibility_4: "撰写相关技术文档",
   back_to_list: "返回列表",
-  
+
   // Position页面相关翻译
   position_page_title: "职位管理",
   position_page_description: "这里展示了详细的职位管理信息。",
@@ -98,7 +98,7 @@ export default {
   position_edit: "编辑职位",
   position_delete: "删除职位",
   position_search_placeholder: "搜索职位...",
-  
+
   // Menu页面相关翻译
   menu_page_title: "菜单管理",
   menu_page_description: "这里展示了详细的菜单管理信息。",
@@ -116,11 +116,31 @@ export default {
   menu_property_2: "控制用户权限访问",
   menu_property_3: "配置路由和页面关联",
   menu_property_4: "设置菜单显示优先级",
-  
+
   // 通用状态消息
   save_success: "保存成功",
   save_failed: "保存失败",
   unknown_error: "未知错误",
   confirm_delete_menu: "确认删除菜单",
-  add_menu: "添加菜单"
+  add_menu: "添加菜单",
+  
+  // Blog相关翻译
+  create_new_document: "创建新文档",
+  document_title: "文档标题",
+  document_cover_url: "文档首图URL", 
+  document_description: "文档描述",
+  document_content: "文档正文",
+  category: "分类",
+  tags: "标签",
+  reading_time_minutes: "网页时长(分钟)",
+  view_count: "浏览次数",
+  save: "保存",
+  document_title_placeholder: "请输入文档标题",
+  document_cover_url_placeholder: "支持图片URL，或上传图片自动填充",
+  document_description_placeholder: "请输入文档描述...",
+  document_content_placeholder: "开始编辑...",
+  category_placeholder: "请选择分类（输入可动态创建）",
+  tags_placeholder: "请选择标签（输入可动态创建标签）",
+  document_save_success: "文档保存成功！",
+  document_save_failed: "文档保存失败"
 };

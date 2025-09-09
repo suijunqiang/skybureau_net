@@ -57,6 +57,11 @@ component: () => import("layouts/MainLayout.vue"),
         { path: "menu", component: () => import("pages/system/UserManagement.vue") },
         { path: "users", component: () => import("pages/system/UserManagement.vue") },
       ],  },
+  {    path: "/blog/create",
+       component: () => import("layouts/MainBackendLayout.vue"),
+       children: [
+        { path: "", component: () => import("pages/system/UserManagement.vue") }
+      ],  },
 
   /*
   {

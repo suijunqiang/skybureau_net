@@ -1,10 +1,11 @@
 <template>
-  <div class="users-container w-full w-screen">
-      <q-card-section>
-        <div class="flex w-full justify-between items-center mb-4">
-          <h2 class="text-xl font-semibold">{{ $t('users_page_title') }}</h2>
-          <q-btn color="primary" :label="$t('add_user')" @click="addUser" />
-        </div>
+  <div class="users-container full-width full-height">
+      <q-card class="full-width full-height shadow-0">
+        <q-card-section class="q-pa-lg full-width">
+          <div class="flex w-full justify-between items-center mb-4">
+            <h2 class="text-xl font-semibold">{{ $t('users_page_title') }}</h2>
+            <q-btn color="primary" :label="$t('add_user')" @click="addUser" />
+          </div>
 
         <!-- 用户列表表格 -->
         <q-table
@@ -43,6 +44,7 @@
           <q-btn color="primary" :label="$t('back_to_list')" @click="goBack"/>
         </div>
       </q-card-section>
+      </q-card>
   </div>
 
   <!-- 用户编辑对话框 -->
@@ -332,57 +334,68 @@ export default defineComponent({
 
 <style scoped>
   .users-container {
-    width: 100%;
+    width: 100% !important;
+    height: 100% !important;
     margin: 0;
-    padding: 1rem 0.5rem;
+    padding: 0;
     box-sizing: border-box;
-    transition: width 0.3s ease;
+    max-width: none !important;
+  }
+
+  .full-width {
+    width: 100% !important;
+    max-width: none !important;
+  }
+
+  .full-height {
+    height: 100% !important;
+    min-height: 100% !important;
   }
 
   .q-card {
-    width: 100%;
-    max-width: none;
+    width: 100% !important;
+    max-width: none !important;
+    border-radius: 0 !important;
   }
 
   .q-card-section {
-    width: 100%;
-    padding: 16px;
+    width: 100% !important;
+    max-width: none !important;
   }
 
   .q-table {
-    width: 100%;
-    min-width: 100%;
+    width: 100% !important;
+    min-width: 100% !important;
     overflow-x: auto;
-    table-layout: fixed;
+    table-layout: auto !important;
   }
 
   .q-table__container {
-    width: 100%;
+    width: 100% !important;
     overflow-x: visible;
   }
 
   .q-table th,
   .q-table td {
-    width: auto;
+    padding: 8px 16px !important;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
 
-  /* 特别处理username和email列 */
-  .q-table th:nth-child(2),
-  .q-table td:nth-child(2),
-  .q-table th:nth-child(3),
-  .q-table td:nth-child(3) {
+  /* 让表格列自动填充剩余空间 */
+  .q-table th:not(:last-child),
+  .q-table td:not(:last-child) {
     width: auto;
-    min-width: 180px;
+    min-width: 120px;
   }
 
-  /* 确保操作按钮正确对齐 */
-  .q-table th.col-actions, .q-table td.col-actions {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
+  /* 操作列固定宽度 */
+  .q-table th:last-child,
+  .q-table td:last-child {
+    width: 150px;
+    min-width: 150px;
+    text-align: right;
   }
 
   /* 调整按钮间距 */
