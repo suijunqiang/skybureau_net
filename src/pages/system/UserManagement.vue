@@ -92,7 +92,7 @@
         </div>
 
         <!-- 内容区域 -->
-      <div class="flex-1 h-full w-full overflow-auto content-area" :class="['users', 'userList', 'menu', 'position', 'branch', 'blogCreate', 'create'].includes(activePage) ? 'no-padding' : 'p-6'">
+      <div class="flex-1 h-full w-full overflow-auto content-area" :class="['users', 'userList', 'menu', 'position', 'branch', 'blogCreate', 'create', 'blogManagement', 'blogList'].includes(activePage) ? 'no-padding' : 'p-6'">
         <!-- 使用渲染函数直接创建组件 -->
         <div class="h-full w-full component-wrapper">
           <component :is="renderCurrentPage()" />
@@ -126,6 +126,7 @@ import PositionPage from "./PositionPage.vue";
 import MenuPage from "./MenuPage.vue";
 import UsersPage from "./UsersPage.vue";
 import BlogCreate from "../blog/BlogCreate.vue";
+import BlogManagement from "../blog/BlogManagement.vue";
 
 export default {
   name: "UserManagement",
@@ -138,7 +139,8 @@ export default {
     PositionPage,
     MenuPage,
     UsersPage,
-    BlogCreate
+    BlogCreate,
+    BlogManagement
   },
   setup() {
     const { t } = useI18n();
@@ -288,10 +290,17 @@ export default {
         // 更健壮的pageName设置逻辑
         let pageName = null;
         if (menu.page_url) {
-          pageName = menu.page_url.split('/').pop();
-          // 特殊处理一些可能的page_url格式
-          if (pageName.includes('.')) {
-            pageName = pageName.split('.')[0];
+          // 特殊处理博客相关路由
+          if (menu.page_url.includes('/blog/list')) {
+            pageName = 'blogManagement';
+          } else if (menu.page_url.includes('/blog/create')) {
+            pageName = 'blogCreate';
+          } else {
+            pageName = menu.page_url.split('/').pop();
+            // 特殊处理一些可能的page_url格式
+            if (pageName.includes('.')) {
+              pageName = pageName.split('.')[0];
+            }
           }
         } else {
           // 如果没有page_url，尝试根据菜单名称生成
@@ -300,7 +309,13 @@ export default {
             'User': 'users',
             'Branch': 'branch',
             'Position': 'position',
-            'Menu': 'menu'
+            'Menu': 'menu',
+            'Blog': 'blogManagement',
+            '博客': 'blogManagement',
+            '博客管理': 'blogManagement',
+            '博客列表': 'blogManagement',
+            'Blog Management': 'blogManagement',
+            'Blog List': 'blogManagement'
           };
 
           for (const [key, value] of Object.entries(nameMap)) {
@@ -408,7 +423,9 @@ export default {
         'users': 'UsersPage',
         'userList': 'UsersPage',
         'blogCreate': 'BlogCreate',
-        'blog': 'BlogCreate'
+        'blog': 'BlogCreate',
+        'blogManagement': 'BlogManagement',
+        'blogList': 'BlogManagement'
       };
 
       const result = componentMap[activePage.value] || 'WelcomePage';
@@ -418,21 +435,65 @@ export default {
 
     // 获取当前页面标题
     const currentPageTitle = computed(() => {
-      // 递归查找当前页面标题
-      const findPageTitle = (nodes) => {
+      console.log('Computing page title for activePage:', activePage.value);
+      
+      // 首先处理特殊页面
+      const specialTitles = {
+        'welcome': t('user_management'),
+        'blogManagement': t('blog_management_hierarchy') || '系统管理 > 博客管理',
+        'blogList': t('blog_management_hierarchy') || '系统管理 > 博客管理',
+        'blogCreate': t('blog_create_hierarchy') || '系统管理 > 博客创建',
+        'users': t('user_management_hierarchy') || '系统管理 > 用户管理',
+        'userList': t('user_management_hierarchy') || '系统管理 > 用户管理',
+        'menu': t('menu_management_hierarchy') || '系统管理 > 菜单管理',
+        'branch': t('branch_management_hierarchy') || '系统管理 > 部门管理',
+        'position': t('position_management_hierarchy') || '系统管理 > 职位管理',
+        'userSettings': t('user_settings_hierarchy') || '系统管理 > 用户设置',
+        'userStatistics': t('user_statistics_hierarchy') || '系统管理 > 用户统计',
+        'addUser': t('add_user_hierarchy') || '系统管理 > 新增用户'
+      };
+
+      if (specialTitles[activePage.value]) {
+        console.log('Found special title:', specialTitles[activePage.value]);
+        return specialTitles[activePage.value];
+      }
+
+      // 递归查找当前页面标题，构建层级关系
+      const findPageTitle = (nodes, parentLabel = '') => {
         for (const node of nodes) {
           if (node.pageName === activePage.value) {
-            return node.label;
+            // 使用国际化的系统管理标题
+            const systemMgmt = t('system_management') || '系统管理';
+            let hierarchy;
+            
+            if (parentLabel) {
+              // 如果parent是系统管理相关，使用国际化版本
+              const localizedParent = parentLabel === '系统管理' ? systemMgmt : parentLabel;
+              hierarchy = `${localizedParent} > ${node.label}`;
+            } else {
+              hierarchy = node.label;
+            }
+            
+            console.log('Found page title with hierarchy:', hierarchy);
+            return hierarchy;
           }
-          if (node.children) {
-            const found = findPageTitle(node.children);
+          if (node.children && node.children.length > 0) {
+            const nodeLabel = node.label === '系统管理' ? (t('system_management') || '系统管理') : node.label;
+            const found = findPageTitle(node.children, nodeLabel);
             if (found) return found;
           }
         }
-        return t('user_management');
+        return null;
       };
 
-      return findPageTitle(menuTree.value);
+      const hierarchyTitle = findPageTitle(menuTree.value);
+      if (hierarchyTitle) {
+        return hierarchyTitle;
+      }
+
+      // 默认返回
+      console.log('Using default title');
+      return t('user_management');
     });
 
 
@@ -515,6 +576,13 @@ export default {
       console.log('节点是否有子菜单:', node.children && node.children.length > 0 ? '是' : '否');
       console.log('节点图标:', node.icon || '无');
       console.log('节点颜色:', node.color || '默认');
+
+      // 特殊处理博客相关菜单项
+      if (node.pageName === 'blogManagement' || node.pageName === 'blogList' || 
+          (node.label && (node.label.includes('博客') || node.label.toLowerCase().includes('blog')))) {
+        console.log('检测到博客相关菜单项，强制设置pageName为blogManagement');
+        node.pageName = 'blogManagement';
+      }
 
       // 验证和修复节点的pageName
       console.log('开始验证节点pageName...');
@@ -713,7 +781,13 @@ export default {
           '菜单管理': 'menu',
           '用户设置': 'userSettings',
           '用户统计': 'userStatistics',
-          '欢迎': 'welcome'
+          '欢迎': 'welcome',
+          '博客管理': 'blogManagement',
+          '博客列表': 'blogManagement',
+          '博客': 'blogManagement',
+          'Blog Management': 'blogManagement',
+          'Blog List': 'blogManagement',
+          'Blog': 'blogManagement'
         };
 
         if (node.label) {
@@ -735,6 +809,10 @@ export default {
           } else if (lowerLabel.includes('职位')) {
             node.pageName = 'position';
             console.log(`临时修复节点: ${node.label} - 基于关键词设置pageName为: position`);
+            return true;
+          } else if (lowerLabel.includes('博客') || lowerLabel.includes('blog')) {
+            node.pageName = 'blogManagement';
+            console.log(`临时修复节点: ${node.label} - 基于关键词设置pageName为: blogManagement`);
             return true;
           } else if (lowerLabel.includes('菜单')) {
             node.pageName = 'menu';
@@ -799,6 +877,10 @@ export default {
       // 特殊处理博客创建页面
       if (path.includes('blog/create')) {
         pageName = 'blogCreate';
+      }
+      // 特殊处理博客列表页面
+      if (path.includes('blog/list')) {
+        pageName = 'blogManagement';
       }
 
       const isProgrammaticNavigation = window.location.hash.includes('fromSwitchPage=true');
@@ -1024,6 +1106,11 @@ export default {
         case 'create':
           console.log('Rendering BlogCreate component');
           return h(BlogCreate, props, on);
+        case 'blogManagement':
+        case 'blogList':
+          console.log('Rendering BlogManagement component');
+          on['goBackToWelcome'] = handleGoBackToWelcome;
+          return h(BlogManagement, props, on);
         default:
           console.warn(`Unknown page: ${activePage.value}`);
           return h('div', {

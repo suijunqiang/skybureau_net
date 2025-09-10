@@ -62,6 +62,11 @@ component: () => import("layouts/MainLayout.vue"),
        children: [
         { path: "", component: () => import("pages/system/UserManagement.vue") }
       ],  },
+  {    path: "/blog/list",
+       component: () => import("layouts/MainBackendLayout.vue"),
+       children: [
+        { path: "", component: () => import("pages/system/UserManagement.vue") }
+      ],  },
 
   /*
   {

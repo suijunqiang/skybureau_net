@@ -1,125 +1,205 @@
 <template>
-  <q-dialog v-model="dialogVisible" :maximized="false">
-    <q-card class="w-full md:w-4/5 lg:w-4/5 custom-dialog-width">
-      <q-card-section>
-        <div class="flex justify-between items-center">
-          <h3 class="text-xl font-semibold text-center flex-1">{{ user ? $t('edit_user') : $t('add_user') }}</h3>
-          <q-btn flat dense round icon="close" @click="closeDialog" color="primary" />
+  <q-dialog
+    v-model="dialogVisible"
+    persistent
+    maximized
+    transition-show="slide-up"
+    transition-hide="slide-down"
+  >
+    <q-card class="full-width full-height">
+      <!-- 对话框头部 -->
+      <q-card-section class="row items-center q-pb-none bg-primary text-white">
+        <div class="col">
+          <div class="text-h6">
+            {{ user ? t('edit_user') : t('add_user') }}
+          </div>
+          <div class="text-caption opacity-70">
+            {{ user ? t('edit_user_subtitle') || '编辑用户信息和权限' : t('add_user_subtitle') || '创建新的系统用户账号' }}
+          </div>
+        </div>
+        <div class="col-auto">
+          <q-btn flat round dense icon="close" @click="closeDialog" />
         </div>
       </q-card-section>
 
-      <q-card-section>
-        <q-form ref="form" @submit="onSubmit">
-          <!-- 用户名 -->
-          <q-input
-            v-model="formData.username"
-            :label="$t('login_name')"
-            :rules="[val => !!val || $t('field_required')]"
-            dense
-            maxlength="50"
-            :disabled="!!user"
-          />
-
-          <!-- 真实姓名 -->
-          <q-input
-            v-model="formData.real_name"
-            :label="$t('real_name')"
-            dense
-            maxlength="50"
-          />
-
-          <!-- 邮箱 -->
-          <q-input
-            v-model="formData.email"
-            :label="$t('email')"
-            type="email"
-            :rules="[val => !!val || $t('field_required'), val => (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val) || $t('invalid_email'))]"
-            dense
-            maxlength="100"
-          />
-
-          <!-- 手机号 -->
-          <q-input
-            v-model="formData.mobile"
-            :label="$t('mobile')"
-            dense
-            maxlength="20"
-          />
-
-          <!-- 职位 -->
-          <q-select
-            v-model="formData.position_id"
-            :label="$t('position')"
-            :options="positions"
-            option-value="id"
-            :option-label="(opt) => opt.position_name || opt.name || opt.label || JSON.stringify(opt)"
-            dense
-            emit-value
-            map-options
-          />
-
-          <!-- 部门 -->
-          <q-select
-            v-model="formData.branch_id"
-            :label="$t('department')"
-            :options="branches"
-            option-value="id"
-            :option-label="(opt) => opt.branch_name || opt.name || opt.label || JSON.stringify(opt)"
-            dense
-            emit-value
-            map-options
-          />
-
-          <!-- 是否启用 -->
-          <q-select
-            v-model="formData.is_enabled"
-            :label="$t('status')"
-            :options="statusOptions"
-            dense
-            emit-value
-            map-options
-          />
-
-          <!-- 密码（新增用户时显示，编辑用户时可选填） -->
-          <div v-if="!user">
-            <q-input
-              v-model="formData.password"
-              :label="$t('password')"
-              type="password"
-              :rules="[val => !!val || $t('field_required'), val => val.length >= 6 || $t('password_too_short')]"
-              dense
-              maxlength="50"
-            />
+      <!-- 对话框内容 -->
+      <q-card-section class="q-pa-md" style="height: calc(100vh - 120px); overflow-y: auto;">
+        <q-form ref="form" @submit="onSubmit" class="full-width">
+          <!-- 基本信息区域 -->
+          <div class="row q-col-gutter-md q-mb-lg">
+            <div class="col-12">
+              <div class="text-h6 q-mb-md text-primary">{{ t('basic_info') || '基本信息' }}</div>
+            </div>
+            
+            <!-- 用户名和邮箱 -->
+            <div class="col-12 col-md-6">
+              <q-input
+                v-model="formData.username"
+                :label="t('login_name') || '登录名'"
+                :placeholder="t('username_placeholder') || '请输入用户名'"
+                outlined
+                dense
+                :rules="[val => !!val || t('field_required')]"
+                maxlength="50"
+                :disabled="!!user"
+              />
+            </div>
+            <div class="col-12 col-md-6">
+              <q-input
+                v-model="formData.email"
+                :label="t('email') || '邮箱'"
+                :placeholder="t('email_placeholder') || '请输入邮箱地址'"
+                outlined
+                dense
+                type="email"
+                :rules="[val => !!val || t('field_required'), val => (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val) || t('invalid_email'))]"
+                maxlength="100"
+              />
+            </div>
+            
+            <!-- 真实姓名和手机号 -->
+            <div class="col-12 col-md-6">
+              <q-input
+                v-model="formData.real_name"
+                :label="t('real_name') || '真实姓名'"
+                :placeholder="t('real_name_placeholder') || '请输入真实姓名'"
+                outlined
+                dense
+                maxlength="50"
+              />
+            </div>
+            <div class="col-12 col-md-6">
+              <q-input
+                v-model="formData.mobile"
+                :label="t('mobile') || '手机号'"
+                :placeholder="t('mobile_placeholder') || '请输入手机号码'"
+                outlined
+                dense
+                maxlength="20"
+              />
+            </div>
           </div>
 
-          <div v-else>
-            <q-input
-              v-model="formData.password"
-              :label="$t('password') + ' (' + $t('leave_blank_to_keep') + ')'"
-              type="password"
-              dense
-              maxlength="50"
-            />
+          <!-- 职位信息区域 -->
+          <div class="row q-col-gutter-md q-mb-lg">
+            <div class="col-12">
+              <div class="text-h6 q-mb-md text-primary">{{ t('position_info') || '职位信息' }}</div>
+            </div>
+            
+            <!-- 职位和部门 -->
+            <div class="col-12 col-md-6">
+              <q-select
+                v-model="formData.position_id"
+                :label="t('position') || '职位'"
+                :placeholder="t('select_position') || '请选择职位'"
+                :options="positions"
+                option-value="id"
+                :option-label="(opt) => opt.position_name || opt.name || opt.label || JSON.stringify(opt)"
+                outlined
+                dense
+                emit-value
+                map-options
+                clearable
+              />
+            </div>
+            <div class="col-12 col-md-6">
+              <q-select
+                v-model="formData.branch_id"
+                :label="t('department') || '部门'"
+                :placeholder="t('select_department') || '请选择部门'"
+                :options="branches"
+                option-value="id"
+                :option-label="(opt) => opt.branch_name || opt.name || opt.label || JSON.stringify(opt)"
+                outlined
+                dense
+                emit-value
+                map-options
+                clearable
+              />
+            </div>
+            
+            <!-- 状态 -->
+            <div class="col-12 col-md-6">
+              <q-select
+                v-model="formData.is_enabled"
+                :label="t('status') || '状态'"
+                :placeholder="t('select_status') || '请选择状态'"
+                :options="statusOptions"
+                outlined
+                dense
+                emit-value
+                map-options
+              />
+            </div>
           </div>
 
-          <!-- 确认密码 -->
-          <div v-if="!user || formData.password">
-            <q-input
-              v-model="formData.confirmPassword"
-              :label="$t('confirm_password')"
-              type="password"
-              :rules="[val => val === formData.password || $t('passwords_not_match')]"
-              dense
-              maxlength="50"
-            />
+          <!-- 安全设置区域 -->
+          <div class="row q-col-gutter-md q-mb-lg">
+            <div class="col-12">
+              <div class="text-h6 q-mb-md text-primary">{{ t('security_settings') || '安全设置' }}</div>
+            </div>
+            
+            <!-- 密码设置 -->
+            <div class="col-12 col-md-6">
+              <q-input
+                v-model="formData.password"
+                :label="user ? (t('password') || '密码') + ' (' + (t('leave_blank_to_keep') || '留空保持原密码') + ')' : t('password') || '密码'"
+                :placeholder="user ? t('password_optional_placeholder') || '留空则不修改密码' : t('password_placeholder') || '请输入密码'"
+                outlined
+                dense
+                type="password"
+                :rules="user ? [] : [val => !!val || t('field_required'), val => val.length >= 6 || t('password_too_short')]"
+                maxlength="50"
+              />
+            </div>
+            <div class="col-12 col-md-6" v-if="!user || formData.password">
+              <q-input
+                v-model="formData.confirmPassword"
+                :label="t('confirm_password') || '确认密码'"
+                :placeholder="t('confirm_password_placeholder') || '请再次输入密码'"
+                outlined
+                dense
+                type="password"
+                :rules="[val => val === formData.password || t('passwords_not_match')]"
+                maxlength="50"
+              />
+            </div>
           </div>
 
-          <!-- 底部按钮 -->
-          <div class="flex justify-end mt-6 gap-2">
-            <q-btn :label="$t('cancel')" @click="closeDialog" />
-            <q-btn :label="$t('save')" type="submit" color="primary" />
+          <!-- 权限设置区域 -->
+          <div class="row q-col-gutter-md q-mb-lg" v-if="!user">
+            <div class="col-12">
+              <div class="text-h6 q-mb-md text-primary">{{ t('permission_settings') || '权限设置' }}</div>
+            </div>
+            
+            <div class="col-12">
+              <q-toggle
+                v-model="formData.confirmed"
+                :label="t('email_confirmed') || '邮箱已验证'"
+                color="positive"
+                size="md"
+              />
+            </div>
           </div>
         </q-form>
+      </q-card-section>
+
+      <!-- 对话框操作按钮 -->
+      <q-card-section class="row justify-end q-pt-none q-gutter-sm bg-grey-1">
+        <q-btn
+          flat
+          :label="t('cancel') || '取消'"
+          color="grey"
+          @click="closeDialog"
+          size="md"
+        />
+        <q-btn
+          :label="t('save') || '保存'"
+          color="primary"
+          @click="onSubmit"
+          size="md"
+          :loading="saving"
+        />
       </q-card-section>
     </q-card>
   </q-dialog>
@@ -153,6 +233,7 @@ export default defineComponent({
     const form = ref(null);
     const positions = ref([]);
     const branches = ref([]);
+    const saving = ref(false);
 
     // 使用本地状态控制对话框显示/隐藏
     const dialogVisible = ref(props.visible);
@@ -179,13 +260,14 @@ export default defineComponent({
       position_id: '',
       branch_id: '',
       mobile: '',
-      is_enabled: true
+      is_enabled: true,
+      confirmed: false
     });
 
     // 状态选项
     const statusOptions = [
-      { label: t('active'), value: true },
-      { label: t('inactive'), value: false }
+      { label: t('active') || '激活', value: true },
+      { label: t('inactive') || '非激活', value: false }
     ];
 
     // 关闭对话框
@@ -264,6 +346,7 @@ export default defineComponent({
       if (!form.value) return;
 
       if (await form.value.validate()) {
+        saving.value = true;
         try {
           let response;
           const submitData = {
@@ -310,6 +393,8 @@ export default defineComponent({
           console.error('保存用户数据失败:', error);
           // 发送错误事件
           emit('error', error);
+        } finally {
+          saving.value = false;
         }
       }
     };
@@ -320,12 +405,14 @@ export default defineComponent({
     });
 
     return {
+      t,
       dialogVisible,
       form,
       formData,
       positions,
       branches,
       statusOptions,
+      saving,
       closeDialog,
       onSubmit
     };
@@ -334,25 +421,65 @@ export default defineComponent({
 </script>
 
 <style scoped>
-  /* 设置标题高度 */
-  .q-card-section:first-child {
-    padding-bottom: 12px;
+  /* 全屏对话框样式 */
+  .full-width {
+    width: 100% !important;
   }
 
-  /* 设置标题字号 */
-  .q-card-section:first-child h3 {
-    font-size: 18px;
+  .full-height {
+    height: 100% !important;
   }
 
-  /* 设置输入项目的高度 */
+  /* 表单区域样式 */
   .q-input,
   .q-select {
-    margin-bottom: 16px;
+    margin-bottom: 0;
   }
 
-  /* 设置对话框宽度 */
-  .custom-dialog-width {
-    max-width: 400px;
-    width: 90%;
+  /* 响应式设计 */
+  @media (max-width: 768px) {
+    .q-card-section {
+      padding: 16px !important;
+    }
+  }
+
+  /* 类似 BlogEditDialog 的专业样式 */
+  .q-card {
+    border-radius: 0 !important;
+  }
+
+  .bg-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  }
+
+  .text-primary {
+    color: #1976d2 !important;
+  }
+
+  /* 表单分组样式 */
+  .text-h6 {
+    font-weight: 600;
+    border-bottom: 2px solid #e0e0e0;
+    padding-bottom: 8px;
+  }
+
+  /* 输入框样式优化 */
+  .q-field--outlined .q-field__control {
+    border-radius: 8px;
+  }
+
+  .q-field--outlined .q-field__control:hover {
+    border-color: #1976d2;
+  }
+
+  /* 按钮样式 */
+  .q-btn {
+    border-radius: 8px;
+    font-weight: 500;
+  }
+
+  /* 底部操作栏 */
+  .bg-grey-1 {
+    border-top: 1px solid #e0e0e0;
   }
 </style>

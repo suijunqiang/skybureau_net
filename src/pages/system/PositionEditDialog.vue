@@ -1,69 +1,174 @@
 <template>
-  <q-dialog :model-value="visible" @update:model-value="(value) => $emit('update:visible', value)" persistent class="custom-dialog-width">
-    <q-card>
-      <q-card-section class="custom-header-height">
-        <h3 class="text-center m-0">
-          {{ position ? 'EDIT POSITION' : 'ADD POSITION' }}
-        </h3>
+  <q-dialog
+    v-model="dialogVisible"
+    persistent
+    maximized
+    transition-show="slide-up"
+    transition-hide="slide-down"
+  >
+    <q-card class="full-width full-height">
+      <!-- 对话框头部 -->
+      <q-card-section class="row items-center q-pb-none bg-primary text-white">
+        <div class="col">
+          <div class="text-h6">
+            {{ position ? t('edit_position') || '编辑职位' : t('add_position') || '添加职位' }}
+          </div>
+          <div class="text-caption opacity-70">
+            {{ position ? t('edit_position_subtitle') || '编辑职位信息和权限配置' : t('add_position_subtitle') || '创建新的系统职位' }}
+          </div>
+        </div>
+        <div class="col-auto">
+          <q-btn flat round dense icon="close" @click="closeDialog" />
+        </div>
       </q-card-section>
-      <q-card-section>
-        <q-form ref="formRef" @submit="onSubmit" class="custom-form">
-          <!-- 职位ID 字段 -->
-          <q-input
-            v-model="form.position_id"
-            label="POSITION ID"
-            class="custom-input-height"
-            :disabled="!!position"
-          />
 
-          <!-- 职位名称字段 -->
-          <q-input
-            v-model="form.name"
-            label="POSITION NAME"
-            required
-            :rules="[val => !!val || 'Please input position name']"
-            class="custom-input-height"
-          />
-
-          <!-- 部门选择字段 -->
-          <q-select
-            v-model="form.branch_id"
-            label="BRANCH"
-            placeholder="Select a branch"
-            :options="branchOptions"
-            :option-label="'name'"
-            :option-value="'branch_id'"
-            required
-            :rules="[val => !!val || 'Please select a branch']"
-            class="custom-input-height"
-          />
-
-          <!-- 菜单权限选择 -->
-          <div class="mt-4">
-            <label class="block text-sm font-medium text-gray-700 mb-2">MENU PERMISSIONS</label>
-            <div class="bg-gray-50 p-4 rounded-md">
-              <div v-for="menu in menus" :key="menu.menu_id" class="mb-2">
-                <label class="flex items-center">
-                  <input
-                    type="checkbox"
-                    :value="menu.menu_id"
-                    v-model="form.menu_id"
-                    class="form-checkbox h-4 w-4 text-primary rounded"
-                  />
-                  <span class="ml-2 text-sm text-gray-700">{{ menu.name }}</span>
-                </label>
-              </div>
+      <!-- 对话框内容 -->
+      <q-card-section class="q-pa-md" style="height: calc(100vh - 120px); overflow-y: auto;">
+        <q-form ref="formRef" @submit="onSubmit" class="full-width">
+          <!-- 基本信息区域 -->
+          <div class="row q-col-gutter-md q-mb-lg">
+            <div class="col-12">
+              <div class="text-h6 q-mb-md text-primary">{{ t('basic_info') || '基本信息' }}</div>
+            </div>
+            
+            <!-- 职位ID和职位名称 -->
+            <div class="col-12 col-md-6">
+              <q-input
+                v-model="form.position_id"
+                :label="t('position_id') || '职位ID'"
+                :placeholder="t('position_id_placeholder') || '请输入职位ID'"
+                outlined
+                dense
+                :disabled="!!position"
+                maxlength="20"
+              />
+            </div>
+            <div class="col-12 col-md-6">
+              <q-input
+                v-model="form.name"
+                :label="t('position_name') || '职位名称'"
+                :placeholder="t('position_name_placeholder') || '请输入职位名称'"
+                outlined
+                dense
+                required
+                :rules="[val => !!val || t('field_required') || '此字段为必填项']"
+                maxlength="50"
+              />
             </div>
           </div>
 
-          <!-- 表单操作按钮 -->
-          <div class="flex justify-center mt-6">
-            <q-btn-group>
-              <q-btn color="negative" label="CANCEL" @click="close" style="margin-right: 8px;" />
-              <q-btn color="primary" label="SAVE" type="submit" />
-            </q-btn-group>
+          <!-- 部门信息区域 -->
+          <div class="row q-col-gutter-md q-mb-lg">
+            <div class="col-12">
+              <div class="text-h6 q-mb-md text-primary">{{ t('department_info') || '部门信息' }}</div>
+            </div>
+            
+            <!-- 部门选择 -->
+            <div class="col-12 col-md-6">
+              <q-select
+                v-model="form.branch_id"
+                :label="t('department') || '部门'"
+                :placeholder="t('select_department') || '请选择部门'"
+                :options="branchOptions"
+                option-value="branch_id"
+                :option-label="(opt) => opt.name || opt.branch_name || opt.label || JSON.stringify(opt)"
+                outlined
+                dense
+                emit-value
+                map-options
+                clearable
+                required
+                :rules="[val => !!val || t('field_required') || '此字段为必填项']"
+              />
+            </div>
+            <div class="col-12 col-md-6">
+              <!-- 预留位置，可以添加其他部门相关字段 -->
+            </div>
+          </div>
+
+          <!-- 权限配置区域 -->
+          <div class="row q-col-gutter-md q-mb-lg">
+            <div class="col-12">
+              <div class="text-h6 q-mb-md text-primary">{{ t('permission_settings') || '权限设置' }}</div>
+            </div>
+            
+            <!-- 菜单权限选择 -->
+            <div class="col-12">
+              <div class="q-mb-sm">
+                <label class="text-subtitle2 text-weight-medium">{{ t('menu_permissions') || '菜单权限' }}</label>
+              </div>
+              <div class="menu-permissions-container">
+                <div v-if="menus && menus.length > 0" class="menu-permissions-grid">
+                  <div 
+                    v-for="menu in menus" 
+                    :key="menu.menu_id" 
+                    class="menu-permission-item"
+                  >
+                    <q-checkbox
+                      v-model="form.menu_id"
+                      :val="menu.menu_id"
+                      :label="menu.name"
+                      color="primary"
+                      size="md"
+                      class="menu-checkbox"
+                    />
+                  </div>
+                </div>
+                <div v-else class="text-center text-grey-5 q-py-lg">
+                  {{ t('no_available_menus') || '无可用菜单权限' }}
+                </div>
+                
+                <!-- 权限统计 -->
+                <div class="q-mt-md q-pa-sm bg-grey-1 rounded-borders">
+                  <div class="row items-center">
+                    <div class="col">
+                      <span class="text-caption text-grey-7">
+                        {{ t('selected_permissions') || '已选择权限' }}: 
+                        <span class="text-weight-bold text-primary">{{ form.menu_id.length }}</span> / {{ menus ? menus.length : 0 }}
+                      </span>
+                    </div>
+                    <div class="col-auto">
+                      <q-btn 
+                        flat 
+                        size="sm" 
+                        color="primary" 
+                        :label="t('select_all') || '全选'"
+                        @click="selectAllPermissions"
+                        v-if="form.menu_id.length < (menus ? menus.length : 0)"
+                      />
+                      <q-btn 
+                        flat 
+                        size="sm" 
+                        color="negative" 
+                        :label="t('clear_all') || '清空'"
+                        @click="clearAllPermissions"
+                        v-if="form.menu_id.length > 0"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </q-form>
+      </q-card-section>
+
+      <!-- 对话框操作按钮 -->
+      <q-card-section class="row justify-end q-pt-none q-gutter-sm bg-grey-1">
+        <q-btn
+          flat
+          :label="t('cancel') || '取消'"
+          color="grey"
+          @click="closeDialog"
+          size="md"
+        />
+        <q-btn
+          :label="t('save') || '保存'"
+          color="primary"
+          @click="onSubmit"
+          size="md"
+          :loading="saving"
+        />
       </q-card-section>
     </q-card>
   </q-dialog>
@@ -98,6 +203,22 @@ export default defineComponent({
   emits: ['update:visible', 'save', 'error'],
   setup(props, { emit }) {
     const { t } = useI18n();
+    const formRef = ref(null);
+    const saving = ref(false);
+    
+    // 使用本地状态控制对话框显示/隐藏
+    const dialogVisible = ref(props.visible);
+
+    // 监听props.visible变化，同步到本地状态
+    watch(() => props.visible, (newValue) => {
+      dialogVisible.value = newValue;
+    });
+
+    // 监听本地状态变化，通知父组件
+    watch(dialogVisible, (newValue) => {
+      emit('update:visible', newValue);
+    });
+    
     const form = reactive({
       id: '',
       documentId: '',
@@ -108,7 +229,25 @@ export default defineComponent({
       sort: 1,
       level: 1
     });
-    const formRef = ref(null);
+
+    // 重置表单 - 必须在使用之前声明
+    const resetForm = () => {
+      Object.assign(form, {
+        id: '',
+        documentId: '',
+        position_id: '',
+        name: '',
+        branch_id: '',
+        menu_id: [],
+        sort: 1,
+        level: 1
+      });
+    };
+
+    // 关闭对话框
+    const closeDialog = () => {
+      dialogVisible.value = false;
+    };
 
     // 部门选项
     const branchOptions = computed(() => {
@@ -129,22 +268,20 @@ export default defineComponent({
           level: newPosition.level || 1
         });
       } else {
-        Object.assign(form, {
-          id: '',
-          documentId: '',
-          position_id: '',
-          name: '',
-          branch_id: '',
-          menu_id: [],
-          sort: 1,
-          level: 1
-        });
+        resetForm();
       }
     }, { immediate: true });
-
-    // 关闭对话框
-    const close = () => {
-      emit('update:visible', false);
+    
+    // 全选权限
+    const selectAllPermissions = () => {
+      if (props.menus && props.menus.length > 0) {
+        form.menu_id = props.menus.map(menu => menu.menu_id);
+      }
+    };
+    
+    // 清空权限
+    const clearAllPermissions = () => {
+      form.menu_id = [];
     };
 
     // 提交表单
@@ -225,7 +362,7 @@ export default defineComponent({
 
         console.log('提交成功:', response.data);
         emit('save', response.data.data);
-        close();
+        closeDialog();
       } catch (error) {
         console.error('提交失败:', error);
         if (error.response) {
@@ -242,10 +379,15 @@ export default defineComponent({
 
     return {
       t,
+      dialogVisible,
       form,
       formRef,
       branchOptions,
-      close,
+      saving,
+      closeDialog,
+      resetForm,
+      selectAllPermissions,
+      clearAllPermissions,
       onSubmit
     };
   }
@@ -253,29 +395,113 @@ export default defineComponent({
 </script>
 
 <style scoped>
-  .custom-dialog-width {
-    max-width: 400px;
-    width: 90%;
+  /* 全屏对话框样式 */
+  .full-width {
+    width: 100% !important;
   }
 
-  .custom-header-height {
-    padding: 4px 16px;
+  .full-height {
+    height: 100% !important;
   }
 
-  .custom-header-height h3 {
-    font-size: 1rem;
-    margin: 0;
+  /* 表单区域样式 */
+  .q-input,
+  .q-select {
+    margin-bottom: 0;
   }
 
-  .custom-input-height .q-field__native {
-    min-height: 36px;
+  /* 响应式设计 */
+  @media (max-width: 768px) {
+    .q-card-section {
+      padding: 16px !important;
+    }
   }
 
-  .custom-input-height .q-field__control {
-    min-height: 36px;
+  /* 类似 BlogEditDialog 的专业样式 */
+  .q-card {
+    border-radius: 0 !important;
   }
 
-  .custom-form {
+  .bg-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  }
+
+  .text-primary {
+    color: #1976d2 !important;
+  }
+
+  /* 表单分组样式 */
+  .text-h6 {
+    font-weight: 600;
+    border-bottom: 2px solid #e0e0e0;
+    padding-bottom: 8px;
+  }
+
+  /* 输入框样式优化 */
+  .q-field--outlined .q-field__control {
+    border-radius: 8px;
+  }
+
+  .q-field--outlined .q-field__control:hover {
+    border-color: #1976d2;
+  }
+
+  /* 按钮样式 */
+  .q-btn {
+    border-radius: 8px;
+    font-weight: 500;
+  }
+
+  /* 底部操作栏 */
+  .bg-grey-1 {
+    border-top: 1px solid #e0e0e0;
+  }
+
+  /* 菜单权限选择样式 */
+  .menu-permissions-container {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 16px;
+    background-color: #fafafa;
+  }
+
+  .menu-permissions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 8px;
+  }
+
+  .menu-permission-item {
+    background: white;
+    border-radius: 6px;
+    padding: 8px;
+    border: 1px solid #e0e0e0;
+    transition: all 0.2s ease;
+  }
+
+  .menu-permission-item:hover {
+    border-color: #1976d2;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .menu-checkbox {
     width: 100%;
+  }
+
+  .menu-checkbox :deep(.q-checkbox__label) {
+    word-break: break-word;
+    font-size: 14px;
+    line-height: 1.4;
+  }
+
+  /* 移动设备优化 */
+  @media (max-width: 768px) {
+    .menu-permissions-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .menu-permission-item {
+      padding: 12px;
+    }
   }
 </style>

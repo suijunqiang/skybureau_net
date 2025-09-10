@@ -376,6 +376,7 @@ export default defineComponent({
     };
 
     return {
+      t,
       form,
       parentOptions,
       showOptions,
