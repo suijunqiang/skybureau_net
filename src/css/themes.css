@@ -1,0 +1,853 @@
+/* Global Theme Variables and Styles */
+
+/* CSS Custom Properties for Default Theme */
+:root,
+body.theme-default {
+  --theme-primary: #667eea !important;
+  --theme-secondary: #764ba2 !important;
+  --theme-accent: #f093fb !important;
+  --theme-background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%) !important;
+  --theme-surface: #ffffff !important;
+  --theme-text: #1a1a1a !important;
+  --theme-textLight: #666666 !important;
+  --theme-border: #e0e0e0 !important;
+  --theme-success: #4caf50 !important;
+  --theme-warning: #ff9800 !important;
+  --theme-error: #f44336 !important;
+  --theme-info: #2196f3 !important;
+  
+  /* Component styles */
+  --theme-card-background: #ffffff !important;
+  --theme-card-borderRadius: 16px !important;
+  --theme-card-shadow: 0 4px 16px rgba(0, 0, 0, 0.1) !important;
+  --theme-card-border: 1px solid #e0e0e0 !important;
+  
+  --theme-button-borderRadius: 8px !important;
+  --theme-button-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+  
+  --theme-input-borderRadius: 8px !important;
+  --theme-input-border: 1px solid #e0e0e0 !important;
+  --theme-input-background: #ffffff !important;
+}
+
+/* Tech Theme CSS Variables */
+body.theme-tech {
+  --theme-primary: #00ffff !important;
+  --theme-secondary: #ff0080 !important;
+  --theme-accent: #8b5cf6 !important;
+  --theme-background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%) !important;
+  --theme-surface: #1e1e3f !important;
+  --theme-text: #00ffff !important;
+  --theme-textLight: #8892b0 !important;
+  --theme-border: rgba(0, 255, 255, 0.3) !important;
+  --theme-success: #4ade80 !important;
+  --theme-warning: #fbbf24 !important;
+  --theme-error: #f87171 !important;
+  --theme-info: #60a5fa !important;
+  
+  /* Component styles */
+  --theme-card-background: #1e1e3f !important;
+  --theme-card-borderRadius: 8px !important;
+  --theme-card-shadow: 0 8px 32px rgba(0, 255, 255, 0.1), 0 0 20px rgba(0, 255, 255, 0.05) !important;
+  --theme-card-border: 1px solid rgba(0, 255, 255, 0.3) !important;
+  
+  --theme-button-borderRadius: 4px !important;
+  --theme-button-shadow: 0 4px 16px rgba(0, 255, 255, 0.2) !important;
+  
+  --theme-input-borderRadius: 4px !important;
+  --theme-input-border: 1px solid rgba(0, 255, 255, 0.3) !important;
+  --theme-input-background: rgba(30, 30, 63, 0.8) !important;
+}
+
+/* IMMEDIATE VISUAL FEEDBACK - Force theme changes */
+body.theme-default,
+html body.theme-default {
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%) !important;
+  color: #1a1a1a !important;
+  transition: all 0.3s ease !important;
+}
+
+body.theme-tech,
+html body.theme-tech {
+  background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%) !important;
+  color: #00ffff !important;
+  font-family: 'Courier New', monospace !important;
+  transition: all 0.3s ease !important;
+}
+
+/* Force immediate header/footer background changes */
+body.theme-default .q-layout,
+body.theme-default #q-app {
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%) !important;
+}
+
+body.theme-tech .q-layout,
+body.theme-tech #q-app {
+  background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%) !important;
+}
+
+/* ULTIMATE OVERRIDE - Highest specificity for immediate visual changes */
+html body.theme-tech .theme-header-bar,
+html body.theme-tech nav .theme-header-bar,
+html body.theme-tech .q-page .theme-header-bar {
+  background: rgba(26, 26, 46, 0.95) !important;
+  color: #00ffff !important;
+  border-bottom: 1px solid rgba(0, 255, 255, 0.3) !important;
+  box-shadow: 0 1px 10px rgba(0, 255, 255, 0.2) !important;
+}
+
+html body.theme-default .theme-header-bar,
+html body.theme-default nav .theme-header-bar,
+html body.theme-default .q-page .theme-header-bar {
+  background: #ffffff !important;
+  color: #2c3e50 !important;
+  border-bottom: 1px solid #e0e0e0 !important;
+  box-shadow: none !important;
+}
+
+/* Subtle background pattern for classic theme */
+.theme-default::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    radial-gradient(circle at 25% 25%, rgba(102, 126, 234, 0.05) 0%, transparent 25%),
+    radial-gradient(circle at 75% 75%, rgba(118, 75, 162, 0.05) 0%, transparent 25%);
+  background-size: 200px 200px;
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Global theme-aware component styles */
+.theme-card {
+  background: var(--theme-card-background) !important;
+  border-radius: var(--theme-card-borderRadius) !important;
+  box-shadow: var(--theme-card-shadow) !important;
+  border: var(--theme-card-border) !important;
+  color: var(--theme-text) !important;
+}
+
+.theme-button {
+  border-radius: var(--theme-button-borderRadius) !important;
+  box-shadow: var(--theme-button-shadow) !important;
+}
+
+.theme-input {
+  border-radius: var(--theme-input-borderRadius) !important;
+  border: var(--theme-input-border) !important;
+  background: var(--theme-input-background) !important;
+  color: var(--theme-text) !important;
+}
+
+.theme-text {
+  color: var(--theme-text) !important;
+}
+
+.theme-text-light {
+  color: var(--theme-textLight) !important;
+}
+
+.theme-background {
+  background: var(--theme-background) !important;
+}
+
+.theme-surface {
+  background: var(--theme-surface) !important;
+}
+
+/* Default Theme Specific Styles */
+.theme-default {
+  background: var(--theme-background);
+  color: var(--theme-text);
+}
+
+.theme-default .q-card {
+  background: var(--theme-card-background);
+  border-radius: var(--theme-card-borderRadius);
+  box-shadow: var(--theme-card-shadow);
+  border: var(--theme-card-border);
+}
+
+.theme-default .q-btn {
+  border-radius: var(--theme-button-borderRadius);
+}
+
+.theme-default .q-input {
+  border-radius: var(--theme-input-borderRadius);
+}
+
+/* Enhanced header styling for classic theme - Higher specificity */
+body.theme-default .q-header,
+.theme-default .q-layout .q-header {
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%) !important;
+  box-shadow: 0 2px 12px rgba(102, 126, 234, 0.3) !important;
+}
+
+body.theme-default .q-toolbar,
+.theme-default .q-layout .q-toolbar {
+  background: transparent !important;
+}
+
+body.theme-default .q-toolbar-title,
+.theme-default .q-layout .q-toolbar-title {
+  color: white !important;
+  font-weight: 600 !important;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3) !important;
+}
+
+body.theme-default .q-footer,
+.theme-default .q-layout .q-footer {
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%) !important;
+  box-shadow: 0 -2px 12px rgba(102, 126, 234, 0.3) !important;
+}
+
+body.theme-default .q-footer .q-toolbar,
+.theme-default .q-layout .q-footer .q-toolbar {
+  background: transparent !important;
+}
+
+body.theme-default .q-footer div,
+.theme-default .q-layout .q-footer div {
+  color: white !important;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Tech Theme Specific Styles */
+.theme-tech {
+  background: var(--theme-background);
+  color: var(--theme-text);
+  font-family: 'Courier New', monospace;
+}
+
+.theme-tech .q-card {
+  background: var(--theme-card-background);
+  border-radius: var(--theme-card-borderRadius);
+  box-shadow: var(--theme-card-shadow);
+  border: var(--theme-card-border);
+  position: relative;
+}
+
+.theme-tech .q-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, transparent 48%, rgba(0, 255, 255, 0.1) 49%, rgba(0, 255, 255, 0.1) 51%, transparent 52%);
+  pointer-events: none;
+  border-radius: var(--theme-card-borderRadius);
+}
+
+/* Enhanced header styling for tech theme */
+.theme-tech .q-header {
+  background: linear-gradient(90deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%) !important;
+  border-bottom: 2px solid var(--theme-primary) !important;
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.5) !important;
+  position: relative;
+}
+
+.theme-tech .q-header::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, var(--theme-primary) 50%, transparent 100%);
+  animation: pulse-border 2s ease-in-out infinite;
+}
+
+.theme-tech .q-toolbar {
+  background: transparent !important;
+}
+
+.theme-tech .q-toolbar-title {
+  color: var(--theme-primary) !important;
+  font-weight: 700 !important;
+  font-family: 'Courier New', monospace !important;
+  text-shadow: 0 0 10px rgba(0, 255, 255, 0.7) !important;
+  letter-spacing: 1px !important;
+}
+
+.theme-tech .q-footer {
+  background: linear-gradient(90deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%) !important;
+  border-top: 2px solid var(--theme-primary) !important;
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.5) !important;
+}
+
+/* Pulse animation for tech theme */
+@keyframes pulse-border {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
+}
+
+/* Enhanced welcome banner styling */
+.theme-default .welcome-banner {
+  background: linear-gradient(135deg, var(--theme-primary) 0%, var(--theme-secondary) 100%) !important;
+  border-radius: 20px !important;
+  box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3) !important;
+}
+
+.theme-tech .welcome-banner {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%) !important;
+  border: 2px solid var(--theme-primary) !important;
+  border-radius: 8px !important;
+  box-shadow: 0 0 30px rgba(0, 255, 255, 0.4) !important;
+  position: relative;
+}
+
+.theme-tech .welcome-banner::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, var(--theme-primary), var(--theme-secondary), var(--theme-accent), var(--theme-primary));
+  border-radius: 8px;
+  z-index: -1;
+  animation: border-glow 3s ease-in-out infinite;
+}
+
+@keyframes border-glow {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+/* Enhanced stats cards */
+.theme-default .stats-card {
+  border-radius: 16px !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1) !important;
+  border: 1px solid rgba(102, 126, 234, 0.1) !important;
+}
+
+.theme-tech .stats-card {
+  background: rgba(26, 26, 46, 0.9) !important;
+  border: 1px solid var(--theme-primary) !important;
+  border-radius: 8px !important;
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.2) !important;
+  position: relative;
+  overflow: hidden;
+}
+
+.theme-tech .stats-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.1), transparent);
+  animation: scan-line 3s ease-in-out infinite;
+}
+
+@keyframes scan-line {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
+
+/* Enhanced typography */
+.theme-default h1, .theme-default h2, .theme-default h3 {
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.theme-tech h1, .theme-tech h2, .theme-tech h3 {
+  font-family: 'Courier New', monospace;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+}
+
+/* Enhanced button styles */
+.theme-default .q-btn {
+  border-radius: 12px;
+  font-weight: 500;
+  text-transform: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.theme-default .q-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.theme-tech .q-btn {
+  border-radius: 4px;
+  font-family: 'Courier New', monospace;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: 1px solid var(--theme-primary);
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.theme-tech .q-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.theme-tech .q-btn:hover::before {
+  left: 100%;
+}
+
+.theme-tech .q-btn:hover {
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+  border-color: var(--theme-accent);
+}
+
+.theme-tech .q-btn {
+  border-radius: var(--theme-button-borderRadius);
+  position: relative;
+  overflow: hidden;
+}
+
+.theme-tech .q-btn::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: radial-gradient(circle, rgba(0, 255, 255, 0.3) 0%, transparent 70%);
+  transition: all 0.3s ease;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.theme-tech .q-btn:hover::after {
+  width: 300px;
+  height: 300px;
+}
+
+.theme-tech .q-input {
+  border-radius: var(--theme-input-borderRadius);
+}
+
+.theme-tech .q-field__control {
+  background: rgba(26, 26, 46, 0.8) !important;
+  border: var(--theme-input-border) !important;
+  color: var(--theme-text) !important;
+}
+
+.theme-tech .q-field__native {
+  color: var(--theme-text) !important;
+}
+
+.theme-tech .q-field__label {
+  color: var(--theme-textLight) !important;
+}
+
+.theme-tech .q-field__append {
+  color: var(--theme-text) !important;
+}
+
+.theme-tech .q-field__prepend {
+  color: var(--theme-text) !important;
+}
+
+.theme-tech .q-placeholder {
+  color: var(--theme-textLight) !important;
+}
+
+.theme-tech input::placeholder {
+  color: var(--theme-textLight) !important;
+}
+
+.theme-tech .q-field--outlined .q-field__control {
+  background: rgba(26, 26, 46, 0.8) !important;
+}
+
+.theme-tech .q-field--outlined .q-field__control:before {
+  border: 1px solid var(--theme-border) !important;
+}
+
+.theme-tech .q-field--outlined .q-field__control:hover:before {
+  border-color: var(--theme-primary) !important;
+}
+
+.theme-tech .q-field--outlined.q-field--focused .q-field__control:before {
+  border-color: var(--theme-primary) !important;
+  box-shadow: 0 0 5px rgba(0, 255, 255, 0.3) !important;
+}
+
+/* Glowing animation for tech theme */
+@keyframes glow {
+  0% { box-shadow: 0 0 5px rgba(0, 255, 255, 0.5); }
+  50% { box-shadow: 0 0 20px rgba(0, 255, 255, 0.8), 0 0 30px rgba(0, 255, 255, 0.3); }
+  100% { box-shadow: 0 0 5px rgba(0, 255, 255, 0.5); }
+}
+
+.theme-tech .glow-element {
+  animation: glow 2s ease-in-out infinite;
+}
+
+/* Enhanced main content area styling */
+.theme-default .q-page-container {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%) !important;
+  min-height: 100vh;
+}
+
+.theme-tech .q-page-container {
+  background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%) !important;
+  min-height: 100vh;
+  position: relative;
+}
+
+.theme-tech .q-page-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    linear-gradient(rgba(0, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 20px 20px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Content wrapper improvements */
+.theme-default .q-page {
+  padding: 24px;
+  position: relative;
+  z-index: 1;
+}
+
+.theme-tech .q-page {
+  padding: 24px;
+  position: relative;
+  z-index: 1;
+}
+
+/* Enhanced tech theme content area - Higher specificity */
+body.theme-tech .q-page-container .q-page,
+.theme-tech .q-layout .q-page-container .q-page {
+  background: rgba(15, 15, 35, 0.95) !important;
+  border: 1px solid rgba(0, 255, 255, 0.3) !important;
+  border-radius: 8px !important;
+  margin: 16px !important;
+  box-shadow: 0 0 30px rgba(0, 255, 255, 0.2) !important;
+  backdrop-filter: blur(10px) !important;
+  position: relative !important;
+  color: white !important;
+}
+
+body.theme-tech .q-page,
+.theme-tech .q-layout .q-page {
+  background: rgba(15, 15, 35, 0.95) !important;
+  color: white !important;
+}
+
+body.theme-tech .q-page *,
+.theme-tech .q-layout .q-page * {
+  color: white !important;
+}
+
+body.theme-tech .q-page h1,
+body.theme-tech .q-page h2,
+body.theme-tech .q-page h3,
+.theme-tech .q-layout .q-page h1,
+.theme-tech .q-layout .q-page h2,
+.theme-tech .q-layout .q-page h3 {
+  color: white !important;
+  font-family: 'Courier New', monospace !important;
+}
+
+body.theme-tech .q-page .q-card,
+.theme-tech .q-layout .q-page .q-card {
+  background: rgba(26, 26, 46, 0.9) !important;
+  color: white !important;
+  border: 1px solid rgba(0, 255, 255, 0.3) !important;
+}
+
+.theme-tech .q-page-container .q-page::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  right: -1px;
+  bottom: -1px;
+  background: linear-gradient(45deg, var(--theme-primary), transparent, var(--theme-secondary), transparent, var(--theme-primary));
+  border-radius: 8px;
+  z-index: -1;
+  opacity: 0.3;
+  animation: border-flow 4s linear infinite;
+}
+
+@keyframes border-flow {
+  0% { background-position: 0% 0%; }
+  100% { background-position: 100% 100%; }
+}
+
+/* Transition animations */
+* {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Override Quasar default styles when needed */
+.theme-tech .q-table {
+  background: var(--theme-surface) !important;
+  color: var(--theme-text) !important;
+}
+
+.theme-tech .q-table th {
+  background: rgba(0, 255, 255, 0.1) !important;
+  color: var(--theme-text) !important;
+  border-bottom: 1px solid var(--theme-border) !important;
+}
+
+.theme-tech .q-table td {
+  border-bottom: 1px solid rgba(0, 255, 255, 0.2) !important;
+  color: var(--theme-text) !important;
+}
+
+.theme-tech .q-table tr:hover {
+  background: rgba(0, 255, 255, 0.05) !important;
+}
+
+/* Left menu styling for tech theme */
+.theme-tech .q-list {
+  background: rgba(26, 26, 46, 0.8) !important;
+}
+
+.theme-tech .q-item {
+  color: var(--theme-text) !important;
+}
+
+.theme-tech .q-item__label {
+  color: var(--theme-text) !important;
+}
+
+.theme-tech .q-item--active {
+  background: rgba(0, 255, 255, 0.1) !important;
+  color: var(--theme-primary) !important;
+}
+
+.theme-tech .q-item--active .q-item__label {
+  color: var(--theme-primary) !important;
+}
+
+.theme-tech .q-item:hover {
+  background: rgba(0, 255, 255, 0.05) !important;
+}
+
+.theme-tech .q-expansion-item__label {
+  color: var(--theme-text) !important;
+}
+
+.theme-tech .q-tree__node-header {
+  color: var(--theme-text) !important;
+}
+
+.theme-tech .q-tree__node-header:hover {
+  background: rgba(0, 255, 255, 0.05) !important;
+}
+
+.theme-tech .q-tree__node--selected > .q-tree__node-header {
+  background: rgba(0, 255, 255, 0.1) !important;
+  color: var(--theme-primary) !important;
+}
+
+/* Additional form controls for tech theme */
+.theme-tech .q-select .q-field__native {
+  color: var(--theme-text) !important;
+}
+
+.theme-tech .q-select .q-field__append {
+  color: var(--theme-text) !important;
+}
+
+.theme-tech .q-menu {
+  background: rgba(26, 26, 46, 0.95) !important;
+  border: 1px solid var(--theme-border) !important;
+}
+
+.theme-tech .q-item {
+  color: var(--theme-text) !important;
+}
+
+.theme-tech .q-item:hover {
+  background: rgba(0, 255, 255, 0.1) !important;
+}
+
+.theme-tech .q-btn-dropdown__arrow {
+  color: var(--theme-text) !important;
+}
+
+.theme-tech .q-chip {
+  background: rgba(0, 255, 255, 0.2) !important;
+  color: var(--theme-text) !important;
+  border: 1px solid var(--theme-primary) !important;
+}
+
+.theme-tech .q-spinner {
+  color: var(--theme-primary) !important;
+}
+
+/* UserManagement.vue specific text visibility fixes */
+.theme-tech .q-page {
+  color: var(--theme-text) !important;
+}
+
+.theme-tech .q-page h1,
+.theme-tech .q-page h2,
+.theme-tech .q-page h3,
+.theme-tech .q-page h4,
+.theme-tech .q-page h5,
+.theme-tech .q-page h6 {
+  color: var(--theme-text) !important;
+}
+
+.theme-tech .q-page .q-card-section {
+  color: var(--theme-text) !important;
+}
+
+.theme-tech .q-page .q-item-label {
+  color: var(--theme-text) !important;
+}
+
+.theme-tech .q-page .q-btn {
+  color: var(--theme-text) !important;
+}
+
+.theme-tech .q-page .text-h5,
+.theme-tech .q-page .text-h6 {
+  color: var(--theme-text) !important;
+}
+
+.theme-tech .q-page .text-grey-6 {
+  color: var(--theme-textLight) !important;
+}
+
+/* Ensure all content in tech theme pages is visible */
+.theme-tech .q-page * {
+  color: inherit;
+}
+
+.theme-tech .q-page .q-field__label {
+  color: var(--theme-textLight) !important;
+}
+
+.theme-tech .q-page .q-field__native {
+  color: var(--theme-text) !important;
+}
+
+/* Specific fixes for UserManagement.vue tech theme */
+.theme-tech .q-page .q-card {
+  background: rgba(26, 26, 46, 0.9) !important;
+  color: var(--theme-text) !important;
+}
+
+.theme-tech .q-page .q-card-section {
+  background: transparent !important;
+  color: var(--theme-text) !important;
+}
+
+/* UserManagement.vue specific header styling */
+.theme-tech .theme-header-bar {
+  background: rgba(26, 26, 46, 0.95) !important;
+  color: #00ffff !important;
+  border-bottom: 1px solid rgba(0, 255, 255, 0.3) !important;
+  box-shadow: 0 1px 10px rgba(0, 255, 255, 0.2) !important;
+}
+
+.theme-default .theme-header-bar {
+  background: #ffffff !important;
+  color: #2c3e50 !important;
+  border-bottom: 1px solid #e0e0e0 !important;
+}
+
+.theme-tech .q-page .welcome-title,
+.theme-tech .q-page .welcome-subtitle {
+  color: var(--theme-text) !important;
+}
+
+.theme-tech .q-page .card-title {
+  color: var(--theme-text) !important;
+}
+
+.theme-tech .q-page .stats-number {
+  color: var(--theme-text) !important;
+}
+
+.theme-tech .q-page .stats-label {
+  color: var(--theme-textLight) !important;
+}
+
+.theme-tech .menu-tree .q-tree__node-header-content {
+  color: var(--theme-text) !important;
+}
+
+.theme-tech .menu-tree .q-tree__icon {
+  color: var(--theme-textLight) !important;
+}
+
+.theme-tech .menu-tree .q-tree__node--selected .q-tree__icon {
+  color: var(--theme-primary) !important;
+}
+
+.theme-tech .menu-tree .q-tree__node-header:hover .q-tree__icon {
+  color: var(--theme-primary) !important;
+}
+
+.theme-tech .menu-tree .q-tree__node-collapsible .q-tree__arrow {
+  color: var(--theme-textLight) !important;
+}
+
+.theme-tech .menu-tree .q-tree__node--selected .q-tree__arrow {
+  color: var(--theme-primary) !important;
+}
+
+/* Side drawer/navigation styles */
+.theme-tech .q-drawer {
+  background: rgba(26, 26, 46, 0.95) !important;
+  border-right: 1px solid var(--theme-border) !important;
+}
+
+.theme-tech .q-drawer .q-list {
+  background: transparent !important;
+}
+
+.theme-tech .q-toolbar {
+  background: rgba(26, 26, 46, 0.8) !important;
+  color: var(--theme-text) !important;
+  border-bottom: 1px solid var(--theme-border) !important;
+}
+
+.theme-tech .q-toolbar__title {
+  color: var(--theme-text) !important;
+}
+
+/* Scrollbar styling for tech theme */
+.theme-tech ::-webkit-scrollbar {
+  width: 8px;
+}
+
+.theme-tech ::-webkit-scrollbar-track {
+  background: rgba(26, 26, 46, 0.5);
+}
+
+.theme-tech ::-webkit-scrollbar-thumb {
+  background: linear-gradient(45deg, #00ffff, #ff0080);
+  border-radius: 4px;
+}
+
+.theme-tech ::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(45deg, #00ffff, #00ff00);
+}

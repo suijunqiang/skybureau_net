@@ -4,11 +4,17 @@
 
 <script>
 import { defineComponent, onMounted } from "vue";
+import { useThemeStore } from "./stores/theme";
 
 export default defineComponent({
   name: "App",
   setup() {
+    const themeStore = useThemeStore();
+    
     onMounted(() => {
+      // Initialize theme system
+      themeStore.initializeTheme();
+      
       // 全局ResizeObserver错误处理
       if (window.ResizeObserver) {
         const originalResizeObserver = window.ResizeObserver;

@@ -7,6 +7,7 @@ export default {
   homePage: "首页",
   newsPage: "新闻",
   productPage: "产品",
+  blogPage: "博客",
   forumPage: "论坛",
   contactPage: "联系我们",
   loginPage: "登录",
@@ -249,8 +250,34 @@ export default {
   days: "天",
   user_guide: "用户指南",
   api_documentation: "API文档",
+  
+  // 登录注册页面翻译
+  welcome_back: "欢迎回来",
+  welcome_back_subtitle: "探索航天与无人机技术的专业平台",
+  login_subtitle: "请登录您的账户以继续",
+  register_subtitle: "加入天局网，开启您的航天之旅",
+  create_account: "创建账户",
+  secure_authentication: "安全认证",
+  cloud_based: "云端服务",
+  high_performance: "高性能",
+  remember_me: "记住我",
+  forgot_password: "忘记密码？",
+  agree_terms: "我同意",
+  terms_and_conditions: "用户协议和隐私政策",
+  or_continue_with: "或使用以下方式继续",
   technical_support: "技术支持",
   feedback: "意见反馈",
+  
+  // 图片上传翻译
+  upload_cover_image: "上传封面图片",
+  select_category_placeholder: "请选择分类",
+  select_image_file: "选择图片文件",
+  upload_image: "上传图片",
+  upload_image_hint: "支持JPG、PNG格式，最大文件5MB",
+  file_upload_rejected: "文件上传被拒绝，请检查文件大小和格式。",
+  please_select_file: "请先选择文件",
+  upload_success: "图片上传成功",
+  upload_failed: "图片上传失败",
   
   // Menu页面相关翻译
   menu_page_title: "菜单管理",
@@ -300,6 +327,9 @@ export default {
   views: "浏览量",
   read_time: "阅读时间",
   minutes: "分钟",
+  cover: "封面",
+  profile_picture: "个人资料图片",
+  current_profile_picture: "当前个人资料图片",
   blog_title: "博客标题",
   blog_title_placeholder: "请输入博客标题",
   blog_title_required: "博客标题不能为空",
@@ -360,5 +390,31 @@ export default {
   category_placeholder: "请选择分类（输入可动态创建）",
   tags_placeholder: "请选择标签（输入可动态创建标签）",
   document_save_success: "文档保存成功！",
-  document_save_failed: "文档保存失败"
+  document_save_failed: "文档保存失败",
+  
+  // Blog list page translations
+  blog_list_title: "博客文章",
+  blog_list_subtitle: "探索航天与无人机技术相关文章",
+  filter_by_category: "按分类筛选",
+  all_categories: "所有分类",
+  read_more: "阅读全文",
+  no_blogs_found: "未找到博客文章",
+  
+  // Theme system translations
+  themePage: "主题",
+  theme_menu: "主题",
+  classic_style: "经典风格",
+  tech_style: "科技风格",
+  theme_description: "选择您偏好的视觉风格",
+  
+  // 统计信息区域
+  statistics: "统计信息",
+  
+  // 公开博客列表页面
+  blog_list_title: "博客文章",
+  blog_list_subtitle: "探索航天与无人机技术洞察",
+  filter_by_category: "按分类筛选",
+  all_categories: "所有分类",
+  read_more: "阅读全文",
+  no_blogs_found: "未找到博客文章"
 };

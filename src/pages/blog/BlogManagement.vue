@@ -107,6 +107,34 @@
             </q-td>
           </template>
 
+          <!-- 封面图片列自定义显示 -->
+          <template v-slot:body-cell-b_blog_picture_profile="props">
+            <q-td :props="props">
+              <div class="flex justify-center">
+                <q-avatar 
+                  v-if="getImageUrl(props.row)" 
+                  size="40px" 
+                  class="rounded-borders"
+                >
+                  <q-img 
+                    :src="getImageUrl(props.row)" 
+                    :alt="props.row.b_title"
+                    fit="cover"
+                  >
+                    <template v-slot:error>
+                      <div class="absolute-full flex flex-center bg-grey-3 text-grey-6">
+                        <q-icon name="broken_image" size="20px" />
+                      </div>
+                    </template>
+                  </q-img>
+                </q-avatar>
+                <q-avatar v-else size="40px" class="bg-grey-3 text-grey-6">
+                  <q-icon name="image" size="20px" />
+                </q-avatar>
+              </div>
+            </q-td>
+          </template>
+
           <!-- 推荐状态列 -->
           <template v-slot:body-cell-b_is_recommend="props">
             <q-td :props="props">
@@ -207,7 +235,7 @@
 import { defineComponent, ref, computed, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
-import { API } from 'src/api/api.js';
+import { API, BASE_URL } from 'src/api/api.js';
 import request from 'src/utils/request.js';
 import { Notify, useQuasar } from 'quasar';
 import BlogEditDialog from './BlogEditDialog.vue';
@@ -256,14 +284,68 @@ export default defineComponent({
       { label: t('normal'), value: false }
     ];
 
+    // 获取图片URL的辅助函数 - 修正字段处理逻辑
+    const getImageUrl = (row, format = 'thumbnail') => {
+      if (!row) return null;
+      
+      // 1. 优先尝试Current Profile Picture (b_first_pic)，但如果为null则跳过
+      if (row.b_first_pic !== null && row.b_first_pic && row.b_first_pic.trim() !== '') {
+        // 如果是完整URL，直接返回
+        if (row.b_first_pic.startsWith('http')) {
+          return row.b_first_pic;
+        }
+        // 如果是相对路径，拼接base URL
+        return `${BASE_URL}${row.b_first_pic}`;
+      }
+      
+      // 2. 如果b_first_pic为null或空，使用b_blog_picture_profile中的url字段
+      const blogPictureProfile = row.b_blog_picture_profile;
+      if (!blogPictureProfile) return null;
+      
+      // 关键修正：当b_first_pic为null时，直接使用url字段显示图片
+      if (blogPictureProfile.url) {
+        return `${BASE_URL}${blogPictureProfile.url}`;
+      }
+      
+      // 备用：如果url字段也没有，尝试使用previewURL
+      if (blogPictureProfile.previewURL && blogPictureProfile.previewURL !== null) {
+        return `${BASE_URL}${blogPictureProfile.previewURL}`;
+      }
+      
+      // 如果有指定格式的图片，使用它
+      if (blogPictureProfile.formats && blogPictureProfile.formats[format]) {
+        return `${BASE_URL}${blogPictureProfile.formats[format].url}`;
+      }
+      
+      // 如果没有指定格式，尝试使用小尺寸图片
+      if (blogPictureProfile.formats && blogPictureProfile.formats.small) {
+        return `${BASE_URL}${blogPictureProfile.formats.small.url}`;
+      }
+      
+      // 如果没有小尺寸图片，尝试使用缩略图
+      if (blogPictureProfile.formats && blogPictureProfile.formats.thumbnail) {
+        return `${BASE_URL}${blogPictureProfile.formats.thumbnail.url}`;
+      }
+      
+      return null;
+    };
+
     // 表格列配置
     const columns = [
       {
-        name: 'serialNum',
+        name: 'blog_id',
         label: t('serial_number'),
-        field: 'serialNum',
+        field: 'blog_id',
         align: 'left',
         sortable: true,
+        style: 'width: 80px'
+      },
+      {
+        name: 'b_blog_picture_profile',
+        label: t('cover'),
+        field: 'b_blog_picture_profile',
+        align: 'center',
+        sortable: false,
         style: 'width: 80px'
       },
       {
@@ -327,7 +409,8 @@ export default defineComponent({
         const params = new URLSearchParams({
           'pagination[page]': page,
           'pagination[pageSize]': rowsPerPage,
-          'sort': 'createdAt:desc'
+          'sort': 'createdAt:desc',
+          'populate': 'b_blog_picture_profile'
         });
 
         // 添加搜索条件
@@ -515,16 +598,7 @@ export default defineComponent({
 
     // 返回
     const goBack = () => {
-      // 使用路由导航，参考MenuPage.vue的做法
-      // 根据当前路由决定导航方式
-      const currentPath = router.currentRoute.value.path;
-      if (currentPath.includes('/blog/list')) {
-        // 如果是通过/blog/list路由访问，返回到用户列表页面（与MenuPage保持一致）
-        router.push('/system/userManagement/userList');
-      } else {
-        // 如果是在UserManagement中作为子组件，发送事件
-        emit('goBackToWelcome');
-      }
+      emit('goBackToWelcome');
     };
 
     // 组件挂载时获取数据
@@ -559,7 +633,8 @@ export default defineComponent({
       deleteBlog,
       goBack,
       onBlogSave,
-      onBlogError
+      onBlogError,
+      getImageUrl
     };
   }
 });

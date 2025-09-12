@@ -1,5 +1,6 @@
 import axios from 'axios';
 import request from "src/utils/request";
+import { BASE_URL } from './api.js';
 
 //Login api
 export const login = (userInfo) => {
@@ -8,7 +9,7 @@ export const login = (userInfo) => {
   const loginAxios = axios.create();
 
   return loginAxios({
-    url: "http://www.suijunqiang.top:1337/api/auth/local",
+    url: `${BASE_URL}/api/auth/local`,
     method: "post",
     data: userInfo,
     // 确保不包含Authorization头
@@ -23,7 +24,7 @@ export const login = (userInfo) => {
 //Register api
 export const register = (userInfo) => {
   return request({
-    url: "http://www.suijunqiang.top:1337/api/auth/local/register",
+    url: `${BASE_URL}/api/auth/local/register`,
     method: "post",
     data: userInfo,
     // 避免与baseURL冲突

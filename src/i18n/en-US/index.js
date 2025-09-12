@@ -15,6 +15,7 @@ export default {
   homePage: "Home",
   newsPage: "News",
   productPage: "Products",
+  blogPage: "Blog",
   forumPage: "Forum",
   contactPage: "Contact",
   loginPage: "Login",
@@ -340,6 +341,9 @@ export default {
   views: "Views",
   read_time: "Read Time",
   minutes: "minutes",
+  cover: "Cover",
+  profile_picture: "Profile Picture",
+  current_profile_picture: "Current Profile Picture",
   blog_title: "Blog Title",
   blog_title_placeholder: "Enter blog title",
   blog_title_required: "Blog title is required",
@@ -400,5 +404,57 @@ export default {
   category_placeholder: "Please select category (type to create dynamically)",
   tags_placeholder: "Please select tags (type to create tags dynamically)",
   document_save_success: "Document saved successfully!",
-  document_save_failed: "Document save failed"
+  document_save_failed: "Document save failed",
+  
+  // Blog list page translations
+  blog_list_title: "Blog Articles",
+  blog_list_subtitle: "Explore articles on aerospace and drone technologies",
+  filter_by_category: "Filter by Category",
+  all_categories: "All Categories",
+  read_more: "Read More",
+  no_blogs_found: "No blogs found",
+  
+  // Theme system translations
+  themePage: "Theme",
+  theme_menu: "Theme",
+  classic_style: "Classic Style",
+  tech_style: "Tech Style",
+  theme_description: "Choose your preferred visual style",
+  
+  // Login register page translations
+  welcome_back: "Welcome Back",
+  welcome_back_subtitle: "Professional platform for aerospace and drone technologies",
+  login_subtitle: "Please login to your account to continue",
+  register_subtitle: "Join Skybureau Net and start your aerospace journey",
+  create_account: "Create Account",
+  secure_authentication: "Secure Authentication",
+  cloud_based: "Cloud Based",
+  high_performance: "High Performance",
+  remember_me: "Remember Me",
+  forgot_password: "Forgot Password?",
+  agree_terms: "I agree to",
+  terms_and_conditions: "Terms and Conditions",
+  or_continue_with: "Or continue with",
+  
+  // Image upload translations
+  upload_cover_image: "Upload Cover Image",
+  select_category_placeholder: "Please select a category",
+  select_image_file: "Select Image File",
+  upload_image: "Upload Image",
+  upload_image_hint: "Support JPG, PNG format, max size 5MB",
+  file_upload_rejected: "File upload rejected. Please check file size and format.",
+  please_select_file: "Please select a file first",
+  upload_success: "Image uploaded successfully",
+  upload_failed: "Image upload failed",
+  
+  // Statistics section
+  statistics: "Statistics",
+  
+  // Public blog list page
+  blog_list_title: "Blog Articles",
+  blog_list_subtitle: "Explore aerospace and drone technology insights",
+  filter_by_category: "Filter by Category",
+  all_categories: "All Categories",
+  read_more: "Read More",
+  no_blogs_found: "No blog articles found"
 };

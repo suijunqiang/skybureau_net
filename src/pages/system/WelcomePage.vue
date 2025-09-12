@@ -1,5 +1,5 @@
 <template>
-  <div class="welcome-page q-pa-lg">
+  <div class="welcome-page theme-background q-pa-lg">
     <!-- 欢迎横幅 -->
     <div class="welcome-banner q-mb-xl">
       <div class="row items-center q-col-gutter-lg">
@@ -30,7 +30,7 @@
     <!-- 系统统计卡片 -->
     <div class="row q-col-gutter-lg q-mb-xl">
       <div class="col-12 col-sm-6 col-md-3">
-        <q-card class="stats-card stats-card-users">
+        <q-card class="stats-card theme-card stats-card-users">
           <q-card-section class="flex items-center justify-between">
             <div>
               <div class="stats-number">{{ systemStats.totalUsers }}</div>
@@ -41,7 +41,7 @@
         </q-card>
       </div>
       <div class="col-12 col-sm-6 col-md-3">
-        <q-card class="stats-card stats-card-content">
+        <q-card class="stats-card theme-card stats-card-content">
           <q-card-section class="flex items-center justify-between">
             <div>
               <div class="stats-number">{{ systemStats.totalContent }}</div>
@@ -52,7 +52,7 @@
         </q-card>
       </div>
       <div class="col-12 col-sm-6 col-md-3">
-        <q-card class="stats-card stats-card-visits">
+        <q-card class="stats-card theme-card stats-card-visits">
           <q-card-section class="flex items-center justify-between">
             <div>
               <div class="stats-number">{{ systemStats.todayVisits }}</div>
@@ -63,7 +63,7 @@
         </q-card>
       </div>
       <div class="col-12 col-sm-6 col-md-3">
-        <q-card class="stats-card stats-card-system">
+        <q-card class="stats-card theme-card stats-card-system">
           <q-card-section class="flex items-center justify-between">
             <div>
               <div class="stats-number">{{ systemStats.systemHealth }}%</div>
@@ -79,7 +79,7 @@
     <div class="row q-col-gutter-lg">
       <!-- 快速操作 -->
       <div class="col-12 col-md-6">
-        <q-card class="quick-actions-card">
+        <q-card class="quick-actions-card theme-card">
           <q-card-section>
             <div class="card-header">
               <q-icon name="flash_on" size="24px" color="primary" />
@@ -104,7 +104,7 @@
 
       <!-- 最近活动 -->
       <div class="col-12 col-md-6">
-        <q-card class="recent-activity-card">
+        <q-card class="recent-activity-card theme-card">
           <q-card-section>
             <div class="card-header">
               <q-icon name="history" size="24px" color="primary" />
@@ -136,7 +136,7 @@
     <div class="row q-col-gutter-lg q-mt-lg">
       <!-- 系统信息 -->
       <div class="col-12 col-md-6">
-        <q-card class="system-info-card">
+        <q-card class="system-info-card theme-card">
           <q-card-section>
             <div class="card-header">
               <q-icon name="info" size="24px" color="primary" />
@@ -154,7 +154,7 @@
 
       <!-- 帮助和文档 -->
       <div class="col-12 col-md-6">
-        <q-card class="help-card">
+        <q-card class="help-card theme-card">
           <q-card-section>
             <div class="card-header">
               <q-icon name="help" size="24px" color="primary" />

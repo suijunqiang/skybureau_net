@@ -1,7 +1,7 @@
 <template>
-  <q-layout view="lHh Lpr lFf">
-    <q-header elevated>
-      <q-toolbar>
+  <q-layout view="lHh Lpr lFf" class="theme-background">
+    <q-header elevated class="theme-surface">
+      <q-toolbar class="theme-surface">
         <q-btn
           flat
           dense
@@ -39,8 +39,8 @@
       <router-view />
     </q-page-container>
 
-    <q-footer elevated>
-      <q-toolbar class="flex flex-center">
+    <q-footer elevated class="theme-surface">
+      <q-toolbar class="flex flex-center theme-surface">
         <FootBar />
         <!--
         <div>Quasar v{{ $q.version }}</div>

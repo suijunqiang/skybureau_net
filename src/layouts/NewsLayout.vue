@@ -21,7 +21,7 @@
     <!--
     <q-drawer v-model="leftDrawerOpen" false bordered>
       -->
-    <q-drawer v-model="leftDrawerOpen" show-if-above bordered>
+    <q-drawer v-model="leftDrawerOpen" :show-if-above="false" bordered>
       <q-list>
         <q-item-label header>News Type </q-item-label>
 

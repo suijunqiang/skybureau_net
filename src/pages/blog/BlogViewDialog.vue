@@ -67,6 +67,24 @@
             </div>
           </div>
 
+          <!-- 封面图片 - 优先显示b_first_pic，再显示b_blog_picture_profile -->
+          <div v-if="getImageUrl(blog)" class="blog-cover q-mb-lg">
+            <div class="text-h6 q-mb-md text-primary">{{ t('cover') }}</div>
+            <q-img
+              :src="getImageUrl(blog, 'small')"
+              :alt="blog.b_title"
+              style="max-height: 400px"
+              class="rounded-borders"
+              fit="cover"
+            >
+              <template v-slot:error>
+                <div class="absolute-full flex flex-center bg-grey-3 text-grey-6">
+                  <q-icon name="broken_image" size="48px" />
+                </div>
+              </template>
+            </q-img>
+          </div>
+
           <!-- 博客状态标签 -->
           <div class="blog-status q-mb-lg">
             <div class="row q-gutter-sm">
@@ -113,22 +131,7 @@
             </div>
           </div>
 
-          <!-- 封面图片 -->
-          <div v-if="blog.b_first_pic" class="blog-cover q-mb-lg">
-            <q-img
-              :src="blog.b_first_pic"
-              :alt="blog.b_title"
-              style="max-height: 400px"
-              class="rounded-borders"
-              fit="cover"
-            >
-              <template v-slot:error>
-                <div class="absolute-full flex flex-center bg-grey-3 text-grey-6">
-                  <q-icon name="broken_image" size="48px" />
-                </div>
-              </template>
-            </q-img>
-          </div>
+          <!-- 原来的封面图片区域已移动到上面 -->
 
           <!-- 博客描述 -->
           <div v-if="blog.b_description && blog.b_description !== 'NULL'" class="blog-description q-mb-lg">
@@ -221,6 +224,7 @@
 <script>
 import { defineComponent, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { BASE_URL } from 'src/api/api.js';
 
 export default defineComponent({
   name: 'BlogViewDialog',
@@ -237,6 +241,52 @@ export default defineComponent({
   emits: ['update:visible', 'edit'],
   setup(props, { emit }) {
     const { t } = useI18n();
+
+    // 获取图片URL的辅助函数 - 修正字段处理逻辑
+    const getImageUrl = (blog, format = 'thumbnail') => {
+      if (!blog) return null;
+      
+      // 1. 优先尝试Current Profile Picture (b_first_pic)，但如果为null则跳过
+      if (blog.b_first_pic !== null && blog.b_first_pic && blog.b_first_pic.trim() !== '') {
+        // 如果是完整URL，直接返回
+        if (blog.b_first_pic.startsWith('http')) {
+          return blog.b_first_pic;
+        }
+        // 如果是相对路径，拼接base URL
+        return `${BASE_URL}${blog.b_first_pic}`;
+      }
+      
+      // 2. 如果b_first_pic为null或空，使用b_blog_picture_profile中的url字段
+      const blogPictureProfile = blog.b_blog_picture_profile;
+      if (!blogPictureProfile) return null;
+      
+      // 关键修正：当b_first_pic为null时，直接使用url字段显示图片
+      if (blogPictureProfile.url) {
+        return `${BASE_URL}${blogPictureProfile.url}`;
+      }
+      
+      // 备用：如果url字段也没有，尝试使用previewURL
+      if (blogPictureProfile.previewURL && blogPictureProfile.previewURL !== null) {
+        return `${BASE_URL}${blogPictureProfile.previewURL}`;
+      }
+      
+      // 如果有指定格式的图片，使用它
+      if (blogPictureProfile.formats && blogPictureProfile.formats[format]) {
+        return `${BASE_URL}${blogPictureProfile.formats[format].url}`;
+      }
+      
+      // 如果没有指定格式，尝试使用小尺寸图片
+      if (blogPictureProfile.formats && blogPictureProfile.formats.small) {
+        return `${BASE_URL}${blogPictureProfile.formats.small.url}`;
+      }
+      
+      // 如果没有小尺寸图片，尝试使用缩略图
+      if (blogPictureProfile.formats && blogPictureProfile.formats.thumbnail) {
+        return `${BASE_URL}${blogPictureProfile.formats.thumbnail.url}`;
+      }
+      
+      return null;
+    };
 
     // 对话框可见状态
     const dialogVisible = computed({
@@ -274,7 +324,8 @@ export default defineComponent({
       dialogVisible,
       formatDate,
       editBlog,
-      closeDialog
+      closeDialog,
+      getImageUrl
     };
   }
 });

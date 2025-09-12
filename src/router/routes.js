@@ -18,6 +18,13 @@ component: () => import("layouts/MainLayout.vue"),
     children: [
       { path: "", component: () => import("pages/AboutUs.vue") },
     ],
+  },
+  {
+    path: "/blog",
+    component: () => import("layouts/BlogLayout.vue"),
+    children: [
+      { path: "", component: () => import("pages/BlogList.vue") },
+    ],
   }
   ,
   {

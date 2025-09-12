@@ -11,114 +11,245 @@
 
         <!-- 表单内容 -->
         <q-form @submit="handleSubmit" class="full-width form-container">
-          <!-- 第一行：文档标题和文档首图URL -->
-          <div class="row q-col-gutter-md q-mb-md full-width-row">
-            <div class="col-12 col-md-6 input-col">
+          <!-- 基本信息区域 -->
+          <div class="row q-col-gutter-md q-mb-lg">
+            <div class="col-12">
+              <div class="text-h6 q-mb-md text-primary">{{ t('basic_info') }}</div>
+            </div>
+            
+            <!-- 标题和封面图 -->
+            <div class="col-12 col-md-8">
               <q-input
-                v-model="form.title"
-                :label="t('document_title')"
-                :placeholder="t('document_title_placeholder')"
+                v-model="form.b_title"
+                :label="t('blog_title')"
+                :placeholder="t('blog_title_placeholder')"
                 outlined
                 dense
                 class="full-width-input"
-                :rules="[val => !!val || t('document_title') + t('field_required')]"
+                :rules="[val => !!val || t('blog_title_required')]"
               />
             </div>
-            <div class="col-12 col-md-6 input-col">
+            <div class="col-12 col-md-4">
               <q-input
-                v-model="form.coverUrl"
-                :label="t('document_cover_url')"
-                :placeholder="t('document_cover_url_placeholder')"
+                v-model="form.b_first_pic"
+                :label="t('cover_image_url')"
+                :placeholder="t('cover_image_placeholder')"
                 outlined
                 dense
                 class="full-width-input"
               />
+            </div>
+            
+            <!-- 图片上传区域 -->
+            <div class="col-12">
+              <div class="text-subtitle2 q-mb-sm">{{ t('upload_cover_image') }}</div>
+              <div class="row q-col-gutter-md">
+                <div class="col-12 col-md-6">
+                  <q-file
+                    v-model="selectedFile"
+                    :label="t('select_image_file')"
+                    outlined
+                    dense
+                    accept="image/*"
+                    max-file-size="5242880"
+                    @update:model-value="onFileSelected"
+                    @rejected="onFileRejected"
+                  >
+                    <template v-slot:prepend>
+                      <q-icon name="attach_file" />
+                    </template>
+                  </q-file>
+                </div>
+                <div class="col-12 col-md-6">
+                  <q-btn
+                    :label="t('upload_image')"
+                    color="primary"
+                    icon="cloud_upload"
+                    @click="uploadImage"
+                    :loading="isUploading"
+                    :disable="!selectedFile"
+                    size="md"
+                  />
+                </div>
+              </div>
+              <div class="text-caption text-grey-6 q-mt-xs">
+                {{ t('upload_image_hint') }}
+              </div>
+            </div>
+            
+            <!-- 封面图片预览 -->
+            <div v-if="getImageUrl(form, null)" class="col-12">
+              <div class="text-subtitle2 q-mb-sm">{{ t('cover') }}</div>
+              <q-img
+                :src="getImageUrl(form, null, 'small')"
+                :alt="form.b_title"
+                style="max-height: 200px; max-width: 300px"
+                class="rounded-borders q-mb-md"
+                fit="contain"
+              >
+                <template v-slot:error>
+                  <div class="absolute-full flex flex-center bg-grey-3 text-grey-6">
+                    <q-icon name="broken_image" size="32px" />
+                  </div>
+                </template>
+              </q-img>
             </div>
           </div>
 
-          <!-- 第二行：文档描述 -->
-          <div class="row q-mb-md full-width-row">
-            <div class="col-12 editor-col">
-              <div class="text-subtitle2 q-mb-sm">{{ t('document_description') }}</div>
+          <!-- 内容区域 -->
+          <div class="row q-mb-lg">
+            <div class="col-12">
+              <div class="text-h6 q-mb-md text-primary">{{ t('content_section') }}</div>
+            </div>
+            
+            <!-- 描述 -->
+            <div class="col-12 q-mb-md">
+              <div class="text-subtitle2 q-mb-sm">{{ t('blog_description') }}</div>
               <q-editor
-                v-model="form.description"
+                v-model="form.b_description"
                 :toolbar="editorToolbar"
-                :placeholder="t('document_description_placeholder')"
-                class="editor-container full-width-editor"
+                :placeholder="t('blog_description_placeholder')"
                 min-height="150px"
-              />
-            </div>
-          </div>
-
-          <!-- 第三行：文档正文编辑器 -->
-          <div class="row q-mb-md full-width-row">
-            <div class="col-12 editor-col">
-              <div class="text-subtitle2 q-mb-sm">{{ t('document_content') }}</div>
-              <q-editor
-                v-model="form.content"
-                :toolbar="editorToolbar"
-                :placeholder="t('document_content_placeholder')"
                 class="editor-container full-width-editor"
+              />
+            </div>
+            
+            <!-- 正文内容 -->
+            <div class="col-12">
+              <div class="text-subtitle2 q-mb-sm">{{ t('blog_content') }}</div>
+              <q-editor
+                v-model="form.b_content"
+                :toolbar="editorToolbar"
+                :placeholder="t('blog_content_placeholder')"
                 min-height="300px"
+                class="editor-container full-width-editor"
               />
             </div>
           </div>
 
-          <!-- 第五行：分类、标签、字数统计 -->
-          <div class="row q-col-gutter-md q-mb-lg full-width-row">
-            <!-- 分类 -->
-            <div class="col-12 col-md-4 select-col">
+          <!-- 设置区域 -->
+          <div class="row q-col-gutter-md q-mb-lg">
+            <div class="col-12">
+              <div class="text-h6 q-mb-md text-primary">{{ t('blog_settings') }}</div>
+            </div>
+            
+            <!-- 分类选择 -->
+            <div class="col-12 col-md-6">
               <q-select
-                v-model="form.category"
+                v-model="form.b_category_id"
                 :options="categoryOptions"
                 :label="t('category')"
-                :placeholder="t('category_placeholder')"
+                :placeholder="t('select_category_placeholder')"
                 outlined
                 dense
-                class="full-width-select"
-                use-input
-                input-debounce="0"
-                new-value-mode="add-unique"
-                @filter="filterCategories"
+                emit-value
+                map-options
+                option-value="category_id"
+                option-label="b_category_name"
+                clearable
                 :loading="isLoadingCategories"
-                option-label="label"
-                option-value="value"
+                class="full-width-select"
               />
             </div>
-            <!-- 标签 -->
-            <div class="col-12 col-md-4 select-col">
-              <q-select
-                v-model="form.tags"
-                :options="tagOptions"
-                :label="t('tags')"
-                :placeholder="t('tags_placeholder')"
+            
+            <!-- 阅读时间和密码 -->
+            <div class="col-12 col-md-6">
+              <q-input
+                v-model.number="form.b_read_time"
+                :label="t('read_time_minutes')"
+                :placeholder="t('read_time_placeholder')"
                 outlined
                 dense
-                class="full-width-select"
-                multiple
-                use-input
-                use-chips
-                input-debounce="0"
-                new-value-mode="add-unique"
-                @filter="filterTags"
-                :loading="isLoadingTags"
-                option-label="label"
-                option-value="value"
+                type="number"
+                min="0"
+                class="full-width-input"
               />
             </div>
-            <!-- 统计信息 -->
-            <div class="col-12 col-md-4 stats-col">
+            <div class="col-12 col-md-6">
+              <q-input
+                v-model="form.b_password"
+                :label="t('blog_password')"
+                :placeholder="t('blog_password_placeholder')"
+                outlined
+                dense
+                type="password"
+                class="full-width-input"
+              />
+            </div>
+          </div>
+
+          <!-- 开关设置区域 -->
+          <div class="row q-col-gutter-md q-mb-lg">
+            <div class="col-12">
+              <div class="text-h6 q-mb-md text-primary">{{ t('publish_settings') }}</div>
+            </div>
+            
+            <div class="col-12 col-sm-6 col-md-4">
+              <q-toggle
+                v-model="form.b_is_published"
+                :label="t('is_published')"
+                color="positive"
+                size="md"
+              />
+            </div>
+            <div class="col-12 col-sm-6 col-md-4">
+              <q-toggle
+                v-model="form.b_is_recommend"
+                :label="t('is_recommend')"
+                color="orange"
+                size="md"
+              />
+            </div>
+            <div class="col-12 col-sm-6 col-md-4">
+              <q-toggle
+                v-model="form.b_is_top"
+                :label="t('is_top')"
+                color="red"
+                size="md"
+              />
+            </div>
+            <div class="col-12 col-sm-6 col-md-4">
+              <q-toggle
+                v-model="form.b_is_appreciation"
+                :label="t('is_appreciation')"
+                color="pink"
+                size="md"
+              />
+            </div>
+            <div class="col-12 col-sm-6 col-md-4">
+              <q-toggle
+                v-model="form.b_is_comment_enabled"
+                :label="t('is_comment_enabled')"
+                color="blue"
+                size="md"
+              />
+            </div>
+          </div>
+
+          <!-- 统计信息 -->
+          <div class="row q-col-gutter-md q-mb-lg">
+            <div class="col-12">
+              <div class="text-h6 q-mb-md text-primary">{{ t('statistics') }}</div>
+            </div>
+            <div class="col-12 col-md-4">
               <div class="q-pa-md bg-grey-1 rounded-borders stats-container">
                 <div class="text-caption text-grey-7">{{ t('reading_time_minutes') }}</div>
                 <div class="text-h6 q-mb-xs">{{ readingTime }}</div>
                 <div class="text-caption text-grey-7">{{ t('view_count') }}</div>
-                <div class="text-h6">{{ form.viewCount || 0 }}</div>
+                <div class="text-h6">{{ form.b_views || 0 }}</div>
               </div>
             </div>
           </div>
 
           <!-- 操作按钮 -->
-          <div class="row justify-end">
+          <div class="row justify-end q-gutter-sm">
+            <q-btn
+              flat
+              :label="t('cancel')"
+              color="grey"
+              @click="() => emit('goBackToWelcome')"
+              size="md"
+            />
             <q-btn
               type="submit"
               color="primary"
@@ -138,7 +269,7 @@
 import { defineComponent, ref, computed, watch, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useTokenStore } from '../../stores/myToken';
-import { API } from '../../api/api.js';
+import { API, BASE_URL } from '../../api/api.js';
 import request from '../../utils/request';
 import { Notify } from 'quasar';
 
@@ -149,21 +280,33 @@ export default defineComponent({
     const { t } = useI18n();
     const tokenStore = useTokenStore();
     
-    // 表单数据
+    // 表单数据 - 匹配 BlogEditDialog 的字段结构
     const form = ref({
-      title: '',
-      coverUrl: '',
-      description: '',
-      content: '',
-      category: null,
-      tags: [],
-      viewCount: 0
+      b_title: '',
+      b_first_pic: '',
+      b_description: '',
+      b_content: '',
+      b_category_id: 0, // 设置默认值为 0
+      b_read_time: 0,
+      b_views: 0,
+      words: 0,
+      b_is_published: true,
+      b_is_recommend: false,
+      b_is_appreciation: false,
+      b_is_comment_enabled: true,
+      b_is_top: false,
+      b_password: null,
+      b_user_id: null,
+      b_blog_picture_profile: null // 存储图片的 ID
     });
 
     // 加载状态
     const isSubmitting = ref(false);
     const isLoadingCategories = ref(false);
-    const isLoadingTags = ref(false);
+    const selectedFile = ref(null);
+    const isUploading = ref(false);
+    const categories = ref([]);
+    const loadingCategories = ref(false);
 
     // 编辑器工具栏配置
     const editorToolbar = [
@@ -176,164 +319,217 @@ export default defineComponent({
       ['fullscreen']
     ];
 
-    // 分类选项（从API获取）
-    const categoryOptions = ref([]);
-    const allCategories = ref([]); // 存储所有分类数据
+    // 分类选项计算属性
+    const categoryOptions = computed(() => {
+      return categories.value.map(category => ({
+        label: category.b_category_name || `Category ${category.category_id}`,
+        value: category.category_id,
+        category_id: category.category_id,
+        b_category_name: category.b_category_name
+      }));
+    });
 
-    // 标签选项（从API获取）
-    const tagOptions = ref([]);
-    const allTags = ref([]); // 存储所有标签数据
-
-    // 获取分类数据
+    // 获取分类列表
     const fetchCategories = async () => {
       try {
-        isLoadingCategories.value = true;
-        console.log('开始获取分类数据, URL:', API.BLOG.B_CATEGRORIES.LIST);
-        
+        loadingCategories.value = true;
         const response = await request.get(API.BLOG.B_CATEGRORIES.LIST);
-        console.log('分类数据响应:', response);
-        
         if (response.data && response.data.data) {
-          allCategories.value = response.data.data;
-          // 根据实际API响应结构转换为选项格式
-          categoryOptions.value = response.data.data.map(category => ({
-            label: category.b_category_name || '未命名分类',
-            value: category.category_id,
-            ...category // 保留原始数据
-          }));
-          console.log('分类选项处理完成:', categoryOptions.value);
-        } else {
-          console.warn('分类数据格式异常:', response.data);
-          // 使用默认分类
-          categoryOptions.value = [
-            { label: '技术分享', value: 'tech' },
-            { label: '生活随笔', value: 'life' },
-            { label: '学习笔记', value: 'study' },
-            { label: '项目总结', value: 'project' },
-            { label: '工具推荐', value: 'tools' }
-          ];
+          categories.value = response.data.data;
+          console.log('分类数据加载成功:', categories.value);
         }
       } catch (error) {
-        console.error('获取分类数据失败:', error);
-        // 使用默认分类
-        categoryOptions.value = [
-          { label: '技术分享', value: 'tech' },
-          { label: '生活随笔', value: 'life' },
-          { label: '学习笔记', value: 'study' },
-          { label: '项目总结', value: 'project' },
-          { label: '工具推荐', value: 'tools' }
-        ];
+        console.error('获取分类列表失败:', error);
       } finally {
-        isLoadingCategories.value = false;
+        loadingCategories.value = false;
       }
     };
 
-    // 获取标签数据
-    const fetchTags = async () => {
-      try {
-        isLoadingTags.value = true;
-        console.log('开始获取标签数据, URL:', API.BLOG.B_BLOG_TAGS.LIST);
-        
-        const response = await request.get(API.BLOG.B_BLOG_TAGS.LIST);
-        console.log('标签数据响应:', response);
-        
-        if (response.data && response.data.data) {
-          allTags.value = response.data.data;
-          // 根据实际API响应结构转换为选项格式
-          // 注意：当前API只返回 b_tag_id，没有标签名称
-          // 这里需要根据 b_tag_id 生成标签显示名称或者调用其他API获取标签名称
-          tagOptions.value = response.data.data.map(tag => ({
-            label: `标签 ${tag.b_tag_id}`, // 临时显示方案，实际应该有标签名称
-            value: tag.b_tag_id,
-            ...tag // 保留原始数据
-          }));
-          console.log('标签选项处理完成:', tagOptions.value);
-          console.warn('当前标签API只返回ID，建议后端提供标签名称字段');
-        } else {
-          console.warn('标签数据格式异常:', response.data);
-          // 使用默认标签
-          tagOptions.value = [
-            { label: 'Vue.js', value: 'vue' },
-            { label: 'JavaScript', value: 'js' },
-            { label: 'CSS', value: 'css' },
-            { label: 'Node.js', value: 'nodejs' },
-            { label: '前端开发', value: 'frontend' },
-            { label: '后端开发', value: 'backend' }
-          ];
+    // 获取图片URL的辅助函数
+    const getImageUrl = (formData, blogData, format = 'thumbnail') => {
+      // 1. 优先尝试Current Profile Picture (b_first_pic) 从表单数据
+      if (formData && formData.b_first_pic !== null && formData.b_first_pic && formData.b_first_pic.trim() !== '') {
+        // 如果是完整URL，直接返回
+        if (formData.b_first_pic.startsWith('http')) {
+          return formData.b_first_pic;
         }
-      } catch (error) {
-        console.error('获取标签数据失败:', error);
-        // 使用默认标签
-        tagOptions.value = [
-          { label: 'Vue.js', value: 'vue' },
-          { label: 'JavaScript', value: 'js' },
-          { label: 'CSS', value: 'css' },
-          { label: 'Node.js', value: 'nodejs' },
-          { label: '前端开发', value: 'frontend' },
-          { label: '后端开发', value: 'backend' }
-        ];
-      } finally {
-        isLoadingTags.value = false;
+        // 如果是相对路径，拼接base URL
+        return `${BASE_URL}${formData.b_first_pic}`;
       }
+      
+      // 2. 如果表单中的Current Profile Picture为空，尝试从原始博客数据获取
+      if (blogData && blogData.b_first_pic !== null && blogData.b_first_pic && blogData.b_first_pic.trim() !== '') {
+        if (blogData.b_first_pic.startsWith('http')) {
+          return blogData.b_first_pic;
+        }
+        return `${BASE_URL}${blogData.b_first_pic}`;
+      }
+      
+      // 3. 如枟b_first_pic都为null或空，使用b_blog_picture_profile中的url字段
+      let blogPictureProfile = null;
+      if (formData && formData.b_blog_picture_profile) {
+        blogPictureProfile = formData.b_blog_picture_profile;
+      } else if (blogData && blogData.b_blog_picture_profile) {
+        blogPictureProfile = blogData.b_blog_picture_profile;
+      }
+      
+      if (!blogPictureProfile) return null;
+      
+      // 关键修正：当b_first_pic为null时，直接使用url字段显示图片
+      if (blogPictureProfile.url) {
+        return `${BASE_URL}${blogPictureProfile.url}`;
+      }
+      
+      // 备用：如果url字段也没有，尝试使用previewURL
+      if (blogPictureProfile.previewURL && blogPictureProfile.previewURL !== null) {
+        return `${BASE_URL}${blogPictureProfile.previewURL}`;
+      }
+      
+      // 如果有指定格式的图片，使用它
+      if (blogPictureProfile.formats && blogPictureProfile.formats[format]) {
+        return `${BASE_URL}${blogPictureProfile.formats[format].url}`;
+      }
+      
+      // 如果没有指定格式，尝试使用小尺寸图片
+      if (blogPictureProfile.formats && blogPictureProfile.formats.small) {
+        return `${BASE_URL}${blogPictureProfile.formats.small.url}`;
+      }
+      
+      // 如果没有小尺寸图片，尝试使用缩略图
+      if (blogPictureProfile.formats && blogPictureProfile.formats.thumbnail) {
+        return `${BASE_URL}${blogPictureProfile.formats.thumbnail.url}`;
+      }
+      
+      return null;
     };
 
     // 计算阅读时长（基于内容的字数）
     const readingTime = computed(() => {
-      const contentLength = (form.value.content || '').replace(/<[^>]*>/g, '').length;
-      const descriptionLength = (form.value.description || '').replace(/<[^>]*>/g, '').length;
+      const contentLength = (form.value.b_content || '').replace(/<[^>]*>/g, '').length;
+      const descriptionLength = (form.value.b_description || '').replace(/<[^>]*>/g, '').length;
       const totalLength = contentLength + descriptionLength;
       // 按每分钟200字计算
       return Math.max(1, Math.round(totalLength / 200));
     });
 
-    // 过滤分类选项
-    const filterCategories = (val, update) => {
-      update(() => {
-        if (val === '') {
-          categoryOptions.value = allCategories.value.map(category => ({
-            label: category.b_category_name || '未命名分类',
-            value: category.category_id,
-            ...category
-          }));
-        } else {
-          const needle = val.toLowerCase();
-          categoryOptions.value = allCategories.value
-            .filter(category => {
-              const name = category.b_category_name || '';
-              return name.toLowerCase().indexOf(needle) > -1;
-            })
-            .map(category => ({
-              label: category.b_category_name || '未命名分类',
-              value: category.category_id,
-              ...category
-            }));
-        }
+
+
+    // 计算字数
+    const calculateWords = () => {
+      const contentText = (form.value.b_content || '').replace(/<[^>]*>/g, '');
+      const descriptionText = (form.value.b_description || '').replace(/<[^>]*>/g, '');
+      return contentText.length + descriptionText.length;
+    };
+
+    // 文件选择处理
+    const onFileSelected = (file) => {
+      console.log('选择的文件:', file);
+    };
+
+    // 文件拒绝处理
+    const onFileRejected = (rejectedEntries) => {
+      console.log('文件被拒绝:', rejectedEntries);
+      Notify.create({
+        message: t('file_upload_rejected'),
+        color: 'negative',
+        timeout: 3000
       });
     };
 
-    // 过滤标签选项
-    const filterTags = (val, update) => {
-      update(() => {
-        if (val === '') {
-          tagOptions.value = allTags.value.map(tag => ({
-            label: `标签 ${tag.b_tag_id}`,
-            value: tag.b_tag_id,
-            ...tag
-          }));
-        } else {
-          const needle = val.toLowerCase();
-          tagOptions.value = allTags.value
-            .filter(tag => {
-              const tagLabel = `标签 ${tag.b_tag_id}`;
-              return tagLabel.toLowerCase().indexOf(needle) > -1;
-            })
-            .map(tag => ({
-              label: `标签 ${tag.b_tag_id}`,
-              value: tag.b_tag_id,
-              ...tag
-            }));
+    // 上传图片
+    const uploadImage = async () => {
+      console.log('上传函数被调用');
+      
+      if (!selectedFile.value) {
+        console.log('没有选择文件');
+        Notify.create({
+          message: t('please_select_file'),
+          color: 'warning',
+          timeout: 3000
+        });
+        return;
+      }
+
+      try {
+        isUploading.value = true;
+        console.log('开始上传流程...');
+
+        // 创建 FormData 对象
+        const formData = new FormData();
+        formData.append('files', selectedFile.value);
+
+        console.log('上传文件信息:');
+        console.log('- 文件名:', selectedFile.value.name);
+        console.log('- 文件大小:', selectedFile.value.size);
+        console.log('- 文件类型:', selectedFile.value.type);
+        console.log('- API地址:', API.UPLOAD);
+        
+        // 检查 FormData 内容
+        console.log('FormData 条目:');
+        for (let [key, value] of formData.entries()) {
+          console.log(`- ${key}:`, value);
         }
-      });
+
+        // 发送上传请求
+        console.log('发送 POST 请求到:', API.UPLOAD);
+        const response = await request.post(API.UPLOAD, formData, {
+          headers: {
+            // 不设置 Content-Type，让浏览器自动处理 multipart/form-data
+          },
+          timeout: 30000 // 30秒超时
+        });
+
+        console.log('上传响应状态:', response.status);
+        console.log('上传响应数据:', response.data);
+
+        // 检查响应格式
+        if (response.data && Array.isArray(response.data) && response.data.length > 0) {
+          const uploadedFile = response.data[0];
+          console.log('解析上传文件:', uploadedFile);
+          
+          // 修改逻辑：只保存图片的 id 到 b_blog_picture_profile 字段
+          if (uploadedFile.id) {
+            form.value.b_blog_picture_profile = uploadedFile.id;
+            console.log('图片上传成功，保存图片ID到 b_blog_picture_profile:', uploadedFile.id);
+          } else {
+            console.error('上传文件缺少 id 字段:', uploadedFile);
+            throw new Error('上传文件响应缺少 id 字段');
+          }
+          
+          Notify.create({
+            message: t('upload_success'),
+            color: 'positive',
+            timeout: 2000
+          });
+        } else {
+          console.error('上传响应格式异常:', response.data);
+          throw new Error('上传响应格式异常');
+        }
+
+      } catch (error) {
+        console.error('图片上传失败:', error);
+        
+        let errorMessage = t('upload_failed');
+        if (error.response) {
+          console.error('错误响应数据:', error.response.data);
+          console.error('错误状态码:', error.response.status);
+          errorMessage += `：${error.response.data?.message || error.response.statusText}`;
+        } else if (error.request) {
+          console.error('没有收到响应:', error.request);
+          errorMessage += '：网络错误或服务器无响应';
+        } else {
+          console.error('请求配置错误:', error.message);
+          errorMessage += `：${error.message}`;
+        }
+        
+        Notify.create({
+          message: errorMessage,
+          color: 'negative',
+          timeout: 5000
+        });
+      } finally {
+        isUploading.value = false;
+      }
     };
 
     // 处理表单提交
@@ -345,32 +541,41 @@ export default defineComponent({
         const token = tokenStore.token;
         if (!token) {
           console.error('未找到token');
-          // 可以显示错误提示或跳转到登录页面
+          Notify.create({
+            message: t('login_required'),
+            color: 'negative',
+            timeout: 3000
+          });
           return;
         }
 
-        // 准备提交数据
+        // 计算字数和阅读时间
+        const words = calculateWords();
+        const readTime = Math.max(1, Math.round(words / 200)); // 每分钟200字
+
+        // 准备提交数据 - 使用与 BlogEditDialog 相同的数据结构
         const submitData = {
           data: {
-            b_title: form.value.title,
-            b_first_pic: form.value.coverUrl,
-            b_description: form.value.description,
-            b_content: form.value.content,
-            b_category_id: form.value.category?.value || form.value.category,
-            b_read_time: readingTime.value,
-            b_views: form.value.viewCount || 0,
-            words: (form.value.content || '').replace(/<[^>]*>/g, '').length, // 计算去除HTML标签后的字数
-            b_is_published: true, // 默认发布
-            b_is_recommend: false, // 默认不推荐
-            b_is_appreciation: false, // 默认不开启赞赏
-            b_is_comment_enabled: true, // 默认允许评论
-            b_is_top: false, // 默认不置顶
-            b_password: null, // 默认无密码
-            b_user_id: null // 由后端根据token确定用户ID
+            b_title: form.value.b_title,
+            b_first_pic: form.value.b_first_pic,
+            b_description: form.value.b_description,
+            b_content: form.value.b_content,
+            b_category_id: form.value.b_category_id,
+            b_read_time: form.value.b_read_time || readTime,
+            b_views: form.value.b_views || 0,
+            words: words,
+            b_is_published: form.value.b_is_published,
+            b_is_recommend: form.value.b_is_recommend,
+            b_is_appreciation: form.value.b_is_appreciation,
+            b_is_comment_enabled: form.value.b_is_comment_enabled,
+            b_is_top: form.value.b_is_top,
+            b_password: form.value.b_password,
+            b_user_id: form.value.b_user_id,
+            b_blog_picture_profile: form.value.b_blog_picture_profile
           }
         };
 
-        console.log('提交文档数据:', submitData);
+        console.log('提交博客数据:', submitData);
 
         // 调用API保存数据
         const response = await request.post(API.BLOG.B_BLOG.CREATE, submitData, {
@@ -379,9 +584,9 @@ export default defineComponent({
           }
         });
 
-        console.log('文档保存成功:', response.data);
+        console.log('博客保存成功:', response.data);
         
-        // 显示成功提示，使用Quasar notify组件，2秒自动关闭
+        // 显示成功提示
         Notify.create({
           message: t('document_save_success'),
           color: 'positive',
@@ -392,9 +597,9 @@ export default defineComponent({
         emit('goBackToWelcome');
 
       } catch (error) {
-        console.error('文档保存失败:', error);
+        console.error('博客保存失败:', error);
         
-        // 显示错误提示，使用Quasar notify组件，3秒自动关闭
+        // 显示错误提示
         Notify.create({
           message: t('document_save_failed') + '：' + (error.response?.data?.message || error.message || t('unknown_error')),
           color: 'negative',
@@ -419,10 +624,7 @@ export default defineComponent({
     // 组件挂载时获取数据
     onMounted(async () => {
       console.log('BlogCreate组件已挂载，开始获取数据...');
-      await Promise.all([
-        fetchCategories(),
-        fetchTags()
-      ]);
+      await fetchCategories();
       console.log('数据获取完成');
     });
 
@@ -430,15 +632,17 @@ export default defineComponent({
       t,
       form,
       isSubmitting,
-      isLoadingCategories,
-      isLoadingTags,
+      isLoadingCategories: loadingCategories,
       editorToolbar,
       categoryOptions,
-      tagOptions,
       readingTime,
-      filterCategories,
-      filterTags,
-      handleSubmit
+      handleSubmit,
+      selectedFile,
+      isUploading,
+      onFileSelected,
+      onFileRejected,
+      uploadImage,
+      getImageUrl
     };
   }
 });

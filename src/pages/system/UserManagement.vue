@@ -77,16 +77,16 @@
       <!-- 主内容区域 -->
       <div class="flex-1 flex flex-col h-full overflow-hidden">
         <!-- 顶部标题栏 -->
-        <div class="bg-white border-b border-grey-200 p-4 flex items-center">
+        <div class="theme-header-bar border-b border-grey-200 p-4 flex items-center">
           <q-btn
             dense
             flat
             round
             icon="menu"
-            class="mr-2"
+            class="mr-2 theme-menu-btn"
             @click="toggleSidebar"
           />
-          <h2 class="text-lg font-semibold">
+          <h2 class="text-lg font-semibold theme-title">
             {{ currentPageTitle }}
           </h2>
         </div>
@@ -170,7 +170,7 @@ export default {
     const sidebarHidden = ref(false);
 
     // 选中的节点
-    const selectedNode = ref(null);
+    const selectedNode = ref("");
 
     // 分页配置
     const pagination = ref({ page: 1, pages: 1, rowsPerPage: 10 });
@@ -1125,6 +1125,20 @@ export default {
       }
     };
 
+    // 监听主题变化事件，强制组件重新渲染
+    const handleThemeChange = () => {
+      // 强制重新渲染组件以应用新主题
+      componentKey.value++;
+    };
+    
+    onMounted(() => {
+      window.addEventListener('skybureau-theme-changed', handleThemeChange);
+    });
+    
+    onUnmounted(() => {
+      window.removeEventListener('skybureau-theme-changed', handleThemeChange);
+    });
+
     return {
       activePage,
       mobileDrawerOpen,
@@ -1385,5 +1399,71 @@ export default {
 /* 隐藏类 - 用于侧边栏宽度过小时隐藏文本 */
 .hidden {
   display: none;
+}
+
+/* Theme-aware header styling */
+.theme-header-bar {
+  background: var(--theme-surface) !important;
+  color: var(--theme-text) !important;
+  transition: all 0.3s ease !important;
+}
+
+/* Tech theme specific header styling with higher specificity */
+body.theme-tech .theme-header-bar,
+.theme-tech .theme-header-bar,
+body.theme-tech .q-page .theme-header-bar {
+  background: rgba(26, 26, 46, 0.95) !important;
+  color: #00ffff !important;
+  border-bottom: 1px solid rgba(0, 255, 255, 0.3) !important;
+  box-shadow: 0 1px 10px rgba(0, 255, 255, 0.2) !important;
+}
+
+/* Classic theme specific header styling with higher specificity */
+body.theme-default .theme-header-bar,
+.theme-default .theme-header-bar,
+body.theme-default .q-page .theme-header-bar {
+  background: #ffffff !important;
+  color: #2c3e50 !important;
+  border-bottom: 1px solid #e0e0e0 !important;
+  box-shadow: none !important;
+}
+
+/* Theme-aware title styling */
+.theme-title {
+  color: inherit !important;
+  font-weight: 600 !important;
+}
+
+body.theme-tech .theme-title,
+.theme-tech .theme-title {
+  color: #00ffff !important;
+  font-family: 'Courier New', monospace !important;
+  text-shadow: 0 0 5px rgba(0, 255, 255, 0.5) !important;
+}
+
+body.theme-default .theme-title,
+.theme-default .theme-title {
+  color: #2c3e50 !important;
+  font-family: inherit !important;
+  text-shadow: none !important;
+}
+
+/* Theme-aware menu button styling */
+.theme-menu-btn {
+  color: inherit !important;
+}
+
+body.theme-tech .theme-menu-btn,
+.theme-tech .theme-menu-btn {
+  color: #00ffff !important;
+  border: 1px solid rgba(0, 255, 255, 0.3) !important;
+  border-radius: 4px !important;
+}
+
+body.theme-default .theme-menu-btn,
+.theme-default .theme-menu-btn {
+  color: #2c3e50 !important;
+  border: none !important;
+  border-radius: 0 !important;
 }
 </style>

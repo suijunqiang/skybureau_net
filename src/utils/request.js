@@ -1,8 +1,9 @@
 import axios from 'axios';
 import { useTokenStore } from '../stores/myToken'
+import { BASE_URL } from '../api/api.js'
 
 const request = axios.create({
-  baseURL: "http://www.suijunqiang.top:1337",
+  baseURL: BASE_URL,
 });
 
 // 添加请求拦截器
