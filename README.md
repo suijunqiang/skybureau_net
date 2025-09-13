@@ -19,11 +19,15 @@ It is a full-stack application that allows you to create a website with a CMS, f
   - [x] Menu management module
   - [x] Branch management module
   - [x] Position management module
+  - [x] Blog management module Frontend/Backend
+    - [x] Blog comments management module
 
 ### Features To Do
-- [x] Blog management module Frontend/Backend
+- [x] Polish Blog comment Frontend/Backend
 - [x] News management module Frontend/Backend
 - [x] Iot management module Frontend/Backend
+- [x] WebRTC management module Frontend/Backend
+- [x] Project management module Frontend/Backend
 
 ### Getting Started
 How to start the project and run it locally.

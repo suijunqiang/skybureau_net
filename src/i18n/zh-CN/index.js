@@ -4,6 +4,24 @@
 export default {
   failed: "Action failed",
   success: "Action was successful",
+  // 评论相关
+  comments: '评论区',
+  submit_comment_success: '评论提交成功',
+  submit_comment_failed: '评论提交失败',
+  nickname_required: '昵称不能为空',
+  email_required: '邮箱不能为空',
+  content_required: '评论内容不能为空',
+  load_comments_failed: '加载评论失败',
+  comment_hint: '评论千万条，友善第一条',
+  nickname_placeholder: '昵称（必填）',
+  email_placeholder: '邮箱（必填）',
+  website_placeholder: 'https://（可选）',
+  subscribe_reply: '订阅回复',
+  submit_comment: '发表评论',
+  total_comments: '评论 | {total}条评论',
+  no_comments: '暂无评论，快来发表第一条评论吧！',
+  reply: '回复',
+  cancel_reply: '取消回复',
   homePage: "首页",
   newsPage: "新闻",
   productPage: "产品",
@@ -22,6 +40,26 @@ export default {
   skybureau: "天局网",
   // 用户管理页面
   user_management: "用户管理",
+  // 博客类别管理
+  add_category: "新增类别",
+  add_category_subtitle: "创建新的博客类别",
+  category_name: "类别名称",
+  update_time: "更新时间",
+  search_categories_placeholder: "搜索类别...",
+  filter_by_parent: "按父类别筛选",
+  total_categories: "总共 {count} 个类别",
+  back_to_list: "返回列表",
+    category_management_title: "博客类别管理",
+    category_management_subtitle: "管理博客文章类别信息",
+    all_parents: "所有父类别",
+    no_parent_category: "无父类别",
+    fetch_categories_failed: "获取类别失败",
+    unknown_error: "未知错误",
+    category_name_placeholder: "请输入类别名称",
+    parent_category_info: "父类别信息",
+    parent_category: "父类别",
+    select_parent_category: "请选择父类别",
+    cannot_change_parent_has_children: "该类别下有子类别，无法更改父类别",
   users_page_title: "用户管理",
   system_settings: "系统设置",
   device_management: "设备管理",
@@ -198,7 +236,7 @@ export default {
   enabled_only: "仅启用",
   visible_only: "仅显示",
   disabled: "禁用",
-  
+
   // 部门管理相关翻译
   branch_management_title: "部门管理",
   branch_management_subtitle: "管理系统部门和组织结构",
@@ -209,11 +247,11 @@ export default {
   total_branches: "总共 {count} 个部门",
   root_branch: "根部门",
   code: "编码",
-  
+
   // 页面层级翻译
   system_management: "系统管理",
   user_management_hierarchy: "系统管理 > 用户管理",
-  menu_management_hierarchy: "系统管理 > 菜单管理", 
+  menu_management_hierarchy: "系统管理 > 菜单管理",
   branch_management_hierarchy: "系统管理 > 部门管理",
   position_management_hierarchy: "系统管理 > 职位管理",
   blog_management_hierarchy: "系统管理 > 博客管理",
@@ -221,7 +259,7 @@ export default {
   user_settings_hierarchy: "系统管理 > 用户设置",
   user_statistics_hierarchy: "系统管理 > 用户统计",
   add_user_hierarchy: "系统管理 > 新增用户",
-  
+
   // 欢迎页翻译
   welcome_title: "欢迎回到天局网管理系统",
   welcome_subtitle: "强大的内容管理和系统配置平台",
@@ -250,7 +288,7 @@ export default {
   days: "天",
   user_guide: "用户指南",
   api_documentation: "API文档",
-  
+
   // 登录注册页面翻译
   welcome_back: "欢迎回来",
   welcome_back_subtitle: "探索航天与无人机技术的专业平台",
@@ -267,7 +305,7 @@ export default {
   or_continue_with: "或使用以下方式继续",
   technical_support: "技术支持",
   feedback: "意见反馈",
-  
+
   // 图片上传翻译
   upload_cover_image: "上传封面图片",
   select_category_placeholder: "请选择分类",
@@ -278,7 +316,7 @@ export default {
   please_select_file: "请先选择文件",
   upload_success: "图片上传成功",
   upload_failed: "图片上传失败",
-  
+
   // Menu页面相关翻译
   menu_page_title: "菜单管理",
   menu_page_description: "这里展示了详细的菜单管理信息。",
@@ -303,7 +341,7 @@ export default {
   unknown_error: "未知错误",
   confirm_delete_menu: "确认删除菜单",
   add_menu: "添加菜单",
-  
+
   // Blog相关翻译
   blog_management_title: "博客管理",
   blog_management_subtitle: "管理和编辑博客文章",
@@ -375,7 +413,7 @@ export default {
   words: "字",
   create_new_document: "创建新文档",
   document_title: "文档标题",
-  document_cover_url: "文档首图URL", 
+  document_cover_url: "文档首图URL",
   document_description: "文档描述",
   document_content: "文档正文",
   category: "分类",
@@ -392,6 +430,24 @@ export default {
   document_save_success: "文档保存成功！",
   document_save_failed: "文档保存失败",
   
+  // 博客标签管理
+  tag_management_title: "博客标签管理",
+  tag_management_subtitle: "管理博客文章标签信息",
+  add_tag: "新增标签",
+  add_tag_subtitle: "创建新的博客标签关联",
+  edit_tag: "编辑标签",
+  edit_tag_subtitle: "编辑博客标签信息",
+  search_tags_placeholder: "搜索标签...",
+  filter_by_blog: "按博客筛选",
+  all_blogs: "所有博客",
+  tag_id: "标签ID",
+  tag_id_placeholder: "请输入标签ID",
+  document_id: "文档ID",
+  not_set: "未设置",
+  confirm_delete_tag: "确认删除标签",
+  total_tags: "总共 {count} 个标签",
+  select_blog: "请选择博客",
+
   // Blog list page translations
   blog_list_title: "博客文章",
   blog_list_subtitle: "探索航天与无人机技术相关文章",
@@ -399,17 +455,17 @@ export default {
   all_categories: "所有分类",
   read_more: "阅读全文",
   no_blogs_found: "未找到博客文章",
-  
+
   // Theme system translations
   themePage: "主题",
   theme_menu: "主题",
   classic_style: "经典风格",
   tech_style: "科技风格",
   theme_description: "选择您偏好的视觉风格",
-  
+
   // 统计信息区域
   statistics: "统计信息",
-  
+
   // 公开博客列表页面
   blog_list_title: "博客文章",
   blog_list_subtitle: "探索航天与无人机技术洞察",

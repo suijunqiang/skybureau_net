@@ -1,11 +1,12 @@
 <template>
   <q-page class="h-full flex">
     <!-- 左侧导航区域 -->
-    <div class="h-full flex relative">
+    <!--div class="flex-1 flex flex-col h-full overflow-hidden"-->
+    <div class="h-full flex ">
       <!-- 导航菜单 -->
-      <div class="bg-white h-full border-r border-grey-200 flex-shrink-0 z-10" :style="{ width: sidebarWidth + 'px', display: sidebarHidden ? 'none' : 'block' }">
-        <div class="h-full p-2 overflow-auto">
-          <q-list class="h-full">
+      <div class="h-full bg-white border-r border-grey-200 flex-shrink-0 z-10" style="height: 100%; min-height: 100vh;" :style="{ width: sidebarWidth + 'px', display: sidebarHidden ? 'none' : 'block' }">
+        <div class="h-full" style="height: 100%; overflow-y: auto;">
+          <q-list style="min-height: 100%;">
             <template v-for="node in menuTree" :key="node.label">
               <!-- 直接使用q-expansion-item -->
               <q-expansion-item
@@ -77,7 +78,7 @@
       <!-- 主内容区域 -->
       <div class="flex-1 flex flex-col h-full overflow-hidden">
         <!-- 顶部标题栏 -->
-        <div class="theme-header-bar border-b border-grey-200 p-4 flex items-center">
+        <div class="theme-header-bar border-b border-grey-200 p-4 flex items-center flex-shrink-0">
           <q-btn
             dense
             flat
@@ -127,6 +128,8 @@ import MenuPage from "./MenuPage.vue";
 import UsersPage from "./UsersPage.vue";
 import BlogCreate from "../blog/BlogCreate.vue";
 import BlogManagement from "../blog/BlogManagement.vue";
+import BlogCategoryPage from "../blog/BlogCategoryPage.vue";
+import BlogTagPage from "../blog/BlogTagPage.vue";
 
 export default {
   name: "UserManagement",
@@ -140,7 +143,9 @@ export default {
     MenuPage,
     UsersPage,
     BlogCreate,
-    BlogManagement
+    BlogManagement,
+    BlogCategoryPage,
+    BlogTagPage
   },
   setup() {
     const { t } = useI18n();
@@ -425,7 +430,9 @@ export default {
         'blogCreate': 'BlogCreate',
         'blog': 'BlogCreate',
         'blogManagement': 'BlogManagement',
-        'blogList': 'BlogManagement'
+        'blogList': 'BlogManagement',
+        'categories': 'BlogCategoryPage',
+        'blog_tag': 'BlogTagPage'
       };
 
       const result = componentMap[activePage.value] || 'WelcomePage';
@@ -436,7 +443,7 @@ export default {
     // 获取当前页面标题
     const currentPageTitle = computed(() => {
       console.log('Computing page title for activePage:', activePage.value);
-      
+
       // 首先处理特殊页面
       const specialTitles = {
         'welcome': t('user_management'),
@@ -465,7 +472,7 @@ export default {
             // 使用国际化的系统管理标题
             const systemMgmt = t('system_management') || '系统管理';
             let hierarchy;
-            
+
             if (parentLabel) {
               // 如果parent是系统管理相关，使用国际化版本
               const localizedParent = parentLabel === '系统管理' ? systemMgmt : parentLabel;
@@ -473,7 +480,7 @@ export default {
             } else {
               hierarchy = node.label;
             }
-            
+
             console.log('Found page title with hierarchy:', hierarchy);
             return hierarchy;
           }
@@ -578,7 +585,7 @@ export default {
       console.log('节点颜色:', node.color || '默认');
 
       // 特殊处理博客相关菜单项
-      if (node.pageName === 'blogManagement' || node.pageName === 'blogList' || 
+      if (node.pageName === 'blogManagement' || node.pageName === 'blogList' ||
           (node.label && (node.label.includes('博客') || node.label.toLowerCase().includes('blog')))) {
         console.log('检测到博客相关菜单项，强制设置pageName为blogManagement');
         node.pageName = 'blogManagement';
@@ -882,6 +889,10 @@ export default {
       if (path.includes('blog/list')) {
         pageName = 'blogManagement';
       }
+      // 特殊处理博客标签页面
+      if (path.includes('blog/blog_tag')) {
+        pageName = 'blog_tag';
+      }
 
       const isProgrammaticNavigation = window.location.hash.includes('fromSwitchPage=true');
       if (isProgrammaticNavigation) {
@@ -1111,6 +1122,14 @@ export default {
           console.log('Rendering BlogManagement component');
           on['goBackToWelcome'] = handleGoBackToWelcome;
           return h(BlogManagement, props, on);
+        case 'categories':
+          console.log('Rendering BlogCategoryPage component');
+          on['goBackToWelcome'] = handleGoBackToWelcome;
+          return h(BlogCategoryPage, props, on);
+        case 'blog_tag':
+          console.log('Rendering BlogTagPage component');
+          on['goBackToWelcome'] = handleGoBackToWelcome;
+          return h(BlogTagPage, props, on);
         default:
           console.warn(`Unknown page: ${activePage.value}`);
           return h('div', {
@@ -1130,11 +1149,11 @@ export default {
       // 强制重新渲染组件以应用新主题
       componentKey.value++;
     };
-    
+
     onMounted(() => {
       window.addEventListener('skybureau-theme-changed', handleThemeChange);
     });
-    
+
     onUnmounted(() => {
       window.removeEventListener('skybureau-theme-changed', handleThemeChange);
     });
@@ -1229,8 +1248,6 @@ export default {
 
 .flex-1 {
   flex: 1;
-  display: flex;
-  flex-direction: column;
   min-height: 0;
 }
 
@@ -1465,5 +1482,17 @@ body.theme-default .theme-menu-btn,
   color: #2c3e50 !important;
   border: none !important;
   border-radius: 0 !important;
+}
+
+/* Ensure left menu and right content have same height */
+.left-menu-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.menu-content {
+  flex: 1;
+  overflow: auto;
 }
 </style>

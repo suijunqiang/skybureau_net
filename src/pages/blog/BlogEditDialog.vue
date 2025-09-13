@@ -301,7 +301,7 @@ export default defineComponent({
     const fetchCategories = async () => {
       try {
         loadingCategories.value = true;
-        const response = await request.get(API.BLOG.B_CATEGRORIES.LIST);
+        const response = await request.get(API.BLOG.B_CATEGORIES.LIST);
         if (response.data && response.data.data) {
           categories.value = response.data.data;
           console.log('分类数据加载成功:', categories.value);

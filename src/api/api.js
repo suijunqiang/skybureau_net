@@ -49,18 +49,13 @@ export const API = {
       UPDATE: (id) => `${BASE_URL}/api/b-blog-tags/${id}`,
       DELETE: (id) => `${BASE_URL}/api/b-blog-tags/${id}`
     },
-    B_CATEGRORIES:{
+    B_CATEGORIES:{
       LIST: `${BASE_URL}/api/b-categories`,
       CREATE: `${BASE_URL}/api/b-categories`,
       UPDATE: (id) => `${BASE_URL}/api/b-categories/${id}`,
       DELETE: (id) => `${BASE_URL}/api/b-categories/${id}`
     },
-    B_COMMENTS:{
-      LIST: `${BASE_URL}/api/b-comments`,
-      CREATE: `${BASE_URL}/api/b-comments`,
-      UPDATE: (id) => `${BASE_URL}/api/b-comments/${id}`,
-      DELETE: (id) => `${BASE_URL}/api/b-comments/${id}`
-    },
+
     B_EXCEPTION_LOGS:{
       LIST: `${BASE_URL}/api/b-exceptions`,
       CREATE: `${BASE_URL}/api/b-exceptions`,

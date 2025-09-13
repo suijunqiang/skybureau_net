@@ -74,6 +74,16 @@ component: () => import("layouts/MainLayout.vue"),
        children: [
         { path: "", component: () => import("pages/system/UserManagement.vue") }
       ],  },
+  {    path: "/blog/categories",
+       component: () => import("layouts/MainBackendLayout.vue"),
+       children: [
+        { path: "", component: () => import("pages/blog/BlogCategoryPage.vue") }
+      ],  },
+  {    path: "/blog/blog_tag",
+       component: () => import("layouts/MainBackendLayout.vue"),
+       children: [
+        { path: "", component: () => import("pages/blog/BlogTagPage.vue") }
+      ],  },
 
   /*
   {

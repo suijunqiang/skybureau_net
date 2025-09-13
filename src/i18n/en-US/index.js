@@ -4,6 +4,24 @@
 export default {
   failed: "Action failed",
   success: "Action was successful",
+  // 评论相关
+  comments: 'Comments',
+  submit_comment_success: 'Comment submitted successfully',
+  submit_comment_failed: 'Failed to submit comment',
+  nickname_required: 'Nickname is required',
+  email_required: 'Email is required',
+  content_required: 'Comment content is required',
+  load_comments_failed: 'Failed to load comments',
+  comment_hint: 'Be friendly in your comments',
+  nickname_placeholder: 'Nickname (Required)',
+  email_placeholder: 'Email (Required)',
+  website_placeholder: 'https:// (Optional)',
+  subscribe_reply: 'Subscribe to replies',
+  submit_comment: 'Submit Comment',
+  total_comments: 'Comments | {total} comments',
+  no_comments: 'No comments yet, be the first to comment!',
+  reply: 'Reply',
+  cancel_reply: 'Cancel Reply',
   mobile: "Mobile",
   status: "Status",
   confirm_password: "Confirm Password",
@@ -26,6 +44,26 @@ export default {
   password: "Password",
   // User management page
   user_management: "User Management",
+  // Blog Category Management
+  add_category: "Add Category",
+  add_category_subtitle: "Create a new blog category",
+  category_name: "Category Name",
+  update_time: "Update Time",
+  search_categories_placeholder: "Search categories...",
+  filter_by_parent: "Filter by parent category",
+  total_categories: "Total {count} categories",
+  back_to_list: "Back to List",
+  category_management_title: "Blog Category Management",
+  category_management_subtitle: "Manage blog article category information",
+  all_parents: "All Parent Categories",
+  no_parent_category: "No Parent Category",
+  fetch_categories_failed: "Failed to fetch categories",
+  unknown_error: "Unknown error",
+    category_name_placeholder: "Please enter category name",
+    parent_category_info: "Parent Category Information",
+    parent_category: "Parent Category",
+    select_parent_category: "Please select parent category",
+    cannot_change_parent_has_children: "This category has subcategories and cannot change parent category",
   users_page_title: "Users Management",
   system_settings: "System Settings",
   device_management: "Device Management",
@@ -60,12 +98,31 @@ export default {
   confirm_delete_user: "Confirm delete user",
   save_success: "Saved successfully",
   save_failed: "Save failed",
+  
+  // Blog Tag Management
+  tag_management_title: "Blog Tag Management",
+  tag_management_subtitle: "Manage blog article tag information",
+  add_tag: "Add Tag",
+  add_tag_subtitle: "Create a new blog tag",
+  edit_tag: "Edit Tag",
+  edit_tag_subtitle: "Edit blog tag information",
+  search_tags_placeholder: "Search tags...",
+  filter_by_blog: "Filter by Blog",
+  all_blogs: "All Blogs",
+  tag_id: "Tag ID",
+  tag_id_placeholder: "Please enter tag ID",
+  document_id: "Document ID",
+  not_set: "Not Set",
+  confirm_delete_tag: "Confirm delete tag",
+  total_tags: "Total {count} tags",
+  select_blog: "Please select blog",
+  field_required: "This field is required",
   unknown_error: "Unknown error",
   unknown_date: "Unknown date",
   unnamed_user: "Unnamed user",
   no_email: "No email",
   select_position: "Select position",
-  select_department: "Select department", 
+  select_department: "Select department",
   select_status: "Select status",
   password_optional_placeholder: "Leave blank to keep current password",
   password_placeholder: "Please enter password",
@@ -218,7 +275,7 @@ export default {
   unknown_error: "Unknown error",
   confirm_delete_menu: "Confirm delete menu",
   add_menu: "Add menu",
-  
+
   // MenuPage translations
   menu_id: "Menu ID",
   page_url: "Page URL",
@@ -227,7 +284,7 @@ export default {
   sort: "Sort",
   is_show: "Show",
   is_enable: "Enable",
-  
+
   // UsersPage translations
   id: "ID",
   username: "Username",
@@ -236,13 +293,13 @@ export default {
   confirmed: "Confirmed",
   blocked: "Blocked",
   is_enabled: "Enabled",
-  
+
   // PositionPage translations
   position_id: "Position ID",
   position_name: "Position Name",
   menu_permissions: "Menu Permissions",
   add_position: "Add Position",
-  
+
   // Menu management translations
   menu_management_title: "Menu Management",
   menu_management_subtitle: "Manage system menus and navigation structure",
@@ -263,7 +320,7 @@ export default {
   enabled_only: "Enabled Only",
   visible_only: "Visible Only",
   disabled: "Disabled",
-  
+
   // Branch management translations
   branch_management_title: "Branch Management",
   branch_management_subtitle: "Manage system branches and departments",
@@ -274,11 +331,11 @@ export default {
   total_branches: "Total {count} branches",
   root_branch: "Root Branch",
   code: "Code",
-  
+
   // Page hierarchy translations
   system_management: "System Management",
   user_management_hierarchy: "System Management > User Management",
-  menu_management_hierarchy: "System Management > Menu Management", 
+  menu_management_hierarchy: "System Management > Menu Management",
   branch_management_hierarchy: "System Management > Branch Management",
   position_management_hierarchy: "System Management > Position Management",
   blog_management_hierarchy: "System Management > Blog Management",
@@ -286,7 +343,7 @@ export default {
   user_settings_hierarchy: "System Management > User Settings",
   user_statistics_hierarchy: "System Management > User Statistics",
   add_user_hierarchy: "System Management > Add User",
-  
+
   // Welcome page translations
   welcome_title: "Welcome to Skybureau Management System",
   welcome_subtitle: "Powerful content management and system configuration platform",
@@ -317,7 +374,7 @@ export default {
   api_documentation: "API Documentation",
   technical_support: "Technical Support",
   feedback: "Feedback",
-  
+
   // Blog related translations
   blog_management_title: "Blog Management",
   blog_management_subtitle: "Manage and edit blog articles",
@@ -390,7 +447,7 @@ export default {
   create_new_document: "Create New Document",
   document_title: "Document Title",
   document_cover_url: "Document Cover URL",
-  document_description: "Document Description", 
+  document_description: "Document Description",
   document_content: "Document Content",
   category: "Category",
   tags: "Tags",
@@ -405,7 +462,7 @@ export default {
   tags_placeholder: "Please select tags (type to create tags dynamically)",
   document_save_success: "Document saved successfully!",
   document_save_failed: "Document save failed",
-  
+
   // Blog list page translations
   blog_list_title: "Blog Articles",
   blog_list_subtitle: "Explore articles on aerospace and drone technologies",
@@ -413,14 +470,14 @@ export default {
   all_categories: "All Categories",
   read_more: "Read More",
   no_blogs_found: "No blogs found",
-  
+
   // Theme system translations
   themePage: "Theme",
   theme_menu: "Theme",
   classic_style: "Classic Style",
   tech_style: "Tech Style",
   theme_description: "Choose your preferred visual style",
-  
+
   // Login register page translations
   welcome_back: "Welcome Back",
   welcome_back_subtitle: "Professional platform for aerospace and drone technologies",
@@ -435,7 +492,7 @@ export default {
   agree_terms: "I agree to",
   terms_and_conditions: "Terms and Conditions",
   or_continue_with: "Or continue with",
-  
+
   // Image upload translations
   upload_cover_image: "Upload Cover Image",
   select_category_placeholder: "Please select a category",
@@ -446,10 +503,10 @@ export default {
   please_select_file: "Please select a file first",
   upload_success: "Image uploaded successfully",
   upload_failed: "Image upload failed",
-  
+
   // Statistics section
   statistics: "Statistics",
-  
+
   // Public blog list page
   blog_list_title: "Blog Articles",
   blog_list_subtitle: "Explore aerospace and drone technology insights",
