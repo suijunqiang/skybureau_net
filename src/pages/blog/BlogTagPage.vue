@@ -9,8 +9,8 @@
             <p class="text-grey-6 q-mb-none q-mt-xs">{{ t('tag_management_subtitle') || '管理博客文章标签信息' }}</p>
           </div>
           <div class="col-auto">
-            <q-btn 
-              color="primary" 
+            <q-btn
+              color="primary"
               :label="t('add_tag') || '新增标签'"
               icon="add"
               @click="addTag"
@@ -191,11 +191,11 @@ export default defineComponent({
     const loading = ref(false);
     const editDialogVisible = ref(false);
     const currentTag = ref(null);
-    
+
     // 搜索和筛选状态
     const searchText = ref('');
     const blogFilter = ref(null);
-    
+
     // 筛选选项 - 博客选项
     const blogOptions = computed(() => {
       return [
@@ -206,7 +206,7 @@ export default defineComponent({
         }))
       ];
     });
-    
+
     // 分页配置
     const pagination = ref({
       page: 1,
@@ -259,16 +259,16 @@ export default defineComponent({
     const handleSearch = () => {
       console.log('Searching for:', searchText.value);
     };
-    
+
     const handleFilterChange = () => {
       console.log('Filter changed:', blogFilter.value);
     };
-    
+
     const resetFilters = () => {
       searchText.value = '';
       blogFilter.value = null;
     };
-    
+
     // 表格请求处理
     const onRequest = (props) => {
       const { page, rowsPerPage } = props.pagination;
@@ -279,28 +279,28 @@ export default defineComponent({
     // 显示的标签数据（带搜索和筛选）
     const displayTags = computed(() => {
       let filtered = tags.value || [];
-      
+
       // 搜索筛选
       if (searchText.value) {
         const search = searchText.value.toLowerCase();
-        filtered = filtered.filter(tag => 
+        filtered = filtered.filter(tag =>
           (tag.b_blog_id && tag.b_blog_id.toString().toLowerCase().includes(search)) ||
           (tag.b_tag_id && tag.b_tag_id.toString().toLowerCase().includes(search)) ||
           (tag.documentId && tag.documentId.toLowerCase().includes(search))
         );
       }
-      
+
       // 博客筛选
       if (blogFilter.value !== null) {
         filtered = filtered.filter(tag => tag.b_blog_id == blogFilter.value);
       }
-      
+
       return filtered;
     });
-    
+
     // 总标签数
     const totalTags = computed(() => displayTags.value.length);
-    
+
     // 格式化日期
     const formatDate = (dateString) => {
       if (!dateString) return '';
@@ -357,7 +357,7 @@ export default defineComponent({
           if (index !== -1) {
             tags.value.splice(index, 1);
           }
-          
+
           Notify.create({
             message: t('delete_success'),
             color: 'positive',

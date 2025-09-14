@@ -43,12 +43,12 @@ request.interceptors.response.use(
       // 设置请求时发生了错误
       console.error('请求配置错误:', error.message);
     }
-    
+
     // 处理"Unexpected token < in JSON at position 0"错误
     if (error.message && error.message.includes('Unexpected token < in JSON at position 0')) {
       console.error('API返回了HTML而非JSON，这可能是服务器错误或网络问题');
     }
-    
+
     return Promise.reject(error);
   }
 );

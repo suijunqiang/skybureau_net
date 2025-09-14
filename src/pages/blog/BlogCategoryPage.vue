@@ -9,8 +9,8 @@
             <p class="text-grey-6 q-mb-none q-mt-xs">{{ t('category_management_subtitle') || '管理博客文章类别信息' }}</p>
           </div>
           <div class="col-auto">
-            <q-btn 
-              color="primary" 
+            <q-btn
+              color="primary"
               :label="t('add_category') || '新增类别'"
               icon="add"
               @click="addCategory"
@@ -206,11 +206,11 @@ export default defineComponent({
     const editDialogVisible = ref(false);
     const viewDialogVisible = ref(false);
     const currentCategory = ref(null);
-    
+
     // 搜索和筛选状态
     const searchText = ref('');
     const parentFilter = ref(null);
-    
+
     // 筛选选项 - 父类别选项
     const parentOptions = computed(() => {
       return [
@@ -223,7 +223,7 @@ export default defineComponent({
           }))
       ];
     });
-    
+
     // 分页配置
     const pagination = ref({
       page: 1,
@@ -264,16 +264,16 @@ export default defineComponent({
     const handleSearch = () => {
       console.log('Searching for:', searchText.value);
     };
-    
+
     const handleFilterChange = () => {
       console.log('Filter changed:', parentFilter.value);
     };
-    
+
     const resetFilters = () => {
       searchText.value = '';
       parentFilter.value = null;
     };
-    
+
     // 表格请求处理
     const onRequest = (props) => {
       const { page, rowsPerPage } = props.pagination;
@@ -284,16 +284,16 @@ export default defineComponent({
     // 显示的类别数据（带搜索和筛选）
     const displayCategories = computed(() => {
       let filtered = categories.value || [];
-      
+
       // 搜索筛选
       if (searchText.value) {
         const search = searchText.value.toLowerCase();
-        filtered = filtered.filter(category => 
+        filtered = filtered.filter(category =>
           (category.b_category_name && category.b_category_name.toLowerCase().includes(search)) ||
           (category.category_id && category.category_id.toString().includes(search))
         );
       }
-      
+
       // 父类别筛选
       if (parentFilter.value !== null) {
         if (parentFilter.value === 0) {
@@ -302,26 +302,26 @@ export default defineComponent({
           filtered = filtered.filter(category => category.parent_category_id === parentFilter.value);
         }
       }
-      
+
       return filtered;
     });
-    
+
     // 总类别数
     const totalCategories = computed(() => displayCategories.value.length);
-    
+
     // 获取父类别名称
     const getParentCategoryName = (parentId) => {
       if (!parentId || parentId === 0) return t('no_parent_category') || '无父类别';
-      
+
       const parent = categories.value.find(cat => cat.category_id == parentId);
       return parent ? parent.b_category_name : `ID:${parentId}`;
     };
-    
+
     // 判断类别是否有子类别
     const hasChildCategories = (categoryId) => {
       return categories.value.some(cat => cat.parent_category_id == categoryId);
     };
-    
+
     // 格式化日期
     const formatDate = (dateString) => {
       if (!dateString) return '';
@@ -349,7 +349,7 @@ export default defineComponent({
       currentCategory.value = { ...category };
       editDialogVisible.value = true;
     };
-    
+
     // 查看类别
     const viewCategory = (category) => {
       currentCategory.value = { ...category };

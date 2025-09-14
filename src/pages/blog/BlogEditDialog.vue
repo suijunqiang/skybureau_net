@@ -30,7 +30,7 @@
             <div class="col-12">
               <div class="text-h6 q-mb-md text-primary">{{ t('basic_info') }}</div>
             </div>
-            
+
             <!-- 标题和封面图 -->
             <div class="col-12 col-md-8">
               <q-input
@@ -51,7 +51,7 @@
                 dense
               />
             </div>
-            
+
             <!-- 图片上传区域 -->
             <div class="col-12">
               <div class="text-subtitle2 q-mb-sm">{{ t('upload_cover_image') }}</div>
@@ -88,7 +88,7 @@
                 {{ t('upload_image_hint') }}
               </div>
             </div>
-            
+
             <!-- 封面图片预览 -->
             <div v-if="getImageUrl(form, isEditing ? blog : null)" class="col-12">
               <div class="text-subtitle2 q-mb-sm">{{ t('cover') }}</div>
@@ -113,7 +113,7 @@
             <div class="col-12">
               <div class="text-h6 q-mb-md text-primary">{{ t('content_section') }}</div>
             </div>
-            
+
             <!-- 描述 -->
             <div class="col-12 q-mb-md">
               <div class="text-subtitle2 q-mb-sm">{{ t('blog_description') }}</div>
@@ -125,7 +125,7 @@
                 class="editor-container"
               />
             </div>
-            
+
             <!-- 正文内容 -->
             <div class="col-12">
               <div class="text-subtitle2 q-mb-sm">{{ t('blog_content') }}</div>
@@ -144,7 +144,7 @@
             <div class="col-12">
               <div class="text-h6 q-mb-md text-primary">{{ t('blog_settings') }}</div>
             </div>
-            
+
             <!-- 分类选择 -->
             <div class="col-12 col-md-6">
               <q-select
@@ -162,7 +162,7 @@
                 :loading="loadingCategories"
               />
             </div>
-            
+
             <!-- 阅读时间和密码 -->
             <div class="col-12 col-md-6">
               <q-input
@@ -192,7 +192,7 @@
             <div class="col-12">
               <div class="text-h6 q-mb-md text-primary">{{ t('publish_settings') }}</div>
             </div>
-            
+
             <div class="col-12 col-sm-6 col-md-4">
               <q-toggle
                 v-model="form.b_is_published"
@@ -280,13 +280,13 @@ export default defineComponent({
   emits: ['update:visible', 'save', 'error'],
   setup(props, { emit }) {
     const { t } = useI18n();
-    
+
     const isSubmitting = ref(false);
     const selectedFile = ref(null);
     const isUploading = ref(false);
     const categories = ref([]);
     const loadingCategories = ref(false);
-    
+
     // 分类选项计算属性
     const categoryOptions = computed(() => {
       return categories.value.map(category => ({
@@ -296,7 +296,7 @@ export default defineComponent({
         b_category_name: category.b_category_name
       }));
     });
-    
+
     // 获取分类列表
     const fetchCategories = async () => {
       try {
@@ -312,7 +312,7 @@ export default defineComponent({
         loadingCategories.value = false;
       }
     };
-    
+
     // 获取图片URL的辅助函数 - 修正字段处理逻辑
     const getImageUrl = (formData, blogData, format = 'thumbnail') => {
       // 1. 优先尝试Current Profile Picture (b_first_pic) 从表单数据
@@ -324,7 +324,7 @@ export default defineComponent({
         // 如果是相对路径，拼接base URL
         return `${BASE_URL}${formData.b_first_pic}`;
       }
-      
+
       // 2. 如果表单中的Current Profile Picture为空，尝试从原始博客数据获取
       if (blogData && blogData.b_first_pic !== null && blogData.b_first_pic && blogData.b_first_pic.trim() !== '') {
         if (blogData.b_first_pic.startsWith('http')) {
@@ -332,7 +332,7 @@ export default defineComponent({
         }
         return `${BASE_URL}${blogData.b_first_pic}`;
       }
-      
+
       // 3. 如果b_first_pic都为null或空，使用b_blog_picture_profile中的url字段
       let blogPictureProfile = null;
       if (formData && formData.b_blog_picture_profile) {
@@ -340,37 +340,37 @@ export default defineComponent({
       } else if (blogData && blogData.b_blog_picture_profile) {
         blogPictureProfile = blogData.b_blog_picture_profile;
       }
-      
+
       if (!blogPictureProfile) return null;
-      
+
       // 关键修正：当b_first_pic为null时，直接使用url字段显示图片
       if (blogPictureProfile.url) {
         return `${BASE_URL}${blogPictureProfile.url}`;
       }
-      
+
       // 备用：如果url字段也没有，尝试使用previewURL
       if (blogPictureProfile.previewURL && blogPictureProfile.previewURL !== null) {
         return `${BASE_URL}${blogPictureProfile.previewURL}`;
       }
-      
+
       // 如果有指定格式的图片，使用它
       if (blogPictureProfile.formats && blogPictureProfile.formats[format]) {
         return `${BASE_URL}${blogPictureProfile.formats[format].url}`;
       }
-      
+
       // 如果没有指定格式，尝试使用小尺寸图片
       if (blogPictureProfile.formats && blogPictureProfile.formats.small) {
         return `${BASE_URL}${blogPictureProfile.formats.small.url}`;
       }
-      
+
       // 如果没有小尺寸图片，尝试使用缩略图
       if (blogPictureProfile.formats && blogPictureProfile.formats.thumbnail) {
         return `${BASE_URL}${blogPictureProfile.formats.thumbnail.url}`;
       }
-      
+
       return null;
     };
-    
+
     // 表单数据 - 移除 b_tags 字段
     const form = ref({
       b_title: '',
@@ -521,16 +521,16 @@ export default defineComponent({
         }
 
         console.log('博客保存成功:', response.data);
-        
+
         // 发送保存成功事件
         emit('save', response.data.data);
-        
+
         // 关闭对话框
         closeDialog();
 
       } catch (error) {
         console.error('博客保存失败:', error);
-        
+
         // 发送错误事件
         emit('error', error);
       } finally {
@@ -570,7 +570,7 @@ export default defineComponent({
     // 上传图片
     const uploadImage = async () => {
       console.log('上传函数被调用');
-      
+
       if (!selectedFile.value) {
         console.log('没有选择文件');
         Notify.create({
@@ -594,7 +594,7 @@ export default defineComponent({
         console.log('- 文件大小:', selectedFile.value.size);
         console.log('- 文件类型:', selectedFile.value.type);
         console.log('- API地址:', API.UPLOAD);
-        
+
         // 检查 FormData 内容
         console.log('FormData 条目:');
         for (let [key, value] of formData.entries()) {
@@ -617,7 +617,7 @@ export default defineComponent({
         if (response.data && Array.isArray(response.data) && response.data.length > 0) {
           const uploadedFile = response.data[0];
           console.log('解析上传文件:', uploadedFile);
-          
+
           // 修改逻辑：只保存图片的 id 到 b_blog_picture_profile 字段
           if (uploadedFile.id) {
             form.value.b_blog_picture_profile = uploadedFile.id;
@@ -626,20 +626,20 @@ export default defineComponent({
             console.error('上传文件缺少 id 字段:', uploadedFile);
             throw new Error('上传文件响应缺少 id 字段');
           }
-          
+
           // 清空选择的文件
           selectedFile.value = null;
-          
+
           Notify.create({
             message: t('upload_success'),
             color: 'positive',
             timeout: 3000
           });
-          
+
         } else if (response.data && !Array.isArray(response.data)) {
           // 如果响应不是数组格式，尝试直接使用
           console.log('响应不是数组格式，尝试直接使用:', response.data);
-          
+
           // 修改逻辑：只保存图片的 id
           if (response.data.id) {
             form.value.b_blog_picture_profile = response.data.id;
@@ -648,9 +648,9 @@ export default defineComponent({
             console.error('上传文件缺少 id 字段:', response.data);
             throw new Error('上传文件响应缺少 id 字段');
           }
-          
+
           selectedFile.value = null;
-          
+
           Notify.create({
             message: t('upload_success'),
             color: 'positive',
@@ -663,7 +663,7 @@ export default defineComponent({
 
       } catch (error) {
         console.error('上传文件失败:', error);
-        
+
         if (error.response) {
           console.error('响应错误:');
           console.error('- 状态码:', error.response.status);
@@ -676,7 +676,7 @@ export default defineComponent({
         } else {
           console.error('请求设置错误:', error.message);
         }
-        
+
         Notify.create({
           message: t('upload_failed') + ': ' + (error.response?.data?.error?.message || error.message || t('unknown_error')),
           color: 'negative',

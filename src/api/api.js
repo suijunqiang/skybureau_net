@@ -136,7 +136,22 @@ export const API = {
       DELETE: (id) => `${BASE_URL}/api/b-visit-logs/${id}`
     },
   },
+  // 设备管理接口
+  DEVICES: {
+    DEVICES:{
+      LIST: `${BASE_URL}/api/iotdevices`,
+      CREATE: `${BASE_URL}/api/iotdevices`,
+      UPDATE: (id) => `${BASE_URL}/api/iotdevices/${id}`,
+      DELETE: (id) => `${BASE_URL}/api/iotdevices/${id}`
+    },
+    DEVICE_TYPES:{
+      LIST: `${BASE_URL}/api/iotdevice-types`,
+      CREATE: `${BASE_URL}/api/iotdevice-types`,
+      UPDATE: (id) => `${BASE_URL}/api/iotdevice-types/${id}`,
+      DELETE: (id) => `${BASE_URL}/api/iotdevice-types/${id}`
+    },
 
+  },
    PRODUCT: {
     LIST: `${BASE_URL}/api/products`,
     DETAIL: (id) => `${BASE_URL}/api/products/${id}`,

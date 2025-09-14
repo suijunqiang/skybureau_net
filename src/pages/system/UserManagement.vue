@@ -130,6 +130,7 @@ import BlogCreate from "../blog/BlogCreate.vue";
 import BlogManagement from "../blog/BlogManagement.vue";
 import BlogCategoryPage from "../blog/BlogCategoryPage.vue";
 import BlogTagPage from "../blog/BlogTagPage.vue";
+import DeviceManagement from "../iotdevices/DeviceManagement.vue";
 
 export default {
   name: "UserManagement",
@@ -145,7 +146,8 @@ export default {
     BlogCreate,
     BlogManagement,
     BlogCategoryPage,
-    BlogTagPage
+    BlogTagPage,
+    DeviceManagement
   },
   setup() {
     const { t } = useI18n();
@@ -1130,6 +1132,10 @@ export default {
           console.log('Rendering BlogTagPage component');
           on['goBackToWelcome'] = handleGoBackToWelcome;
           return h(BlogTagPage, props, on);
+        case 'devices':
+          console.log('Rendering DeviceManagement component');
+          on['goBackToWelcome'] = handleGoBackToWelcome;
+          return h(DeviceManagement, props, on);
         default:
           console.warn(`Unknown page: ${activePage.value}`);
           return h('div', {

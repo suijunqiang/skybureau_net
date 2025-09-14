@@ -91,6 +91,20 @@ component: () => import("layouts/MainLayout.vue"),
     component: () => import("pages/LoginRegister.vue"),
   },
   */
+  {    path: "/devices/devices",
+       component: () => import("layouts/MainBackendLayout.vue"),
+       children: [
+        { path: "", component: () => import("pages/iotdevices/DeviceManagement.vue") }
+      ],
+  },
+  {    path: "/iotdevices",
+       component: () => import("layouts/MainBackendLayout.vue"),
+       children: [
+        { path: "", component: () => import("pages/iotdevices/DeviceManagement.vue") },
+        { path: "types", component: () => import("pages/iotdevices/DeviceTypeManagement.vue") }
+      ],
+  },
+
   // Always leave this as last one,
   // but you can also remove it
   {

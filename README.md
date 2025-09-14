@@ -21,11 +21,11 @@ It is a full-stack application that allows you to create a website with a CMS, f
   - [x] Position management module
   - [x] Blog management module Frontend/Backend
     - [x] Blog comments management module
+    - [x] Iot Devices management module
 
 ### Features To Do
-- [x] Polish Blog comment Frontend/Backend
+- [x] Polish Blog/Iot Frontend/Backend
 - [x] News management module Frontend/Backend
-- [x] Iot management module Frontend/Backend
 - [x] WebRTC management module Frontend/Backend
 - [x] Project management module Frontend/Backend
 

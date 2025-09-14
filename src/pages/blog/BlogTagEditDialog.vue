@@ -29,7 +29,7 @@
             <div class="col-12">
               <div class="text-h6 q-mb-md text-primary">{{ t('basic_info') || '基本信息' }}</div>
             </div>
-            
+
             <!-- 博客选择 -->
             <div class="col-12">
               <q-select
@@ -44,7 +44,7 @@
                 :rules="[val => !!val || t('field_required') || '此字段为必填项']"
               />
             </div>
-            
+
             <!-- 标签ID输入 -->
             <div class="col-12">
               <q-input
@@ -65,7 +65,7 @@
             <div class="col-12">
               <div class="text-h6 q-mb-md text-primary">{{ t('time_info') || '时间信息' }}</div>
             </div>
-            
+
             <div class="col-12 col-md-6">
               <q-field :label="t('created_at') || '创建时间'" readonly>
                 <template v-slot:control>
@@ -73,7 +73,7 @@
                 </template>
               </q-field>
             </div>
-            
+
             <div class="col-12 col-md-6">
               <q-field :label="t('updated_at') || '更新时间'" readonly>
                 <template v-slot:control>
@@ -87,19 +87,19 @@
 
       <!-- 对话框底部按钮 -->
       <q-card-actions class="q-px-md q-pb-md q-pt-none justify-between">
-        <q-btn 
-          flat 
+        <q-btn
+          flat
           :label="t('cancel') || '取消'"
           @click="closeDialog"
         />
         <div class="q-gutter-sm">
-          <q-btn 
-            flat 
+          <q-btn
+            flat
             color="primary"
             :label="t('reset') || '重置'"
             @click="resetForm"
           />
-          <q-btn 
+          <q-btn
             color="primary"
             :label="t('submit') || '提交'"
             @click="onSubmit"
@@ -142,7 +142,7 @@ export default defineComponent({
   setup(props, { emit }) {
     const { t } = useI18n();
     const formRef = ref(null);
-    
+
     // 表单数据
     const form = ref({
       b_blog_id: '',
@@ -238,7 +238,7 @@ export default defineComponent({
 
         // 触发保存成功事件
         emit('save', response.data.data);
-        
+
         // 关闭对话框
         closeDialog();
       } catch (error) {

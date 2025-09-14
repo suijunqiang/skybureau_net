@@ -30,7 +30,7 @@
             <div class="col-12">
               <div class="text-h6 q-mb-md text-primary">{{ t('basic_info') || '基本信息' }}</div>
             </div>
-            
+
             <!-- 类别ID和类别名称 -->
             <div class="col-12 col-md-6">
               <q-input
@@ -62,7 +62,7 @@
             <div class="col-12">
               <div class="text-h6 q-mb-md text-primary">{{ t('parent_category_info') || '父类别信息' }}</div>
             </div>
-            
+
             <!-- 父类别选择 -->
             <div class="col-12 col-md-6">
               <q-select
@@ -148,7 +148,7 @@ export default defineComponent({
     const { t } = useI18n();
     const formRef = ref(null);
     const saving = ref(false);
-    
+
     // 使用本地状态控制对话框显示/隐藏
     const dialogVisible = ref(props.visible);
 
@@ -161,7 +161,7 @@ export default defineComponent({
     watch(dialogVisible, (newValue) => {
       emit('update:visible', newValue);
     });
-    
+
     const form = reactive({
       id: '',
       documentId: '',
@@ -212,7 +212,7 @@ export default defineComponent({
               ...cat,
               level: level
             }));
-          
+
           if (children.length > 0) {
             options = [...options, ...children];
             addChildren(children, level + 1);
