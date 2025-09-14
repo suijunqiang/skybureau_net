@@ -34,11 +34,11 @@ How to start the project and run it locally.
 [INSTALL](./readme/README_INSTALL.md)
 
 ### Demo online
-- Frontend [Quasar Skybureau](http://www.suijunqiang.top:9000)
-- Backend [Strapi Skybureau](http://www.suijunqiang.top:1337/admin)
+- Frontend [Quasar Skybureau](http://www.skybureau.net:9000)
+- Backend [Strapi Skybureau](http://www.skybureau.net:1337/admin)
 
 ### Screen Shot
-- ![image](http://suijunqiang.top:10000/img/sbn.gif)
+- ![image](http://www.skybureau.net:10000/img/sbn.gif)
 - ![image](./readme/home.jpg)
 - ![image](./readme/jwt.jpg)
 
