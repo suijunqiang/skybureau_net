@@ -103,7 +103,7 @@
                   size="sm"
                   class="q-mr-xs"
                 />
-                {{ props.value === 0 ? '离线' : '在线' }}
+                {{ props.value === 0 ? t('offline') : t('online') }}
               </div>
             </q-td>
           </template>
@@ -118,7 +118,7 @@
                   size="sm"
                   class="q-mr-xs"
                 />
-                {{ props.value === 0 ? '待机' : '运行中' }}
+                {{ props.value === 0 ? t('standby') : t('running') }}
               </div>
             </q-td>
           </template>
@@ -144,7 +144,7 @@
                   size="sm"
                   @click="editDevice(props.row)"
                 >
-                  <q-tooltip>编辑</q-tooltip>
+                  <q-tooltip>{{ t('edit') }}</q-tooltip>
                 </q-btn>
                 <q-btn
                   flat
@@ -154,7 +154,7 @@
                   size="sm"
                   @click="viewDevice(props.row)"
                 >
-                  <q-tooltip>查看</q-tooltip>
+                  <q-tooltip>{{ t('view') }}</q-tooltip>
                 </q-btn>
                 <q-btn
                   flat
@@ -164,7 +164,7 @@
                   size="sm"
                   @click="deleteDevice(props.row)"
                 >
-                  <q-tooltip>删除</q-tooltip>
+                  <q-tooltip>{{ t('delete') }}</q-tooltip>
                 </q-btn>
               </div>
             </q-td>
@@ -240,10 +240,10 @@ export default defineComponent({
     const searchText = ref('');
     const typeFilter = ref(null);
 
-    // 筛选选项 - 设备类型选项
+    // 设备类型筛选选项
     const deviceTypeOptions = computed(() => {
       return [
-        { label: '所有设备类型', value: null },
+        { label: t('all_device_types'), value: null },
         ...deviceTypes.value.map(type => ({
           label: type.name,
           value: type.id
@@ -258,18 +258,18 @@ export default defineComponent({
       rowsNumber: 0
     });
 
-    // 表格列配置
-    const columns = ref([
-      { name: "serialNum", label: "设备序列号", field: "serialNum", align: "left", sortable: true },
-      { name: "name", label: "设备名称", field: "name", align: "left", sortable: true },
-      { name: "type_id", label: "设备类型", field: "type_id", align: "left", sortable: true },
-      { name: "model", label: "设备型号", field: "model", align: "left", sortable: true },
-      { name: "manufacturer", label: "制造商", field: "manufacturer", align: "left", sortable: true },
-      { name: "connectionStatus", label: "连接状态", field: "connectionStatus", align: "left", sortable: true },
-      { name: "workStatus", label: "工作状态", field: "workStatus", align: "left", sortable: true },
-      { name: "ipAddress", label: "IP地址", field: "ipAddress", align: "left", sortable: true },
-      { name: "updatedAt", label: "更新时间", field: "updatedAt", align: "left", sortable: true },
-      { name: "actions", label: "操作", field: "id", align: "right", width: 150, sortable: false }
+    // 表格列配置 - 国际化处理
+    const columns = computed(() => [
+      { name: "serialNum", label: t('device_serial_number'), field: "serialNum", align: "left", sortable: true },
+      { name: "name", label: t('device_name'), field: "name", align: "left", sortable: true },
+      { name: "type_id", label: t('device_type'), field: "type_id", align: "left", sortable: true },
+      { name: "model", label: t('device_model'), field: "model", align: "left", sortable: true },
+      { name: "manufacturer", label: t('manufacturer'), field: "manufacturer", align: "left", sortable: true },
+      { name: "connectionStatus", label: t('connection_status'), field: "connectionStatus", align: "left", sortable: true },
+      { name: "workStatus", label: t('work_status'), field: "workStatus", align: "left", sortable: true },
+      { name: "ipAddress", label: t('ip_address'), field: "ipAddress", align: "left", sortable: true },
+      { name: "updatedAt", label: t('update_time'), field: "updatedAt", align: "left", sortable: true },
+      { name: "actions", label: t('actions'), field: "id", align: "right", width: 150, sortable: false }
     ]);
 
     // 获取设备数据
@@ -277,13 +277,20 @@ export default defineComponent({
       loading.value = true;
       try {
         const response = await axios.get(API.DEVICES.DEVICES.LIST);
-        devices.value = response.data.data;
+        devices.value = response.data.data || [];
+        // 确保设备数据中的状态值是数字类型，以便正确匹配选项
+        devices.value = devices.value.map(device => ({
+          ...device,
+          type_id: device.type_id !== undefined ? Number(device.type_id) : null,
+          connectionStatus: device.connectionStatus !== undefined ? Number(device.connectionStatus) : 0,
+          workStatus: device.workStatus !== undefined ? Number(device.workStatus) : 0
+        }));
         console.log('设备数据加载成功:', devices.value);
       } catch (error) {
         console.error('获取设备数据失败:', error);
         devices.value = [];
         Notify.create({
-          message: '获取设备数据失败: ' + (error.message || '未知错误'),
+          message: t('fetch_device_data_failed') + ': ' + (error.message || t('unknown_error')),
           color: 'negative',
           timeout: 2000
         });
@@ -296,13 +303,18 @@ export default defineComponent({
     const fetchDeviceTypes = async () => {
       try {
         const response = await axios.get(API.DEVICES.DEVICE_TYPES.LIST);
-        deviceTypes.value = response.data.data;
+        deviceTypes.value = response.data.data || [];
+        // 确保设备类型ID是数字类型，以便正确匹配
+        deviceTypes.value = deviceTypes.value.map(type => ({
+          ...type,
+          id: Number(type.id)
+        }));
         console.log('设备类型数据加载成功:', deviceTypes.value);
       } catch (error) {
         console.error('获取设备类型数据失败:', error);
         deviceTypes.value = [];
         Notify.create({
-          message: '获取设备类型数据失败: ' + (error.message || '未知错误'),
+          message: t('fetch_device_types_failed') + ': ' + (error.message || t('unknown_error')),
           color: 'negative',
           timeout: 2000
         });
@@ -347,7 +359,9 @@ export default defineComponent({
 
       // 设备类型筛选
       if (typeFilter.value !== null) {
-        filtered = filtered.filter(device => device.type_id === typeFilter.value);
+        // 确保类型ID比较时类型一致
+        const numericTypeId = Number(typeFilter.value);
+        filtered = filtered.filter(device => Number(device.type_id) === numericTypeId);
       }
 
       return filtered;
@@ -393,7 +407,13 @@ export default defineComponent({
 
     // 编辑设备
     const editDevice = (device) => {
-      currentDevice.value = { ...device };
+      // 确保传递给编辑对话框的数据类型正确
+      currentDevice.value = {
+        ...device,
+        type_id: device.type_id !== undefined ? Number(device.type_id) : null,
+        connectionStatus: device.connectionStatus !== undefined ? Number(device.connectionStatus) : 0,
+        workStatus: device.workStatus !== undefined ? Number(device.workStatus) : 0
+      };
       editDialogVisible.value = true;
     };
 
@@ -405,15 +425,23 @@ export default defineComponent({
 
     // 设备保存成功处理
     const onDeviceSave = (updatedDevice) => {
+      // 确保更新的设备数据类型正确
+      const normalizedDevice = {
+        ...updatedDevice,
+        type_id: updatedDevice.type_id !== undefined ? Number(updatedDevice.type_id) : null,
+        connectionStatus: updatedDevice.connectionStatus !== undefined ? Number(updatedDevice.connectionStatus) : 0,
+        workStatus: updatedDevice.workStatus !== undefined ? Number(updatedDevice.workStatus) : 0
+      };
+      
       const index = devices.value.findIndex(d => d.id === updatedDevice.id);
       if (index !== -1) {
-        devices.value[index] = updatedDevice;
+        devices.value[index] = normalizedDevice;
       } else {
-        devices.value.push(updatedDevice);
+        devices.value.push(normalizedDevice);
       }
 
       Notify.create({
-        message: '保存成功',
+        message: t('save_success'),
         color: 'positive',
         timeout: 2000
       });
@@ -426,7 +454,7 @@ export default defineComponent({
     // 设备保存失败处理
     const onDeviceError = (error) => {
       Notify.create({
-        message: '保存失败: ' + (error.message || '未知错误'),
+        message: t('save_failed') + ': ' + (error.message || t('unknown_error')),
         color: 'negative',
         timeout: 2000
       });
@@ -435,8 +463,8 @@ export default defineComponent({
     // 删除设备
     const deleteDevice = (device) => {
       $q.dialog({
-        title: '确认删除',
-        message: '确定要删除设备: ' + device.name + '?',
+        title: t('confirm_delete'),
+        message: t('confirm_delete_device') + ': ' + device.name + '?',
         ok: {
           push: true,
           color: 'positive'
@@ -462,7 +490,7 @@ export default defineComponent({
           devices.value = devices.value.filter(d => d.id !== device.id);
 
           Notify.create({
-            message: '删除成功',
+            message: t('delete_success'),
             color: 'positive',
             timeout: 2000
           });
@@ -472,7 +500,7 @@ export default defineComponent({
           console.error('删除设备失败:', error);
 
           Notify.create({
-            message: '删除失败: ' + (error.message || '未知错误'),
+            message: t('delete_failed') + ': ' + (error.message || t('unknown_error')),
             color: 'negative',
             timeout: 2000
           });

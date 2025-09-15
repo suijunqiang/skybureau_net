@@ -1,5 +1,5 @@
 <template>
-    <q-dialog
+  <q-dialog
       v-model="localVisible"
       persistent
       class="device-edit-dialog"
@@ -9,7 +9,7 @@
     <q-card class="dialog-card">
       <q-card-section class="q-pa-lg">
         <div class="flex items-center justify-between">
-          <h3 class="text-lg font-semibold">{{ isEdit ? '编辑设备' : '新增设备' }}</h3>
+          <h3 class="text-lg font-semibold">{{ isEdit ? t('edit_device') : t('add_device') }}</h3>
           <q-btn
             flat
             round
@@ -32,20 +32,20 @@
             <div class="col">
               <q-input
                 v-model="form.name"
-                label="设备名称"
+                :label="t('device_name')"
                 outlined
                 dense
-                :rules="[val => !!val || '请输入设备名称']"
+                :rules="[val => !!val || t('device_name_required')]"
               />
             </div>
 
             <div class="col">
               <q-input
                 v-model="form.serialNum"
-                label="设备序列号 (主键)"
+                :label="t('device_serial_number')"
                 outlined
                 dense
-                :rules="[val => !!val || '请输入设备序列号']"
+                :rules="[val => !!val || t('device_serial_number_required')]"
                 :readonly="isEdit"
               />
             </div>
@@ -55,20 +55,23 @@
             <div class="col">
               <q-select
                 v-model="form.type_id"
-                label="设备类型"
+                :label="t('device_type')"
                 outlined
                 dense
                 :options="deviceTypesOptions"
                 option-label="label"
                 option-value="value"
-                :rules="[val => val !== null && val !== undefined && val !== '' || '请选择设备类型']"
+                use-input
+                emit-value
+                map-options
+                :rules="[val => val !== null && val !== undefined && val !== '' || t('device_type_required')]"
               />
             </div>
 
             <div class="col">
               <q-input
                 v-model="form.model"
-                label="设备型号"
+                :label="t('device_model')"
                 outlined
                 dense
               />
@@ -79,7 +82,7 @@
             <div class="col">
               <q-input
                 v-model="form.manufacturer"
-                label="制造商"
+                :label="t('manufacturer')"
                 outlined
                 dense
               />
@@ -88,12 +91,15 @@
             <div class="col">
               <q-select
                 v-model="form.connectionStatus"
-                label="连接状态"
+                :label="t('connection_status')"
                 outlined
                 dense
                 :options="connectionStatusOptions"
                 option-label="label"
                 option-value="value"
+                use-input
+                emit-value
+                :rules="[val => val !== null && val !== undefined && val !== '' || t('connection_status_required')]"
               >
                 <template v-slot:option="scope">
                   <div class="flex items-center">
@@ -126,7 +132,7 @@
             <div class="col">
               <q-input
                 v-model="form.ipAddress"
-                label="IP地址"
+                :label="t('ip_address')"
                 outlined
                 dense
               />
@@ -135,7 +141,7 @@
             <div class="col">
               <q-input
                 v-model="form.macAddress"
-                label="MAC地址"
+                :label="t('mac_address')"
                 outlined
                 dense
               />
@@ -146,19 +152,23 @@
             <div class="col">
               <q-select
                 v-model="form.networkType"
-                label="网络类型"
+                :label="t('network_type')"
                 outlined
                 dense
                 :options="networkTypeOptions"
                 option-label="label"
                 option-value="value"
+                use-input
+                emit-value
+                map-options
+                :rules="[val => val !== null && val !== undefined && val !== '' || t('network_type_required')]"
               />
             </div>
 
             <div class="col">
               <q-input
                 v-model="form.signalStrength"
-                label="信号强度"
+                :label="t('signal_strength')"
                 outlined
                 dense
               />
@@ -170,12 +180,15 @@
             <div class="col">
               <q-select
                 v-model="form.workStatus"
-                label="工作状态"
+                :label="t('work_status')"
                 outlined
                 dense
                 :options="workStatusOptions"
                 option-label="label"
                 option-value="value"
+                use-input
+                emit-value
+                :rules="[val => val !== null && val !== undefined && val !== '' || t('work_status_required')]"
               >
                 <template v-slot:option="scope">
                   <div class="flex items-center">
@@ -205,7 +218,7 @@
             <div class="col">
               <q-input
                 v-model="form.location"
-                label="设备位置"
+                :label="t('device_location')"
                 outlined
                 dense
               />
@@ -216,7 +229,7 @@
             <div class="col">
               <q-input
                 v-model="form.version"
-                label="固件版本"
+                :label="t('firmware_version')"
                 outlined
                 dense
               />
@@ -227,7 +240,7 @@
           <div class="mt-4">
             <q-input
               v-model="form.notes"
-              label="备注信息"
+              :label="t('notes')"
               outlined
               dense
               type="textarea"
@@ -241,13 +254,13 @@
       <q-card-section class="q-pa-lg q-pt-4 q-px-xl">
         <div class="flex justify-end q-gutter-md">
           <q-btn
-            label="取消"
+            :label="t('cancel')"
             flat
             @click="closeDialog"
             class="min-w-[80px]"
           />
           <q-btn
-            label="保存"
+            :label="t('save')"
             color="primary"
             :disabled="!formValid || saving"
             @click="submitForm"
@@ -261,6 +274,7 @@
 
 <script>
 import { defineComponent, ref, computed, watch, onMounted } from 'vue';
+import { useI18n } from 'vue-i18n';
 import axios from 'axios';
 import { API } from 'src/api/api.js';
 import { Notify } from 'quasar';
@@ -283,21 +297,22 @@ export default defineComponent({
   },
   emits: ['update:visible', 'save', 'error'],
   setup(props, { emit }) {
+    const { t } = useI18n();
     // 创建本地状态跟踪对话框可见性
     const localVisible = ref(false);
-    
+
     // 同步props.visible到localVisible
     watch(() => props.visible, (newVisible) => {
       localVisible.value = newVisible;
     });
-    
+
     // 当localVisible变化时，通知父组件
     watch(localVisible, (newVisible) => {
       if (newVisible !== props.visible) {
         emit('update:visible', newVisible);
       }
     });
-    
+
     const form = ref({
       id: null,
       documentId: null,
@@ -305,17 +320,17 @@ export default defineComponent({
       serialNum: '',
       type_id: null,
       model: '',
-      manufacturer: '',
-      connectionStatus: 0,
-      ipAddress: '',
-      macAddress: null,
-      signalStrength: '',
-      networkType: 0,
-      location: '',
-      notes: '',
-      workStatus: 0,
-      version: '',
-      createdAt: null,
+          manufacturer: '',
+          connectionStatus: null,
+          ipAddress: '',
+          macAddress: null,
+          signalStrength: '',
+          networkType: null,
+          location: '',
+          notes: '',
+          workStatus: null,
+          version: '',
+          createdAt: null,
       updatedAt: null,
       publishedAt: null
     });
@@ -326,32 +341,35 @@ export default defineComponent({
 
     // 设备类型选项
     const deviceTypesOptions = computed(() => {
+      if (!props.deviceTypes || props.deviceTypes.length === 0) {
+        return [];
+      }
       return props.deviceTypes.map(type => ({
-        label: type.name,
-        value: type.id
+        label: type.type_name,
+        value: type.type_id
       }));
     });
 
     // 连接状态选项
     const connectionStatusOptions = [
-      { label: '离线', value: 0 },
-      { label: '在线', value: 1 }
+      { label: t('offline'), value: 0 },
+      { label: t('online'), value: 1 }
     ];
 
     // 网络类型选项
     const networkTypeOptions = [
-      { label: '有线', value: 0 },
-      { label: 'WiFi', value: 1 },
-      { label: '4G', value: 2 },
-      { label: '5G', value: 3 }
+      { label: t('wired'), value: 0 },
+      { label: t('wifi'), value: 1 },
+      { label: t('4g'), value: 2 },
+      { label: t('5g'), value: 3 }
     ];
 
     // 工作状态选项
     const workStatusOptions = [
-      { label: '待机', value: 0 },
-      { label: '运行中', value: 1 },
-      { label: '维护中', value: 2 },
-      { label: '故障', value: 3 }
+      { label: t('standby'), value: 0 },
+      { label: t('running'), value: 1 },
+      { label: t('maintenance'), value: 2 },
+      { label: t('fault'), value: 3 }
     ];
 
     // 是否为编辑模式
@@ -369,14 +387,14 @@ export default defineComponent({
         type_id: null,
         model: '',
         manufacturer: '',
-        connectionStatus: 0,
+        connectionStatus: null,
         ipAddress: '',
         macAddress: null,
         signalStrength: '',
-        networkType: 0,
+        networkType: null,
         location: '',
         notes: '',
-        workStatus: 0,
+        workStatus: null,
         version: '',
         createdAt: null,
         updatedAt: null,
@@ -387,8 +405,13 @@ export default defineComponent({
     // 加载设备数据到表单
     const loadDeviceData = () => {
       if (props.device) {
+        // 确保所有值类型正确，特别是数字类型
         form.value = {
-          ...props.device
+          ...props.device,
+          type_id: props.device.type_id !== undefined ? Number(props.device.type_id) : null,
+          connectionStatus: props.device.connectionStatus !== undefined ? Number(props.device.connectionStatus) : null,
+          networkType: props.device.networkType !== undefined ? Number(props.device.networkType) : null,
+          workStatus: props.device.workStatus !== undefined ? Number(props.device.workStatus) : null
         };
       }
     };
@@ -413,7 +436,7 @@ export default defineComponent({
           const updateUrl = API.DEVICES.DEVICES.UPDATE(props.device.id);
           response = await axios.put(updateUrl, form.value);
           Notify.create({
-            message: '设备更新成功',
+            message: t('device_update_success'),
             color: 'positive',
             timeout: 2000
           });
@@ -421,7 +444,7 @@ export default defineComponent({
           // 新增模式 - 使用POST请求
           response = await axios.post(API.DEVICES.DEVICES.CREATE, form.value);
           Notify.create({
-            message: '设备创建成功',
+            message: t('device_create_success'),
             color: 'positive',
             timeout: 2000
           });
@@ -433,7 +456,7 @@ export default defineComponent({
       } catch (error) {
         console.error('保存设备失败:', error);
         Notify.create({
-          message: '保存设备失败: ' + (error.message || '未知错误'),
+          message: t('save_failed') + ': ' + (error.message || t('unknown_error')),
           color: 'negative',
           timeout: 2000
         });
@@ -462,6 +485,7 @@ export default defineComponent({
     });
 
     return {
+      t,
       form,
       deviceForm,
       formValid,
@@ -495,3 +519,4 @@ export default defineComponent({
     margin-bottom: 0 !important;
   }
 </style>
+
