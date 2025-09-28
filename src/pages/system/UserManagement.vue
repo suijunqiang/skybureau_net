@@ -1,10 +1,9 @@
 <template>
-  <q-page class="h-full flex">
+  <q-page class="h-full flex position-relative">
     <!-- 左侧导航区域 -->
-    <!--div class="flex-1 flex flex-col h-full overflow-hidden"-->
-    <div class="h-full flex ">
+    <div class="h-full flex position-relative">
       <!-- 导航菜单 -->
-      <div class="h-full bg-white border-r border-grey-200 flex-shrink-0 z-10" style="height: 100%; min-height: 100vh;" :style="{ width: sidebarWidth + 'px', display: sidebarHidden ? 'none' : 'block' }">
+      <div class="h-full bg-white border-r border-grey-200 flex-shrink-0 z-10 mobile-menu-container" style="height: 100%; min-height: 100vh;" :style="{ width: sidebarWidth + 'px', display: sidebarHidden ? 'none' : 'block' }" :class="{ show: mobileDrawerOpen && isMobile }">
         <div class="h-full" style="height: 100%; overflow-y: auto;">
           <q-list style="min-height: 100%;">
             <template v-for="node in menuTree" :key="node.label">
@@ -72,7 +71,7 @@
       <div
         class="sidebar-resizer"
         @mousedown="startResize"
-        :style="{ left: sidebarWidth - 3 + 'px', display: sidebarHidden ? 'none' : 'block' }"
+        :style="{ left: sidebarWidth + 'px', display: sidebarHidden ? 'none' : 'block' }"
       ></div>
 
       <!-- 主内容区域 -->
@@ -85,7 +84,7 @@
             round
             icon="menu"
             class="mr-2 theme-menu-btn"
-            @click="toggleSidebar"
+            @click="isMobile ? toggleDrawer() : toggleSidebar()"
           />
           <h2 class="text-lg font-semibold theme-title">
             {{ currentPageTitle }}
@@ -104,8 +103,8 @@
       <!-- 移动设备上的抽屉覆盖层 -->
       <div
         v-if="mobileDrawerOpen && isMobile"
-        class="fixed inset-0 bg-black bg-opacity-50 z-20 md:hidden"
-        @click="mobileDrawerOpen = false"
+        class="fixed inset-0 bg-black bg-opacity-50 z-15 md:hidden"
+        @click="toggleDrawer()"
       ></div>
     </div>
   </q-page>
@@ -850,13 +849,19 @@ export default {
     };
 
     // 切换移动设备抽屉
-    const toggleDrawer = function() {
+    const toggleDrawer = () => {
       mobileDrawerOpen.value = !mobileDrawerOpen.value;
+      console.log('移动抽屉切换为:', mobileDrawerOpen.value);
+      // 在移动设备上强制显示/隐藏侧边栏
+      if (isMobile.value) {
+        sidebarHidden.value = false; // 确保侧边栏不被隐藏
+      }
     };
 
     // 切换侧边栏显示/隐藏
-    const toggleSidebar = function() {
+    const toggleSidebar = () => {
       sidebarHidden.value = !sidebarHidden.value;
+      console.log('侧边栏切换为:', sidebarHidden.value ? '隐藏' : '显示');
     };
 
     // 获取节点图标
@@ -868,10 +873,16 @@ export default {
     };
 
     // 监听窗口大小变化
-    const handleResize = function() {
-      isMobile.value = window.innerWidth < 768;
-      if (!isMobile.value) {
-        mobileDrawerOpen.value = false;
+    const handleResize = () => {
+      const newIsMobile = window.innerWidth < 768;
+      if (newIsMobile !== isMobile.value) {
+        isMobile.value = newIsMobile;
+        console.log('窗口大小变化，isMobile更新为:', isMobile.value);
+
+        // 在移动设备上自动隐藏侧边栏
+        if (isMobile.value) {
+          mobileDrawerOpen.value = false;
+        }
       }
     };
 
@@ -1404,14 +1415,17 @@ export default {
   position: absolute;
   top: 0;
   bottom: 0;
+  left: 100%;
   width: 6px;
   cursor: ew-resize;
   z-index: 20;
   transition: all 0.2s ease;
+  background-color: rgba(0, 0, 0, 0.05);
 }
 
 .sidebar-resizer:hover {
   background-color: rgba(0, 0, 0, 0.1);
+  width: 8px;
 }
 
 /* 主内容区域随侧边栏宽度变化 */
@@ -1422,6 +1436,34 @@ export default {
 /* 隐藏类 - 用于侧边栏宽度过小时隐藏文本 */
 .hidden {
   display: none;
+}
+
+/* 移动端响应式样式 */
+@media (max-width: 767px) {
+  .sidebar-resizer {
+    display: none !important;
+  }
+
+  /* 确保移动设备上内容区域可以滚动查看 */
+  .content-area {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* 确保菜单在移动设备上正常隐藏 */
+  .mobile-menu-container {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    height: 100vh !important;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    z-index: 20 !important;
+  }
+
+  .mobile-menu-container.show {
+    transform: translateX(0);
+  }
 }
 
 /* Theme-aware header styling */

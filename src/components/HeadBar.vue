@@ -580,4 +580,24 @@ body.theme-tech nav .q-select,
 .active-theme {
   background-color: rgba(255, 255, 255, 0.1) !important;
 }
+
+/* 响应式处理 - 确保小屏设备上顶部菜单可以横向滚动 */
+@media (max-width: 1024px) {
+  nav {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    scrollbar-width: none !important; /* Firefox */
+  }
+  
+  nav::-webkit-scrollbar {
+    display: none !important; /* Chrome, Safari, Edge */
+  }
+  
+  .el-menu-item {
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
+  }
+}
 </style>

@@ -767,6 +767,25 @@ export default defineComponent({
   padding-bottom: 16px;
 }
 
+/* 封面图片容器样式 */
+.blog-cover {
+  overflow: visible; /* 确保内容不被截断 */
+}
+
+/* 封面图片样式 */
+.blog-cover .q-img {
+  display: block;
+  margin: 0 auto;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+/* 修复图片上方边缘被截断的问题 */
+.rounded-borders {
+  padding-top: 4px; /* 添加顶部内边距 */
+  background-color: white; /* 确保背景色不会影响显示 */
+}
+
 .content-html {
   line-height: 1.6;
   font-size: 16px;
