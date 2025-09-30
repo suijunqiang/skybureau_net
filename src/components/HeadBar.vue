@@ -582,22 +582,69 @@ body.theme-tech nav .q-select,
 }
 
 /* 响应式处理 - 确保小屏设备上顶部菜单可以横向滚动 */
-@media (max-width: 1024px) {
-  nav {
-    display: flex !important;
-    flex-wrap: nowrap !important;
-    overflow-x: auto !important;
-    -webkit-overflow-scrolling: touch !important;
-    scrollbar-width: none !important; /* Firefox */
+  @media (max-width: 1024px) {
+    nav {
+      display: flex !important;
+      flex-wrap: nowrap !important;
+      overflow-x: auto !important;
+      -webkit-overflow-scrolling: touch !important;
+      scrollbar-width: none !important; /* Firefox */
+      min-width: 100% !important;
+      padding-right: 10px !important;
+    }
+    
+    nav::-webkit-scrollbar {
+      display: none !important; /* Chrome, Safari, Edge */
+    }
+    
+    .el-menu-item {
+      white-space: nowrap !important;
+      flex-shrink: 0 !important;
+      padding: 0 6px !important;
+      font-size: 13px !important;
+    }
+    
+    /* 确保所有菜单项在移动设备上正确显示 */
+    .theme-menu, .logout-button {
+      flex-shrink: 0 !important;
+    }
+    
+    /* 调整下拉按钮大小以适应小屏幕 */
+    .theme-dropdown, .q-select {
+      min-height: 26px !important;
+      font-size: 11px !important;
+      padding: 3px 6px !important;
+    }
   }
   
-  nav::-webkit-scrollbar {
-    display: none !important; /* Chrome, Safari, Edge */
+  /* 针对更小屏幕的特别优化 (iPhone Pro 7等) */
+  @media (max-width: 768px) {
+    nav {
+      padding-left: 5px !important;
+      padding-right: 5px !important;
+    }
+    
+    .el-menu-item {
+      padding: 0 5px !important;
+      font-size: 12px !important;
+      height: 36px !important;
+      line-height: 36px !important;
+    }
+    
+    /* 进一步减小按钮和选择器尺寸 */
+    .theme-dropdown, .q-select, .logout-button {
+      min-height: 24px !important;
+      font-size: 10px !important;
+      padding: 2px 5px !important;
+      margin-left: 2px !important;
+      margin-right: 2px !important;
+    }
+    
+    /* 确保所有导航元素都不会被隐藏 */
+    .nav-item {
+      display: flex !important;
+      align-items: center !important;
+      height: 36px !important;
+    }
   }
-  
-  .el-menu-item {
-    white-space: nowrap !important;
-    flex-shrink: 0 !important;
-  }
-}
 </style>

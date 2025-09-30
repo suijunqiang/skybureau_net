@@ -1,11 +1,9 @@
 <template>
-  <q-page class="h-full flex position-relative">
-    <!-- 左侧导航区域 -->
-    <div class="h-full flex position-relative">
-      <!-- 导航菜单 -->
-      <div class="h-full bg-white border-r border-grey-200 flex-shrink-0 z-10 mobile-menu-container" style="height: 100%; min-height: 100vh;" :style="{ width: sidebarWidth + 'px', display: sidebarHidden ? 'none' : 'block' }" :class="{ show: mobileDrawerOpen && isMobile }">
-        <div class="h-full" style="height: 100%; overflow-y: auto;">
-          <q-list style="min-height: 100%;">
+  <q-page class="h-full flex">
+    <!-- 左侧导航菜单 -->
+    <div class="h-full bg-white border-r border-grey-200 flex-shrink-0 z-10 mobile-menu-container" :style="{ width: sidebarWidth + 'px' + ' !important', flexBasis: sidebarWidth + 'px', display: sidebarHidden && !isMobile ? 'none' : 'block' }" :class="{ show: mobileDrawerOpen && isMobile }">
+      <div class="h-full" style="height: 100%; overflow-y: auto;">
+        <q-list style="min-height: 100%;">
             <template v-for="node in menuTree" :key="node.label">
               <!-- 直接使用q-expansion-item -->
               <q-expansion-item
@@ -64,18 +62,25 @@
               </q-item>
             </template>
           </q-list>
-        </div>
       </div>
+    </div>
 
-      <!-- 宽度调整拖拽条 -->
-      <div
-        class="sidebar-resizer"
-        @mousedown="startResize"
-        :style="{ left: sidebarWidth + 'px', display: sidebarHidden ? 'none' : 'block' }"
-      ></div>
+    <!-- 宽度调整拖拽条 -->
+    <div
+      class="sidebar-resizer"
+      @mousedown="startResize"
+      :style="{ left: sidebarWidth + 'px', display: sidebarHidden ? 'none' : 'block' }"
+    ></div>
 
-      <!-- 主内容区域 -->
-      <div class="flex-1 flex flex-col h-full overflow-hidden">
+    <!-- 移动设备菜单背景遮罩层 -->
+    <div
+      class="mobile-menu-overlay"
+      :class="{ show: mobileDrawerOpen && isMobile }"
+      @click="toggleDrawer()"
+    ></div>
+
+    <!-- 主内容区域 -->
+    <div class="flex-1 flex flex-col h-full overflow-hidden" :style="{ marginLeft: sidebarHidden ? '0px' : (isMobile ? '0px' : sidebarWidth + 'px') }">
         <!-- 顶部标题栏 -->
         <div class="theme-header-bar border-b border-grey-200 p-4 flex items-center flex-shrink-0">
           <q-btn
@@ -98,15 +103,9 @@
           <component :is="renderCurrentPage()" />
         </div>
       </div>
-      </div>
-
-      <!-- 移动设备上的抽屉覆盖层 -->
-      <div
-        v-if="mobileDrawerOpen && isMobile"
-        class="fixed inset-0 bg-black bg-opacity-50 z-15 md:hidden"
-        @click="toggleDrawer()"
-      ></div>
     </div>
+
+
   </q-page>
 </template>
 
@@ -154,6 +153,9 @@ export default {
 
     // 当前活动页面
     const activePage = ref("welcome");
+
+    console.log('UserManagement组件初始化 - 当前主题:', localStorage.getItem('skybureau-theme'));
+    console.log('UserManagement组件初始化 - 窗口尺寸:', { width: window.innerWidth, height: window.innerHeight });
     // 添加一个强制更新的key，用于触发组件重新渲染
     const componentKey = ref(0);
 
@@ -984,8 +986,9 @@ export default {
 
       const onMouseMove = (moveEvent) => {
         const newWidth = moveEvent.clientX;
-        // 限制最小宽度和最大宽度
-        if (newWidth >= 50 && newWidth <= 300) {
+        // 增加最大宽度限制，适应不同屏幕尺寸
+        const maxWidth = window.innerWidth * 0.6; // 设置为窗口宽度的60%
+        if (newWidth >= 50 && newWidth <= maxWidth) {
           sidebarWidth.value = newWidth;
         }
       };
@@ -1219,10 +1222,15 @@ export default {
   padding: 16px 0;
 }
 
-/* 左侧导航样式 */
-.menu-expansion-item, .menu-item {
-  width: 100%;
-  box-sizing: border-box;
+/* 确保左侧菜单正确显示 */
+.mobile-menu-container {
+  position: fixed !important;
+  top: 0;
+  left: 0;
+  height: 100vh !important;
+  background: #ffffff !important;
+  z-index: 10 !important;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
 }
 
 /* 确保菜单项文本不会溢出 */
@@ -1315,21 +1323,18 @@ export default {
   margin-right: 0.5rem;
 }
 
-/* 响应式布局调整 */
-@media (max-width: 767px) {
-  /* 移动设备上的侧边栏 */
-  [style*="width:"] {
-    position: fixed;
-    left: -20rem;
-    top: 0;
-    bottom: 0;
-    z-index: 30;
-    transition: left 0.3s ease;
-  }
+/* 移动设备菜单背景遮罩层 */
+.mobile-menu-overlay { position: fixed !important; top: 0 !important; left: 0 !important; right: 0 !important; bottom: 0 !important; background-color: rgba(0, 0, 0, 0.5) !important; z-index: 15 !important; display: none; pointer-events: auto; }
+.mobile-menu-overlay.show { display: block; }
 
-  [style*="width:"].mobile-drawer-open {
-    left: 0;
-  }
+/* 响应式布局调整 - 移动设备 */
+@media (max-width: 767px) {
+  /* 确保主内容区域在移动设备上正确显示 */
+  .flex-1 { position: relative !important; z-index: 25 !important; background-color: white !important; }
+  /* 修复菜单弹出时右侧窗口黑色问题 */
+  .content-area { background-color: white !important; position: relative !important; z-index: 30 !important; }
+  /* 确保侧边栏菜单在正确的层级 */
+  .mobile-menu-container { position: fixed !important; z-index: 35 !important; background-color: white !important; }
 }
 
 /* 边框样式 */
@@ -1412,13 +1417,12 @@ export default {
 
 /* 侧边栏调整器样式 */
 .sidebar-resizer {
-  position: absolute;
+  position: fixed !important;
   top: 0;
   bottom: 0;
-  left: 100%;
   width: 6px;
   cursor: ew-resize;
-  z-index: 20;
+  z-index: 100 !important; /* 更高的z-index确保显示在其他元素之上 */
   transition: all 0.2s ease;
   background-color: rgba(0, 0, 0, 0.05);
 }
@@ -1438,33 +1442,28 @@ export default {
   display: none;
 }
 
-/* 移动端响应式样式 */
-@media (max-width: 767px) {
-  .sidebar-resizer {
-    display: none !important;
-  }
+/* 移动设备响应式样式 */
+  @media (max-width: 767px) {
+    .sidebar-resizer {
+      display: none !important;
+    }
 
-  /* 确保移动设备上内容区域可以滚动查看 */
-  .content-area {
-    overflow-x: auto !important;
-    -webkit-overflow-scrolling: touch;
-  }
+    /* 确保移动设备上内容区域可以滚动查看 */
+    .content-area {
+      overflow-x: auto !important;
+      -webkit-overflow-scrolling: touch;
+    }
 
-  /* 确保菜单在移动设备上正常隐藏 */
-  .mobile-menu-container {
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    height: 100vh !important;
-    transform: translateX(-100%);
-    transition: transform 0.3s ease;
-    z-index: 20 !important;
-  }
+    /* 确保菜单在移动设备上正常隐藏 */
+    .mobile-menu-container {
+      transform: translateX(-100%);
+      transition: transform 0.3s ease;
+    }
 
-  .mobile-menu-container.show {
-    transform: translateX(0);
+    .mobile-menu-container.show {
+      transform: translateX(0);
+    }
   }
-}
 
 /* Theme-aware header styling */
 .theme-header-bar {

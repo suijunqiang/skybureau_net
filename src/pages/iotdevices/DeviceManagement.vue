@@ -432,7 +432,7 @@ export default defineComponent({
         connectionStatus: updatedDevice.connectionStatus !== undefined ? Number(updatedDevice.connectionStatus) : 0,
         workStatus: updatedDevice.workStatus !== undefined ? Number(updatedDevice.workStatus) : 0
       };
-      
+
       const index = devices.value.findIndex(d => d.id === updatedDevice.id);
       if (index !== -1) {
         devices.value[index] = normalizedDevice;

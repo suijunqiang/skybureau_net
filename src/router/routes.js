@@ -42,7 +42,6 @@ component: () => import("layouts/MainLayout.vue"),
   {    path: "/mainBackend",
        component: () => import("layouts/MainBackendLayout.vue"),
        children: [
-        { path: "", component: () => import("pages/IndexPage.vue") },
         { path: "", component: () => import("pages/IndexTest.vue") },
         // { path: "/login", component: () => import("pages/LoginRegister.vue") },
         {
