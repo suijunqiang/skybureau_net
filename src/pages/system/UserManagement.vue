@@ -1231,6 +1231,7 @@ export default {
   background: #ffffff !important;
   z-index: 10 !important;
   box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+  padding-top: 60px; /* 添加顶部间距 */
 }
 
 /* 确保菜单项文本不会溢出 */
