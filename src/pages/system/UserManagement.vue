@@ -1,8 +1,8 @@
 <template>
   <q-page class="h-full flex">
     <!-- 左侧导航菜单 -->
-    <div class="h-full bg-white border-r border-grey-200 flex-shrink-0 z-10 mobile-menu-container" :style="{ width: sidebarWidth + 'px' + ' !important', flexBasis: sidebarWidth + 'px', display: sidebarHidden && !isMobile ? 'none' : 'block' }" :class="{ show: mobileDrawerOpen && isMobile }">
-      <div class="h-full" style="height: 100%; overflow-y: auto;">
+    <div class="h-full theme-surface border-r border-grey-200 flex-shrink-0 z-10 mobile-menu-container" :style="{ width: sidebarWidth + 'px' + ' !important', flexBasis: sidebarWidth + 'px', display: sidebarHidden && !isMobile ? 'none' : 'block', borderRightColor: 'var(--theme-border) !important' }" :class="[ 'show', { show: mobileDrawerOpen && isMobile }, { 'tech-theme-left-menu': themeStore.isTech }]">
+      <div class="h-full left-menu-content" style="height: 100%; overflow-y: auto;">
         <q-list style="min-height: 100%;">
             <template v-for="node in menuTree" :key="node.label">
               <!-- 直接使用q-expansion-item -->
@@ -116,6 +116,7 @@ import { useRouter } from "vue-router";
 import axios from 'axios';
 import { API } from "src/api/api.js";
 import { usePositionInfoStore } from "src/stores/positionInfo.js";
+import { useThemeStore } from "src/stores/theme.js";
 import WelcomePage from "./WelcomePage.vue";
 import AddUser from "./AddUser.vue";
 import UserSettings from "./UserSettings.vue";
@@ -150,6 +151,7 @@ export default {
   setup() {
     const { t } = useI18n();
     const router = useRouter();
+    const themeStore = useThemeStore();
 
     // 当前活动页面
     const activePage = ref("welcome");
@@ -1203,7 +1205,8 @@ export default {
       testPageSwitch,
       componentKey,
       handleGoBackToWelcome,
-      renderCurrentPage
+      renderCurrentPage,
+      themeStore
     };
   }
 };
@@ -1530,6 +1533,46 @@ body.theme-default .theme-menu-btn,
   color: #2c3e50 !important;
   border: none !important;
   border-radius: 0 !important;
+}
+
+/* Tech Theme 左侧菜单专用样式 */
+.tech-theme-left-menu .left-menu-content {
+  background: rgba(26, 26, 46, 0.9) !important;
+  border-right: 1px solid var(--theme-border) !important;
+}
+
+/* 确保左侧菜单顶部间距颜色与Tech主题背景一致 */
+.tech-theme-left-menu .q-list {
+  background: transparent !important;
+  padding-top: 0 !important;
+  margin-top: 0 !important;
+}
+
+/* 修复Tech主题下左侧菜单顶部间距颜色 */
+.theme-tech .tech-theme-left-menu {
+  background: rgba(26, 26, 46, 0.9) !important;
+  border-right: 1px solid var(--theme-border) !important;
+}
+
+.theme-tech .tech-theme-left-menu .q-list {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+/* 确保左侧菜单项在Tech主题下正确显示 */
+.theme-tech .tech-theme-left-menu .q-item {
+  color: var(--theme-text) !important;
+  background: transparent !important;
+}
+
+.theme-tech .tech-theme-left-menu .q-item--active {
+  background: rgba(0, 255, 255, 0.1) !important;
+  color: var(--theme-primary) !important;
+}
+
+/* 确保左侧菜单在Tech主题下的边框和阴影效果 */
+.theme-tech .tech-theme-left-menu {
+  box-shadow: 1px 0 10px rgba(0, 255, 255, 0.2) !important;
 }
 
 /* Ensure left menu and right content have same height */

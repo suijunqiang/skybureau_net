@@ -51,19 +51,9 @@
     </div>
     <RouterLink class="el-menu-item" to="/aboutus">{{ $t("about_us") }}</RouterLink>
     <RouterLink class="el-menu-item" to="/loginRegister">{{ $t("loginPage") }}</RouterLink>
-    <div class="el-menu-item" href="#">
-      <!--
+    <div class="el-menu-item" href="">
       <q-select
-        filled
-        v-model="model"
-        label="Language"
-        :options="localeOptions"
-        style="width: 250px"
-        behavior="menu"
-      />
-      -->
-      <q-select
-        class="el-menu-item"
+        class="language-selector"
         color="primary"
         v-model="locale"
         :options="localeOptions"
@@ -167,7 +157,13 @@ export default {
         
         // Also update all menu items
         const menuItems = document.querySelectorAll('nav .el-menu-item');
+        const themeMenuItem = document.querySelector('nav .el-menu-item.theme-menu');
+        const languageMenuItem = document.querySelector('nav .el-menu-item:nth-last-child(2)');
+        
         menuItems.forEach(item => {
+          // 检查是否是Theme菜单或语言选择器
+          const isSpecialItem = item === themeMenuItem || item === languageMenuItem;
+          
           if (themeName === 'tech') {
             item.style.cssText = `
               color: #00ffff !important;
@@ -178,7 +174,7 @@ export default {
               background: rgba(0, 255, 255, 0.05) !important;
               box-shadow: 0 0 3px rgba(0, 255, 255, 0.2) !important;
               border-radius: 4px !important;
-              padding: 6px 12px !important;
+              padding: 6px ${isSpecialItem ? '0' : '12px'} !important;
               margin: 0 1px !important;
               text-decoration: none !important;
               display: flex !important;
@@ -197,7 +193,7 @@ export default {
               text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3) !important;
               border: 1px solid rgba(255, 255, 255, 0.2) !important;
               border-radius: 6px !important;
-              padding: 6px 12px !important;
+              padding: 6px ${isSpecialItem ? '0' : '12px'} !important;
               margin: 0 1px !important;
               transition: all 0.3s ease !important;
               text-decoration: none !important;
@@ -360,6 +356,7 @@ body.theme-default nav .el-menu-item,
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3) !important;
   border: 1px solid rgba(255, 255, 255, 0.2) !important;
   border-radius: 6px !important;
+/* 恢复默认内边距 */
   padding: 6px 12px !important;
   margin: 0 1px !important;
   transition: all 0.3s ease !important;
@@ -411,7 +408,64 @@ body.theme-tech nav .el-menu-item:hover,
   color: #00ffff !important;
 }
 
-/* User name styling */
+/* Theme菜单和语言选择器的专用样式 */
+/* Theme菜单 - 左右内边距为0，上下内边距保持正常 */
+body.theme-default nav .el-menu-item.theme-menu,
+.theme-default nav .el-menu-item.theme-menu {
+  padding: 6px 0 !important; /* 左右内边距为0，上下内边距6px */
+  min-height: 32px !important; /* 确保高度正常 */
+}
+
+body.theme-tech nav .el-menu-item.theme-menu,
+.theme-tech nav .el-menu-item.theme-menu {
+  padding: 6px 0 !important; /* 左右内边距为0，上下内边距6px */
+  min-height: 32px !important; /* 确保高度正常 */
+}
+
+/* 语言选择器容器 - 左右内边距为0，上下内边距保持正常 */
+body.theme-default nav .el-menu-item:nth-last-child(2),
+.theme-default nav .el-menu-item:nth-last-child(2) {
+  padding: 6px 0 !important; /* 左右内边距为0，上下内边距6px */
+  min-height: 32px !important; /* 确保高度正常 */
+}
+
+body.theme-tech nav .el-menu-item:nth-last-child(2),
+.theme-tech nav .el-menu-item:nth-last-child(2) {
+  padding: 6px 0 !important; /* 左右内边距为0，上下内边距6px */
+  min-height: 32px !important; /* 确保高度正常 */
+}
+
+/* 移除语言选择器内部元素的el-menu-item类样式影响 */
+body.theme-default nav .language-selector,
+.theme-default nav .language-selector,
+body.theme-tech nav .language-selector,
+.theme-tech nav .language-selector {
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+  background: transparent !important;
+  min-height: auto !important;
+  height: auto !important;
+}
+
+/* 确保Theme按钮和语言选择器按钮的内容居中 */
+body.theme-default nav .el-menu-item.theme-menu .q-btn,
+.theme-default nav .el-menu-item.theme-menu .q-btn,
+body.theme-tech nav .el-menu-item.theme-menu .q-btn,
+.theme-tech nav .el-menu-item.theme-menu .q-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+body.theme-default nav .el-menu-item:nth-last-child(2) .language-selector,
+.theme-default nav .el-menu-item:nth-last-child(2) .language-selector,
+body.theme-tech nav .el-menu-item:nth-last-child(2) .language-selector,
+.theme-tech nav .el-menu-item:nth-last-child(2) .language-selector {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 body.theme-default nav .user-name,
 .theme-default nav .user-name {
   margin-left: 12px !important;

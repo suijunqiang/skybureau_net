@@ -5,8 +5,8 @@
         <!-- 顶部操作栏 -->
         <div class="row items-center q-mb-lg">
           <div class="col">
-            <h2 class="text-h5 q-my-none text-weight-medium">设备管理</h2>
-            <p class="text-grey-6 q-mb-none q-mt-xs">管理IoT设备信息</p>
+            <h2 class="text-h5 q-my-none text-weight-medium">{{ t('device_management') }}</h2>
+            <p class="text-grey-6 q-mb-none q-mt-xs">{{ t('device_management_subtitle') }}</p>
           </div>
           <div class="col-auto">
             <q-btn
@@ -34,7 +34,7 @@
           <div class="col-12 col-md-4">
             <q-input
               v-model="searchText"
-              placeholder="搜索设备..."
+              :placeholder="t('search_devices_placeholder')"
               outlined
               dense
               clearable
@@ -49,7 +49,7 @@
             <q-select
               v-model="typeFilter"
               :options="deviceTypeOptions"
-              label="按设备类型筛选"
+              :label="t('filter_by_device_type')"
               outlined
               dense
               clearable
@@ -60,7 +60,7 @@
             <q-btn
               flat
               color="primary"
-              label="重置筛选"
+              :label="t('reset_filters')"
               @click="resetFilters"
               size="md"
             />
@@ -84,10 +84,10 @@
             <q-td :props="props">
               <div class="device-info-cell">
                 <div class="text-weight-medium text-primary cursor-pointer" @click="viewDevice(props.row)">
-                  {{ props.value || '未命名设备' }}
+                  {{ props.value || t('unnamed_device') }}
                 </div>
                 <div class="text-caption text-grey-6 q-mt-xs">
-                  设备序列号: {{ props.row.serialNum }}
+                  {{ t('device_serial_number') }}: {{ props.row.serialNum }}
                 </div>
               </div>
             </q-td>
@@ -177,15 +177,15 @@
             <q-btn
               flat
               color="primary"
-              label="返回"
+              :label="t('back')"
               icon="arrow_back"
               @click="goBack"
             />
           </div>
           <div class="col-auto">
             <span class="text-grey-6">
-              总共 {{ totalDevices }} 个设备
-            </span>
+                {{ t('total_devices', { count: totalDevices }) }}
+              </span>
           </div>
         </div>
       </q-card-section>

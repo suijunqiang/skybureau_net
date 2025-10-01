@@ -24,7 +24,7 @@ ios: http://www.skybureau.net:10000/sbn/sbn.apk
   - [x] Blog management module Frontend/Backend
     - [x] Polish Blog comments management module
     - [x] Polish Iot Devices management module
-  - [x] Pulbish the Android APK for Skybureau Net
+- [x] Pulbish the Android APK for Skybureau Net
 
 
 ### Features To Do
@@ -38,7 +38,7 @@ How to start the project and run it locally.
 [INSTALL](./readme/README_INSTALL.md)
 
 ### Demo online
-- Frontend [Quasar Skybureau](http://www.skybureau.net:9000)
+- Frontend admin/111111 [Quasar Skybureau](http://www.skybureau.net:9000)
 - Backend [Strapi Skybureau](http://www.skybureau.net:1337/admin)
 
 ### Screen Shot

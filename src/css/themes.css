@@ -851,3 +851,12 @@ body.theme-tech .q-page .q-card,
 .theme-tech ::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(45deg, #00ffff, #00ff00);
 }
+
+/* Top menu Theme and English button border fix */
+.theme-tech .q-toolbar .q-btn {
+  border: 0 !important;
+}
+
+.theme-default .q-toolbar .q-btn {
+  border: 0 !important;
+}
