@@ -173,6 +173,22 @@ module.exports = configure(function (/* ctx */) {
     // Full list of options: https://v2.quasar.dev/quasar-cli-vite/developing-cordova-apps/configuring-cordova
     cordova: {
       // noIosLegacyBuildFlag: true, // uncomment only if you know what you are doing
+      // 解决Gradle下载超时问题 - 使用国内镜像源
+      noIosLegacyBuildFlag: true,
+      // 设置Cordova构建参数
+      onBeforeBuild: function (params) {
+        // 为Gradle设置国内镜像源
+        process.env.CORDOVA_ANDROID_GRADLE_DISTRIBUTION_URL = 'https://mirrors.cloud.tencent.com/gradle/gradle-7.6-all.zip';
+        console.log('Using Gradle distribution from Tencent Cloud mirror');
+      },
+      
+      // 配置闪屏屏幕
+      splashscreen: {
+        // 设置闪屏屏幕颜色
+        backgroundColor: '#ffffff',
+        // 使用网站图标作为闪屏图标
+        src: './public/icons/favicon-128x128.png'
+      }
     },
 
     // Full list of options: https://v2.quasar.dev/quasar-cli-vite/developing-capacitor-apps/configuring-capacitor

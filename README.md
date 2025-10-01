@@ -2,7 +2,9 @@
 
 Quasar Skybureau is based on Quasar V2.18.1 (Vue 3) (lastest) and Strapi V5.12.1
 It is a full-stack application that allows you to create a website with a CMS, frontend and backend complemented by Quasar/Strapi/Mysql.
-
+### APP download
+android: http://www.skybureau.net:10000/sbn/sbn.apk
+ios: http://www.skybureau.net:10000/sbn/sbn.apk
 ### Tech Stack Features
 - [x] Quasar V2.18.5 (lastest)
 - [x] Vue 3 (lastest)
@@ -22,11 +24,14 @@ It is a full-stack application that allows you to create a website with a CMS, f
   - [x] Blog management module Frontend/Backend
     - [x] Polish Blog comments management module
     - [x] Polish Iot Devices management module
+  - [x] Pulbish the Android APK for Skybureau Net
+
 
 ### Features To Do
 - [x] News management module Frontend/Backend
 - [x] WebRTC management module Frontend/Backend
 - [x] Project management module Frontend/Backend
+- [x] Publish the iOS APK for Skybureau Net
 
 ### Getting Started
 How to start the project and run it locally.

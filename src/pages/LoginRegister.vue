@@ -269,32 +269,39 @@ export default {
         })
           .then((res) => {
             if (isNull(res.data.jwt)) {
-              // alert("Error！");
+              // token为空，登录失败
+              console.log("登录失败：未返回token");
+              self.isLoading = false;
             } else {
-              // 等待用户点击确定后再跳转
-              // alert("succses！\r\n" + JSON.stringify(res.data));
-              console.log("userInfo:" + JSON.stringify(res.data));
               // 存储token
               tokenStore.saveToken(res.data.jwt);
               // 存储用户信息
               userInfoStore.setUserInfo(res.data);
-
-              // 查询用户职位信息并等待完成后再跳转
+              
+              console.log("登录成功，用户信息：" + JSON.stringify(res.data));
+              
+              // 尝试查询用户职位信息，但即使失败也继续跳转
               getUserPosition().then(() => {
-                // 跳转到用户管理页面
+                console.log("职位信息查询完成，准备跳转");
                 self.$router.push("/system/userManagement");
+              }).catch((error) => {
+                console.error("查询职位信息失败：", error);
+                // 即使职位信息查询失败，也进行页面跳转
+                self.$router.push("/system/userManagement");
+              }).finally(() => {
+                self.isLoading = false;
               });
             }
           })
           .catch((err) => {
-            // alert("Error \r\n Login faild！");
-            console.log(err);
+            console.error("登录请求失败：", err);
+            alert("登录失败，请检查网络连接或用户名密码");
           })
           .finally(() => {
             self.isLoading = false;
           });
       } else {
-        // alert("填写不能为空！");
+        alert("用户名和密码不能为空！");
       }
     },
     register() {
