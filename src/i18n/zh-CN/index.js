@@ -40,6 +40,18 @@ export default {
   skybureau: "天局网",
   // 用户管理页面
   user_management: "用户管理",
+  // 新闻分类管理
+  news_category_management_title: "新闻分类管理",
+  news_category_management_subtitle: "管理和维护新闻分类系统",
+  category_id: "分类ID",
+  category_id_required: "分类ID不能为空",
+  view_news_category: "查看新闻分类",
+  no_parent: "无父类别",
+  parent_category_id: "父分类ID",
+  add_news_category: "新增新闻分类",
+  search_news_category_placeholder: "搜索新闻分类...",
+  edit_news_category: "编辑新闻分类",
+  category_information: "分类信息",
   // 博客类别管理
   add_category: "新增类别",
   add_device_type: "新增设备类型",

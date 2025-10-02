@@ -441,6 +441,10 @@ export default defineComponent({
 
       setTimeout(() => {
         fetchPositions();
+        // 调用全局菜单刷新方法，更新UserManagement中的菜单
+        if (window.refreshUserManagementMenus) {
+          window.refreshUserManagementMenus();
+        }
       }, 500);
     };
 

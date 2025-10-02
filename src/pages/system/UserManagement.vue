@@ -76,11 +76,19 @@
     <div
       class="mobile-menu-overlay"
       :class="{ show: mobileDrawerOpen && isMobile }"
-      @click="toggleDrawer()"
+      @click="(e) => {
+        e.stopPropagation();
+        toggleDrawer();
+      }"
     ></div>
 
     <!-- 主内容区域 -->
-    <div class="flex-1 flex flex-col h-full overflow-hidden" :style="{ marginLeft: sidebarHidden ? '0px' : (isMobile ? '0px' : sidebarWidth + 'px') }">
+    <div class="flex-1 flex flex-col h-full overflow-hidden" :style="{ marginLeft: sidebarHidden ? '0px' : (isMobile ? '0px' : sidebarWidth + 'px') }" @click="() => {
+      if (mobileDrawerOpen && isMobile) {
+        console.log('外层主内容区域点击事件触发 - 调用toggleDrawer()');
+        toggleDrawer();
+      }
+    }">
         <!-- 顶部标题栏 -->
         <div class="theme-header-bar border-b border-grey-200 p-4 flex items-center flex-shrink-0">
           <q-btn
@@ -89,7 +97,10 @@
             round
             icon="menu"
             class="mr-2 theme-menu-btn"
-            @click="isMobile ? toggleDrawer() : toggleSidebar()"
+            @click="(e) => {
+              e.stopPropagation(); // 阻止事件冒泡到全局点击监听器
+              isMobile ? toggleDrawer() : toggleSidebar();
+            }"
           />
           <h2 class="text-lg font-semibold theme-title">
             {{ currentPageTitle }}
@@ -97,7 +108,12 @@
         </div>
 
         <!-- 内容区域 -->
-      <div class="flex-1 h-full w-full overflow-auto content-area" :class="['users', 'userList', 'menu', 'position', 'branch', 'blogCreate', 'create', 'blogManagement', 'blogList'].includes(activePage) ? 'no-padding' : 'p-6'">
+      <div class="flex-1 h-full w-full overflow-auto content-area" :class="['users', 'userList', 'menu', 'position', 'branch', 'blogCreate', 'create', 'blogManagement', 'blogList'].includes(activePage) ? 'no-padding' : 'p-6'" @click="() => {
+        if (mobileDrawerOpen && isMobile) {
+          console.log('内容区域点击事件触发 - 调用toggleDrawer()');
+          toggleDrawer();
+        }
+      }">
         <!-- 使用渲染函数直接创建组件 -->
         <div class="h-full w-full component-wrapper">
           <component :is="renderCurrentPage()" />
@@ -110,7 +126,7 @@
 </template>
 
 <script>
-import { ref, computed, watch, onMounted, onUnmounted, h } from "vue";
+import { ref, computed, watch, onMounted, onUnmounted, h, provide } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
 import axios from 'axios';
@@ -130,6 +146,8 @@ import BlogManagement from "../blog/BlogManagement.vue";
 import BlogCategoryPage from "../blog/BlogCategoryPage.vue";
 import BlogTagPage from "../blog/BlogTagPage.vue";
 import DeviceManagement from "../iotdevices/DeviceManagement.vue";
+import NewsManagement from "../news/NewsManagement.vue";
+import NewsCategoryManagement from "../news/NewsCategoryManagement.vue";
 
 export default {
   name: "UserManagement",
@@ -146,7 +164,8 @@ export default {
     BlogManagement,
     BlogCategoryPage,
     BlogTagPage,
-    DeviceManagement
+    DeviceManagement,
+    NewsManagement
   },
   setup() {
     const { t } = useI18n();
@@ -305,6 +324,12 @@ export default {
             pageName = 'blogManagement';
           } else if (menu.page_url.includes('/blog/create')) {
             pageName = 'blogCreate';
+          } else if (menu.page_url.includes('/news/list')) {
+            // 特殊处理新闻相关路由
+            pageName = 'newsManagement';
+          } else if (menu.page_url.includes('/news/category')) {
+            // 特殊处理新闻分类路由
+            pageName = 'newsCategoryManagement';
           } else {
             pageName = menu.page_url.split('/').pop();
             // 特殊处理一些可能的page_url格式
@@ -416,6 +441,12 @@ export default {
         console.error('获取菜单数据失败:', error);
       }
     };
+
+    // 提供刷新菜单的方法给子组件
+    provide('refreshMenus', fetchMenus);
+
+    // 添加全局方法供其他组件调用
+    window.refreshUserManagementMenus = fetchMenus;
 
     // 定义当前页面组件名称
     const currentComponentName = computed(() => {
@@ -854,11 +885,13 @@ export default {
 
     // 切换移动设备抽屉
     const toggleDrawer = () => {
+      console.log('toggleDrawer调用前 - mobileDrawerOpen:', mobileDrawerOpen.value, 'isMobile:', isMobile.value);
       mobileDrawerOpen.value = !mobileDrawerOpen.value;
-      console.log('移动抽屉切换为:', mobileDrawerOpen.value);
+      console.log('toggleDrawer调用后 - mobileDrawerOpen:', mobileDrawerOpen.value);
       // 在移动设备上强制显示/隐藏侧边栏
       if (isMobile.value) {
         sidebarHidden.value = false; // 确保侧边栏不被隐藏
+        console.log('移动设备模式 - sidebarHidden设置为:', sidebarHidden.value);
       }
     };
 
@@ -886,6 +919,26 @@ export default {
         // 在移动设备上自动隐藏侧边栏
         if (isMobile.value) {
           mobileDrawerOpen.value = false;
+        }
+      }
+    };
+
+    // 全局点击事件监听器 - 专门处理移动设备上点击非菜单区域关闭菜单
+    const handleGlobalClick = (event) => {
+      if (isMobile.value && mobileDrawerOpen.value) {
+        console.log('全局点击事件触发 - isMobile:', isMobile.value, 'mobileDrawerOpen:', mobileDrawerOpen.value);
+        
+        const isMobileMenu = event.target.closest('.mobile-menu-container');
+        const isMenuButton = event.target.closest('.theme-menu-btn');
+        const isContentArea = event.target.closest('.content-area');
+        const isOverlay = event.target.closest('.mobile-menu-overlay');
+        
+        console.log('点击事件目标分析 - 是菜单容器:', !!isMobileMenu, '是菜单按钮:', !!isMenuButton, '是内容区域:', !!isContentArea, '是遮罩层:', !!isOverlay);
+        
+        // 如果点击的不是菜单容器也不是菜单按钮，则关闭菜单
+        if (!isMobileMenu && !isMenuButton) {
+          console.log('触发菜单关闭 - toggleDrawer()');
+          toggleDrawer();
         }
       }
     };
@@ -950,6 +1003,7 @@ export default {
     onMounted(async function() {
       console.log('UserManagement组件已挂载');
       window.addEventListener('resize', handleResize);
+      window.addEventListener('click', handleGlobalClick);
       await fetchMenus();
       validateAndFixMenuTree(menuTree.value);
       initializePageFromUrl();
@@ -974,6 +1028,7 @@ export default {
     // 生命周期钩子
     onUnmounted(function() {
       window.removeEventListener('resize', handleResize);
+      window.removeEventListener('click', handleGlobalClick);
       if (routeListener) {
         window.removeEventListener('popstate', routeListener);
       }
@@ -1149,9 +1204,17 @@ export default {
           on['goBackToWelcome'] = handleGoBackToWelcome;
           return h(BlogTagPage, props, on);
         case 'devices':
-          console.log('Rendering DeviceManagement component');
-          on['goBackToWelcome'] = handleGoBackToWelcome;
-          return h(DeviceManagement, props, on);
+           console.log('Rendering DeviceManagement component');
+           on['goBackToWelcome'] = handleGoBackToWelcome;
+           return h(DeviceManagement, props, on);
+         case 'newsManagement':
+           console.log('Rendering NewsManagement component');
+           on['goBackToWelcome'] = handleGoBackToWelcome;
+           return h(NewsManagement, props, on);
+         case 'newsCategoryManagement':
+           console.log('Rendering NewsCategoryManagement component');
+           on['goBackToWelcome'] = handleGoBackToWelcome;
+           return h(NewsCategoryManagement, props, on);
         default:
           console.warn(`Unknown page: ${activePage.value}`);
           return h('div', {
@@ -1328,17 +1391,32 @@ export default {
 }
 
 /* 移动设备菜单背景遮罩层 */
-.mobile-menu-overlay { position: fixed !important; top: 0 !important; left: 0 !important; right: 0 !important; bottom: 0 !important; background-color: rgba(0, 0, 0, 0.5) !important; z-index: 15 !important; display: none; pointer-events: auto; }
+.mobile-menu-overlay { position: fixed !important; top: 0 !important; left: 0 !important; right: 0 !important; bottom: 0 !important; background-color: rgba(0, 0, 0, 0.5) !important; z-index: 20 !important; display: none; pointer-events: auto; }
 .mobile-menu-overlay.show { display: block; }
 
 /* 响应式布局调整 - 移动设备 */
 @media (max-width: 767px) {
   /* 确保主内容区域在移动设备上正确显示 */
-  .flex-1 { position: relative !important; z-index: 25 !important; background-color: white !important; }
+  .flex-1 {
+    position: relative !important;
+    z-index: 15 !important;
+    background-color: white !important;
+    pointer-events: auto !important;
+  }
   /* 修复菜单弹出时右侧窗口黑色问题 */
-  .content-area { background-color: white !important; position: relative !important; z-index: 30 !important; }
+  .content-area {
+    background-color: white !important;
+    position: relative !important;
+    z-index: 15 !important;
+    pointer-events: auto !important;
+    display: block !important;
+  }
   /* 确保侧边栏菜单在正确的层级 */
-  .mobile-menu-container { position: fixed !important; z-index: 35 !important; background-color: white !important; }
+  .mobile-menu-container {
+    position: fixed !important;
+    z-index: 25 !important;
+    background-color: white !important;
+  }
 }
 
 /* 边框样式 */

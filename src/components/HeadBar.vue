@@ -15,9 +15,8 @@
       <q-btn-dropdown
         flat
         no-caps
-        :label="$t('theme_menu')"
+        icon="palette"
         class="theme-dropdown"
-        dropdown-icon="palette"
         :style="getDropdownStyle()"
       >
         <q-list>
@@ -625,10 +624,64 @@ body.theme-default nav .q-select,
   color: white !important;
 }
 
-body.theme-tech nav .q-select,
+body.theme-tech nav .q-select, 
 .theme-tech nav .q-select {
   color: #00ffff !important;
   font-family: 'Courier New', monospace !important;
+}
+
+/* 主题选择器下拉三角 - 增强选择器优先级 */
+body.theme-default nav .theme-menu .theme-dropdown .q-icon,
+body.theme-default nav .theme-menu .theme-dropdown .q-btn-dropdown__dropdown-icon,
+.theme-default nav .theme-menu .theme-dropdown .q-icon,
+.theme-default nav .theme-menu .theme-dropdown .q-btn-dropdown__dropdown-icon {
+  margin-left: 2px !important;
+  margin-right: 2px !important;
+  min-width: 16px !important;
+  width: 16px !important;
+  display: inline-flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+}
+
+body.theme-tech nav .theme-menu .theme-dropdown .q-icon,
+body.theme-tech nav .theme-menu .theme-dropdown .q-btn-dropdown__dropdown-icon,
+.theme-tech nav .theme-menu .theme-dropdown .q-icon,
+.theme-tech nav .theme-menu .theme-dropdown .q-btn-dropdown__dropdown-icon {
+  margin-left: 2px !important;
+  margin-right: 2px !important;
+  min-width: 16px !important;
+  width: 16px !important;
+  display: inline-flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+}
+
+/* 语言选择器下拉三角 - 增强选择器优先级 */
+body.theme-default nav .language-selector .q-icon,
+body.theme-default nav .language-selector .q-select__dropdown-icon,
+.theme-default nav .language-selector .q-icon,
+.theme-default nav .language-selector .q-select__dropdown-icon {
+  margin-left: 2px !important;
+  margin-right: 2px !important;
+  min-width: 16px !important;
+  width: 16px !important;
+  display: inline-flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+}
+
+body.theme-tech nav .language-selector .q-icon,
+body.theme-tech nav .language-selector .q-select__dropdown-icon,
+.theme-tech nav .language-selector .q-icon,
+.theme-tech nav .language-selector .q-select__dropdown-icon {
+  margin-left: 2px !important;
+  margin-right: 2px !important;
+  min-width: 16px !important;
+  width: 16px !important;
+  display: inline-flex !important;
+  justify-content: center !important;
+  align-items: center !important;
 }
 
 .active-theme {

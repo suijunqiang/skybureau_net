@@ -4,6 +4,21 @@
 export default {
   failed: "Action failed",
   success: "Action was successful",
+  add: "Add",
+  appreciation_status: "Appreciation Status",
+  appreciation_status_desc: "Allow readers to appreciate this news",
+  publish_status: "Publish Status",
+  publish_status_desc: "Make this news visible to readers",
+  recommend_status: "Recommend Status",
+  recommend_status_desc: "Show this news in recommended section",
+  // News related
+  news_description: "News Description",
+  news_content: "News Content",
+  click_to_edit_content: "Click to edit content",
+  settings: "Settings",
+  status_settings: "Status Settings",
+  comment_status: "Comment Status",
+  comment_status_desc: "Allow readers to leave comments",
   // 评论相关
   comments: 'Comments',
   submit_comment_success: 'Comment submitted successfully',
@@ -35,13 +50,28 @@ export default {
   productPage: "Products",
   blogPage: "Blog",
   forumPage: "Forum",
-  contactPage: "Contact",
+  contactPage: "Contact Us",
   loginPage: "Login",
   registerPage: "Register",
-  profilePage: "Person",
-  logout: "Exit",
+  profilePage: "Profile",
+  logout: "Logout",
   userName: "Username",
   password: "Password",
+  submit: "Submit",
+  cancel: "Cancel",
+  search: "Search",
+  // 新闻分类管理
+  news_category_management_title: "News Category Management",
+  news_category_management_subtitle: "Manage and maintain news category system",
+  category_id: "Category ID",
+  category_id_required: "Category ID is required",
+  view_news_category: "View News Category",
+  no_parent: "No Parent Category",
+  parent_category_id: "Parent Category ID",
+  add_news_category: "Add News Category",
+  search_news_category_placeholder: "Search news categories...",
+  edit_news_category: "Edit News Category",
+  category_information: "Category Information",
   // User management page
   user_management: "User Management",
   // Blog Category Management
@@ -162,12 +192,12 @@ export default {
   running: "Running",
   maintenance: "Maintenance",
   fault: "Fault",
-  
+
   // 网络类型相关
   wired: "Wired",
   "4g": "4G",
   "5g": "5G",
-  
+
   // 必填验证信息
   device_name_required: "Device name is required",
   device_serial_number_required: "Device serial number is required",
@@ -176,7 +206,7 @@ export default {
   network_type_required: "Network type is required",
   work_status_required: "Work status is required",
   status_required: "Status is required",
-  
+
   // 设备属性相关
   device_model: "Device Model",
   manufacturer: "Manufacturer",
@@ -319,7 +349,7 @@ export default {
   home_title_2_content: "Since the dawn of human civilization, the yearning for the vast firmament has been deeply rooted in our hearts. From the first artificial satellite cutting through the sky, playing the prelude to the exploration of the universe, to manned spaceflight breaking through the shackles of the atmosphere and embarking on the journey to conquer space, and now to the in - depth exploration of distant celestial bodies such as Mars and Jupiter, aerospace technology has been evolving at an astonishing speed. Here, you will witness giant launch vehicles rising from the ground in flames and roars, breaking free from the earth's gravity and setting off on an interstellar voyage with majestic momentum. You can also understand how humans, with wisdom and courage, build space stations in the extremely complex space environment, carry out cutting - edge scientific research, and gradually uncover the mysterious and profound veil of the universe, constantly moving forward towards the unknown ultimate truth of the universe.",
   home_title_3_content: "Driven by the surging tide of technology, drone technology has emerged as a bright star in the low - altitude field, profoundly transforming the operation models of many industries. With its excellent mobility, high autonomy, and sophisticated intelligent control system, it has broken through the spatial and temporal limitations of traditional operations. From using high - resolution imaging technology to capture the stunning aerial views of the magnificent mountains and rivers on Earth from an unprecedented perspective, to applying advanced sensors and precise spraying systems to achieve fine - scale agricultural plant protection, greatly improving food yield and quality; from quickly launching search and rescue operations in the ruins after natural disasters, bringing hope of life to the affected people, to performing high - risk inspection tasks in complex industrial environments, ensuring production safety and stable operation. Drones, with their unique advantages, are reshaping our understanding and utilization of low - altitude airspace, opening a door to the sky full of unlimited possibilities for humanity.",
   home_more: "Click to enter for more exciting content",
-  about_us: "About Us",
+  about_us: "About",
   about_us_title_1: "Welcome to skybureau.net - Your Gateway to Aerospace and Drone Technologies",
   about_us_title_2: "The Paramount Importance of Aerospace Technology",
   about_us_title_3: "The Indispensable Role of Drone Technology",
@@ -620,7 +650,20 @@ export default {
   all_categories: "All Categories",
   read_more: "Read More",
   no_blogs_found: "No blog articles found",
-  
+
   // Common table column
-  actions: "Actions"
+  actions: "Actions",
+
+  // Device Management translations
+  back: "Back",
+
+  // News Management translations
+  news_management_title: "News Management",
+  news_management_subtitle: "Manage news articles and publishing",
+  add_news: "Add News",
+  search_news_placeholder: "Search news...",
+  filter_by_recommend: "Filter by recommended",
+  total_news: "Total {count} news articles",
+  news_title: "News Title",
+  uncategorized: "Uncategorized"
 };

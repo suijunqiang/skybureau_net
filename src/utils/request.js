@@ -28,7 +28,7 @@ request.interceptors.request.use(
 // 添加响应拦截器
 request.interceptors.response.use(
   response => {
-    // 正常情况，直接返回数据
+    // 返回完整的响应对象，以便组件可以访问状态码、头部等信息
     return response;
   },
   error => {

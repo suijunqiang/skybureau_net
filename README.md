@@ -8,30 +8,33 @@ ios: http://www.skybureau.net:10000/sbn/sbn.apk
 ### Tech Stack Features
 - [x] Quasar V2.18.5 (lastest)
 - [x] Vue 3 (lastest)
-- [x] Strapi V5.23.4 (lastest)
+- [x] Strapi V5.25.0 (lastest)
 - [x] MySQL
 
 ### Features Done
 - [x] Home/Product/Login/Language pages
-- [x] Header/Footer/Content pages
+- [x] Header/Footer/Content pages framework
+- [x] Theme color customization for all pages
 - [x] i18n support English/Simplified Chinese
 - [x] JWT Authentication by Frontend/Strapi
 - [x] Authorization module implementation
   - [x] User management module
-  - [x] Menu management module
-  - [x] Branch management module
-  - [x] Position management module
-  - [x] Blog management module Frontend/Backend
-    - [x] Polish Blog comments management module
-    - [x] Polish Iot Devices management module
-- [x] Pulbish the Android APK for Skybureau Net
-
+  - [x] Menu management module edit/delete/add
+  - [x] Branch management module edit/delete/add
+  - [x] Position management module edit/delete/add
+  - [x] Blog management module edit/delete/add Frontend/Backend
+    - [x] Polish Blog comments management module edit/delete/add
+    - [x] Polish Iot Devices management module edit/delete/add
+- [x] Pulbish the test APK for Android
+- [x] News management module Frontend/Backend edit/delete/add
+- [x] Iot devices review module Frontend/Backend online/offline
 
 ### Features To Do
-- [x] News management module Frontend/Backend
+- [x] News management module for public access
 - [x] WebRTC management module Frontend/Backend
-- [x] Project management module Frontend/Backend
-- [x] Publish the iOS APK for Skybureau Net
+- [x] Iot devices firmware update module Frontend/Backend
+- [x] AI Agnet ask system for Skybureau Net
+- [x] Publish the iOS for Iphone app
 
 ### Getting Started
 How to start the project and run it locally.

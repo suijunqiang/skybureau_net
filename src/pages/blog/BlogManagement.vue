@@ -20,6 +20,8 @@
           </div>
         </div>
 
+
+
         <!-- 搜索和筛选栏 -->
         <div class="row q-col-gutter-md q-mb-lg">
           <div class="col-12 col-md-4">
@@ -30,6 +32,7 @@
               dense
               clearable
               @input="handleSearch"
+              @click="handleSearch"
             >
               <template v-slot:prepend>
                 <q-icon name="search" />
@@ -284,9 +287,12 @@ export default defineComponent({
       { label: t('normal'), value: false }
     ];
 
-    // 获取图片URL的辅助函数 - 修正字段处理逻辑
+    // 获取图片URL的辅助函数 - 增强版，添加更严格的空值检查
     const getImageUrl = (row, format = 'thumbnail') => {
-      if (!row) return null;
+      if (!row || typeof row !== 'object') {
+        console.warn('getImageUrl接收到无效的row参数');
+        return null;
+      }
       
       // 1. 优先尝试Current Profile Picture (b_first_pic)，但如果为null则跳过
       if (row.b_first_pic !== null && row.b_first_pic && row.b_first_pic.trim() !== '') {
@@ -300,7 +306,9 @@ export default defineComponent({
       
       // 2. 如果b_first_pic为null或空，使用b_blog_picture_profile中的url字段
       const blogPictureProfile = row.b_blog_picture_profile;
-      if (!blogPictureProfile) return null;
+      if (!blogPictureProfile || typeof blogPictureProfile !== 'object') {
+        return null;
+      }
       
       // 关键修正：当b_first_pic为null时，直接使用url字段显示图片
       if (blogPictureProfile.url) {
@@ -313,17 +321,17 @@ export default defineComponent({
       }
       
       // 如果有指定格式的图片，使用它
-      if (blogPictureProfile.formats && blogPictureProfile.formats[format]) {
+      if (blogPictureProfile.formats && typeof blogPictureProfile.formats === 'object' && blogPictureProfile.formats[format]) {
         return `${BASE_URL}${blogPictureProfile.formats[format].url}`;
       }
       
       // 如果没有指定格式，尝试使用小尺寸图片
-      if (blogPictureProfile.formats && blogPictureProfile.formats.small) {
+      if (blogPictureProfile.formats && typeof blogPictureProfile.formats === 'object' && blogPictureProfile.formats.small) {
         return `${BASE_URL}${blogPictureProfile.formats.small.url}`;
       }
       
       // 如果没有小尺寸图片，尝试使用缩略图
-      if (blogPictureProfile.formats && blogPictureProfile.formats.thumbnail) {
+      if (blogPictureProfile.formats && typeof blogPictureProfile.formats === 'object' && blogPictureProfile.formats.thumbnail) {
         return `${BASE_URL}${blogPictureProfile.formats.thumbnail.url}`;
       }
       
@@ -429,11 +437,39 @@ export default defineComponent({
 
         const url = `${API.BLOG.B_BLOG.LIST}?${params}`;
         console.log('请求博客数据URL:', url);
+        console.log('BASE_URL配置:', BASE_URL);
 
+        // 记录请求前的状态
+        console.log('请求前的筛选条件:', {
+          searchText: searchText.value,
+          statusFilter: statusFilter.value,
+          publishedFilter: publishedFilter.value,
+          page: page,
+          rowsPerPage: rowsPerPage
+        });
+
+        const startTime = Date.now();
         const response = await request.get(url);
+        const endTime = Date.now();
         
-        if (response.data && response.data.data) {
-          blogs.value = response.data.data;
+        console.log('API请求耗时:', endTime - startTime, 'ms');
+        console.log('完整响应对象:', response);
+        console.log('响应状态码:', response.status);
+        console.log('响应头部:', response.headers);
+        console.log('响应数据结构:', {
+          hasData: !!response.data,
+          dataType: typeof response.data,
+          hasDataArray: response.data && !!response.data.data,
+          dataArrayType: response.data && response.data.data ? typeof response.data.data : 'undefined',
+          dataArrayLength: response.data && response.data.data && Array.isArray(response.data.data) ? response.data.data.length : 'N/A'
+        });
+
+        // 直接打印数据以查看详情
+        if (response && response.data && response.data.data) {
+          console.log('博客数据详情:', JSON.stringify(response.data.data, null, 2));
+          console.log('元数据:', JSON.stringify(response.data.meta, null, 2));
+          
+          blogs.value = response.data.data || [];
           totalBlogs.value = response.data.meta?.pagination?.total || 0;
           
           // 更新分页信息
@@ -443,38 +479,116 @@ export default defineComponent({
             rowsNumber: totalBlogs.value
           };
           
-          console.log('博客数据加载成功:', blogs.value);
+          console.log('博客数据加载成功，共', blogs.value.length, '条数据');
+          console.log('设置后的博客数组:', blogs.value);
+        } else {
+          console.log('未获取到博客数据，详细原因:', {
+            responseExists: !!response,
+            dataExists: response ? !!response.data : false,
+            dataArrayExists: response && response.data ? !!response.data.data : false,
+            responseText: response ? JSON.stringify(response, null, 2).substring(0, 500) : '无响应'
+          });
+          blogs.value = [];
+          totalBlogs.value = 0;
         }
       } catch (error) {
         console.error('获取博客数据失败:', error);
+        console.error('错误详情:', {
+          message: error.message,
+          stack: error.stack,
+          response: error.response ? {
+            status: error.response.status,
+            data: error.response.data,
+            headers: error.response.headers
+          } : '无响应对象'
+        });
+        
+        // 尝试直接使用fetch API作为备选方案
+        try {
+          const altUrl = `${API.BLOG.B_BLOG.LIST}?${new URLSearchParams({
+            'pagination[page]': 1,
+            'pagination[pageSize]': 10,
+            'sort': 'createdAt:desc',
+            'populate': 'b_blog_picture_profile'
+          })}`;
+          console.log('尝试使用原生fetch API:', altUrl);
+          
+          const fetchResponse = await fetch(altUrl, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              // 添加可能需要的认证头
+              'Authorization': `Bearer ${useTokenStore().token || ''}`
+            },
+            credentials: 'include' // 包含cookies
+          });
+          
+          const fetchData = await fetchResponse.json();
+          console.log('原生fetch响应:', fetchData);
+          
+          if (fetchData && fetchData.data) {
+            blogs.value = fetchData.data || [];
+            totalBlogs.value = fetchData.meta?.pagination?.total || 0;
+            console.log('通过原生fetch获取到', blogs.value.length, '条数据');
+          }
+        } catch (fetchError) {
+          console.error('原生fetch也失败:', fetchError);
+        }
+        
         Notify.create({
           message: t('fetch_blogs_failed') + ': ' + (error.message || t('unknown_error')),
           color: 'negative',
           timeout: 3000
         });
+        // 确保在错误情况下也有数据显示
+        blogs.value = [];
+        totalBlogs.value = 0;
       } finally {
+        console.log('请求完成后的博客数据状态:', {
+          blogsLength: blogs.value.length,
+          totalBlogs: totalBlogs.value,
+          displayBlogsLength: displayBlogs.value.length
+        });
         loading.value = false;
       }
     };
 
-    // 显示的博客数据
+    // 显示的博客数据 - 确保总是返回有效的数组
     const displayBlogs = computed(() => {
-      return blogs.value || [];
+      // 添加防御性检查，确保blogs.value是一个数组
+      if (!Array.isArray(blogs.value)) {
+        console.warn('blogs.value不是一个数组，返回空数组');
+        return [];
+      }
+      return blogs.value;
     });
 
-    // 分页请求处理
+    // 分页请求处理 - 添加参数检查
     const onRequest = (props) => {
+      if (!props || typeof props !== 'object') {
+        console.warn('onRequest接收到无效的props参数');
+        fetchBlogs();
+        return;
+      }
       fetchBlogs(props);
     };
 
-    // 搜索处理
-    const handleSearch = () => {
+    // 搜索处理 - 防止事件对象未定义的情况
+    const handleSearch = (event) => {
+      // 防御性编程，确保即使没有event参数也能正常工作
+      if (event && typeof event.preventDefault === 'function') {
+        event.preventDefault();
+      }
       pagination.value.page = 1;
       fetchBlogs();
     };
 
-    // 筛选变化处理
-    const handleFilterChange = () => {
+    // 筛选变化处理 - 防止事件对象未定义的情况
+    const handleFilterChange = (event) => {
+      // 防御性编程，确保即使没有event参数也能正常工作
+      if (event && typeof event.preventDefault === 'function') {
+        event.preventDefault();
+      }
       pagination.value.page = 1;
       fetchBlogs();
     };

@@ -101,12 +101,13 @@
                 <div v-if="menus && menus.length > 0" class="menu-permissions-grid">
                   <div 
                     v-for="menu in menus" 
-                    :key="menu.menu_id" 
+                    :key="menu.menu_id"
                     class="menu-permission-item"
                   >
+                    <!-- 使用字符串类型确保类型匹配 -->
                     <q-checkbox
                       v-model="form.menu_id"
-                      :val="menu.menu_id"
+                      :val="String(menu.menu_id)"
                       :label="menu.name"
                       color="primary"
                       size="md"
@@ -257,11 +258,45 @@ export default defineComponent({
     // 监听position数据变化
     watch(() => props.position, (newPosition) => {
       if (newPosition) {
+        console.log('接收到的position数据:', newPosition);
+        console.log('原始menu_id数据:', newPosition.menu_id, '类型:', typeof newPosition.menu_id);
+        
+        // 更健壮的menu_id处理逻辑，支持字符串、数组和null
+        let menuIds = [];
+        if (newPosition.menu_id) {
+          if (Array.isArray(newPosition.menu_id)) {
+            // 如果已经是数组，将所有元素转换为字符串
+            menuIds = newPosition.menu_id.map(id => String(id));
+          } else if (typeof newPosition.menu_id === 'string') {
+            // 如果是字符串，按逗号分割并清理每个id
+            menuIds = newPosition.menu_id.split(',').map(id => {
+              const trimmedId = id.trim();
+              // 确保id不为空字符串
+              return trimmedId || null;
+            }).filter(id => id !== null);
+          } else if (typeof newPosition.menu_id === 'object') {
+            // 如果是对象，尝试提取数组或转换为数组
+            console.warn('menu_id是对象，尝试处理:', newPosition.menu_id);
+            try {
+              // 尝试将对象转换为数组
+              const menuIdArr = Object.values(newPosition.menu_id);
+              if (Array.isArray(menuIdArr)) {
+                menuIds = menuIdArr
+                  .filter(id => id !== null && id !== undefined && id !== '')
+                  .map(id => String(id)); // 转换为字符串
+              }
+            } catch (e) {
+              console.error('处理menu_id对象失败:', e);
+            }
+          }
+        }
+        
+        console.log('最终转换的menu_ids数组:', menuIds);
+        
         Object.assign(form, {
           ...newPosition,
           documentId: newPosition.documentId || newPosition.id,
-          // 将menu_id字符串转换为数组
-          menu_id: newPosition.menu_id ? newPosition.menu_id.split(',').map(id => id.trim()) : [],
+          menu_id: menuIds,
           // 确保branch_id是数值类型
           branch_id: newPosition.branch_id ? Number(newPosition.branch_id) : '',
           sort: newPosition.sort || 1,

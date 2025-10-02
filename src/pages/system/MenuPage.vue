@@ -438,6 +438,10 @@ export default defineComponent({
       // 延迟一小段时间后重新加载菜单数据，确保UI更新先显示，然后再同步最新数据
       setTimeout(() => {
         fetchMenus();
+        // 调用全局菜单刷新方法，更新UserManagement中的菜单
+        if (window.refreshUserManagementMenus) {
+          window.refreshUserManagementMenus();
+        }
       }, 500);
     };
 

@@ -153,6 +153,26 @@ export const API = {
     },
 
   },
+   NEWS: {
+      NEWS :{
+      LIST: `${BASE_URL}/api/news`,
+      CREATE: `${BASE_URL}/api/news`,
+      UPDATE: (id) => `${BASE_URL}/api/news/${id}`,
+      DELETE: (id) => `${BASE_URL}/api/news/${id}`
+    },
+     NEWS_CATEGORIES  :{
+      LIST: `${BASE_URL}/api/new-categories`,
+      CREATE: `${BASE_URL}/api/new-categories`,
+      UPDATE: (id) => `${BASE_URL}/api/new-categories/${id}`,
+      DELETE: (id) => `${BASE_URL}/api/new-categories/${id}`
+    },
+    NEWS_TAGS:{
+      LIST: `${BASE_URL}/api/new-tags`,
+      CREATE: `${BASE_URL}/api/new-tags`,
+      UPDATE: (id) => `${BASE_URL}/api/new-tags/${id}`,
+      DELETE: (id) => `${BASE_URL}/api/new-tags/${id}`
+    },
+  },
    PRODUCT: {
     LIST: `${BASE_URL}/api/products`,
     DETAIL: (id) => `${BASE_URL}/api/products/${id}`,
