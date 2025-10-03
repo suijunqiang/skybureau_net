@@ -639,6 +639,11 @@ export default {
   please_select_file: "Please select a file first",
   upload_success: "Image uploaded successfully",
   upload_failed: "Image upload failed",
+  click_to_upload: "Click to upload",
+  basic_information: "Basic Information",
+  uploading_image: "Uploading image...",
+  supported_formats: "Support JPG, PNG format, max size 5MB",
+  current_cover_image: "Current Cover Image",
 
   // Statistics section
   statistics: "Statistics",

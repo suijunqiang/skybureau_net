@@ -9,9 +9,9 @@
             <p class="text-grey-6 q-mb-none q-mt-xs">{{ t('news_management_subtitle') }}</p>
           </div>
           <div class="col-auto">
-            <q-btn 
-              color="primary" 
-              :label="t('add_news')" 
+            <q-btn
+              color="primary"
+              :label="t('add_news')"
               icon="add"
               @click="addNews"
               size="md"
@@ -111,13 +111,13 @@
           <template v-slot:body-cell-fisrt_pic="props">
             <q-td :props="props">
               <div class="flex justify-center">
-                <q-avatar 
-                  v-if="getImageUrl(props.row)" 
-                  size="40px" 
+                <q-avatar
+                  v-if="getImageUrl(props.row)"
+                  size="40px"
                   class="rounded-borders"
                 >
-                  <q-img 
-                    :src="getImageUrl(props.row)" 
+                  <q-img
+                    :src="getImageUrl(props.row)"
                     :alt="props.row.title"
                     fit="cover"
                   >
@@ -253,7 +253,7 @@ export default defineComponent({
     const { t } = useI18n();
     const router = useRouter();
     const $q = useQuasar();
-    
+
     // 响应式数据
     const newsList = ref([]);
     const loading = ref(false);
@@ -288,7 +288,7 @@ export default defineComponent({
     // 获取图片URL的辅助函数
     const getImageUrl = (row, format = 'thumbnail') => {
       if (!row) return null;
-      
+
       // 优先尝试fisrt_pic
       if (row.fisrt_pic !== null && row.fisrt_pic && row.fisrt_pic.trim() !== '') {
         // 如果是完整URL，直接返回
@@ -298,7 +298,7 @@ export default defineComponent({
         // 如果是相对路径，拼接base URL
         return `${BASE_URL}${row.fisrt_pic}`;
       }
-      
+
       return null;
     };
 
@@ -416,9 +416,9 @@ const fetchNews = async (props = {}) => {
   try {
     // 立即设置默认的mock数据，确保表格总是有内容显示
     setInitialMockData();
-    
+
     const { page = 1, rowsPerPage = 10 } = props.pagination || pagination.value;
-    
+
     // 构建请求参数
     const params = new URLSearchParams({
       'pagination[page]': page,
@@ -441,16 +441,16 @@ const fetchNews = async (props = {}) => {
     }
 
     const url = `${API.NEWS.NEWS.LIST}?${params}`;
-    
+
     // 尝试获取实际数据，但即使失败也继续使用mock数据
     try {
       const response = await request.get(url);
-      
+
       // 简化的响应处理
       if (response && response.data) {
         let newsData = [];
         let totalCount = 0;
-        
+
         // 处理各种可能的响应格式
         if (response.data && Array.isArray(response.data)) {
           newsData = response.data;
@@ -468,7 +468,7 @@ const fetchNews = async (props = {}) => {
           newsData = response.data.list;
           totalCount = response.data.total || response.data.list.length;
         }
-        
+
         // 只有当有实际数据时才更新
         if (newsData.length > 0) {
           newsList.value = newsData;
@@ -606,7 +606,7 @@ const fetchNews = async (props = {}) => {
           console.log('删除新闻请求URL:', deleteUrl);
 
           await request.delete(deleteUrl);
-          
+
           // 从列表中移除
           newsList.value = newsList.value.filter(n => n.id !== news.id);
           totalNews.value -= 1;

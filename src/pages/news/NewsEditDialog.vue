@@ -15,7 +15,7 @@
           <!-- 基本信息区域 -->
           <div class="q-mb-lg">
             <h3 class="text-h6 q-mb-md">{{ t('basic_information') }}</h3>
-            
+
             <!-- 标题 -->
             <q-input
               v-model="formData.title"
@@ -29,7 +29,7 @@
 
             <!-- 封面图URL输入 -->
             <q-input
-              v-model="formData.fisrt_pic"
+              v-model="formData.picture_profile"
               :label="t('cover_image_url')"
               outlined
               dense
@@ -47,7 +47,7 @@
                   color="primary"
                   icon="check"
                   size="sm"
-                  :disable="!formData.fisrt_pic"
+                  :disable="!formData.picture_profile"
                   @click="previewImage"
                 />
               </template>
@@ -74,7 +74,7 @@
             <div v-if="previewUrl" class="q-mb-md">
               <p class="text-sm q-mb-sm">{{ t('current_cover_image') }}</p>
               <div class="relative">
-                <q-img 
+                <q-img
                   :src="previewUrl"
                   alt="{{ t('cover_image_preview') }}"
                   fit="cover"
@@ -105,7 +105,7 @@
           <!-- 内容区域 -->
           <div class="q-mb-lg">
             <h3 class="text-h6 q-mb-md">{{ t('content') }}</h3>
-            
+
             <!-- 描述 -->
             <q-input
               v-model="formData.description"
@@ -131,7 +131,7 @@
           <!-- 设置区域 -->
           <div class="q-mb-lg">
             <h3 class="text-h6 q-mb-md">{{ t('settings') }}</h3>
-            
+
             <!-- 分类选择 -->
             <q-select
               v-model="formData.category_id"
@@ -176,7 +176,7 @@
           <!-- 开关设置 -->
           <div class="q-mb-lg">
             <h3 class="text-h6 q-mb-md">{{ t('status_settings') }}</h3>
-            
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <!-- 发布开关 -->
               <div class="flex items-center justify-between">
@@ -250,6 +250,7 @@ import { useI18n } from 'vue-i18n';
 import { useQuasar } from 'quasar';
 import { API, BASE_URL } from 'src/api/api.js';
 import request from 'src/utils/request.js';
+import { Notify } from 'quasar';
 
 export default defineComponent({
   name: 'NewsEditDialog',
@@ -268,18 +269,22 @@ export default defineComponent({
     const { t } = useI18n();
     const $q = useQuasar();
     const fileInput = ref(null);
-    
+
     // 响应式数据
     const saving = ref(false);
     const previewUrl = ref('');
     const categories = ref([
       { id: 0, name: t('uncategorized') }
     ]);
-    
+
+    // 添加与BlogEditDialog相同的变量
+    const selectedFile = ref(null);
+    const isUploading = ref(false);
+
     // 表单数据
     const formData = ref({
       title: '',
-      fisrt_pic: null,
+      picture_profile: null,
       content: '',
       description: '',
       is_published: false,
@@ -296,25 +301,25 @@ export default defineComponent({
     });
 
     // 是否为新建
-    const isNew = computed(() => !props.news || !props.news.id);
+    const isNew = computed(() => !props.news || !props.news.new_id);
 
     // 初始化表单数据
     const initFormData = () => {
-      if (props.news && props.news.id) {
+      if (props.news && props.news.new_id) {
         formData.value = {
           ...formData.value,
           ...props.news
         };
-        
+
         // 设置预览URL
-        if (props.news.fisrt_pic) {
-          previewUrl.value = getImageUrl(props.news.fisrt_pic);
+        if (props.news.picture_profile) {
+          previewUrl.value = getImageUrl(props.news.picture_profile);
         }
       } else {
         // 重置表单
         formData.value = {
           title: '',
-          fisrt_pic: null,
+          picture_profile: null,
           content: '',
           description: '',
           is_published: false,
@@ -336,12 +341,27 @@ export default defineComponent({
     // 获取图片URL
     const getImageUrl = (path) => {
       if (!path) return '';
+
+      // 如果path是一个对象（完整的picture_profile），直接使用其url属性
+      if (typeof path === 'object' && path !== null && path.url) {
+        if (path.url.startsWith('http')) {
+          return path.url;
+        }
+        return `${BASE_URL}${path.url}`;
+      }
+
+      // 确保path是字符串类型
+      const pathStr = String(path);
+
+      // 如果是空字符串，返回空
+      if (pathStr.trim() === '') return '';
+
       // 如果是完整URL，直接返回
-      if (path.startsWith('http')) {
-        return path;
+      if (pathStr.startsWith('http')) {
+        return pathStr;
       }
       // 如果是相对路径，拼接base URL
-      return `${BASE_URL}${path}`;
+      return `${BASE_URL}${pathStr}`;
     };
 
     // 获取分类数据
@@ -359,8 +379,8 @@ export default defineComponent({
 
     // 处理图片URL变化
     const handleImageUrlChange = () => {
-      if (formData.value.fisrt_pic) {
-        previewUrl.value = getImageUrl(formData.value.fisrt_pic);
+      if (formData.value.picture_profile) {
+        previewUrl.value = getImageUrl(formData.value.picture_profile);
       } else {
         previewUrl.value = '';
       }
@@ -377,16 +397,17 @@ export default defineComponent({
       if (!file) return;
 
       try {
-        // 这里应该调用实际的文件上传API
-        console.log('文件选择:', file);
-        
+        selectedFile.value = file;
+
         // 简单预览
         const reader = new FileReader();
         reader.onload = (e) => {
           previewUrl.value = e.target.result;
-          formData.value.fisrt_pic = previewUrl.value; // 实际项目中应该是上传后的URL
         };
         reader.readAsDataURL(file);
+
+        // 调用上传方法
+        await uploadImage();
       } catch (error) {
         console.error('文件上传失败:', error);
         $q.notify({
@@ -400,16 +421,160 @@ export default defineComponent({
       }
     };
 
+    // 上传图片 - 与BlogEditDialog相同的逻辑
+    const uploadImage = async () => {
+      console.log('上传函数被调用');
+
+      if (!selectedFile.value) {
+        console.log('没有选择文件');
+        Notify.create({
+          message: t('please_select_file'),
+          color: 'warning',
+          timeout: 3000
+        });
+        return;
+      }
+
+      let uploadingNotification = null;
+
+      try {
+        isUploading.value = true;
+        console.log('开始上传流程...');
+
+        // 创建 FormData 对象
+        const formDataUpload = new FormData();
+        formDataUpload.append('files', selectedFile.value);
+
+        console.log('上传文件信息:');
+        console.log('- 文件名:', selectedFile.value.name);
+        console.log('- 文件大小:', selectedFile.value.size);
+        console.log('- 文件类型:', selectedFile.value.type);
+        console.log('- API地址:', API.UPLOAD);
+
+        // 检查 FormData 内容
+        console.log('FormData 条目:');
+        for (let [key, value] of formDataUpload.entries()) {
+          console.log(`- ${key}:`, value);
+        }
+
+        // 显示上传中通知并保存引用
+        uploadingNotification = Notify.create({
+          message: t('uploading_image'),
+          spinner: true,
+          timeout: 0,
+          color: 'primary',
+          textColor: 'white'
+        });
+
+        // 发送请求上传文件
+        console.log('发送 POST 请求到:', API.UPLOAD);
+        const response = await request.post(API.UPLOAD, formDataUpload, {
+          headers: {
+            // 不设置 Content-Type，让浏览器自动处理 multipart/form-data
+          },
+          timeout: 30000 // 30秒超时
+        });
+
+        console.log('上传响应状态:', response.status);
+        console.log('上传响应数据:', response.data);
+
+        // 关闭上传中通知 - 添加类型检查
+        if (uploadingNotification && typeof uploadingNotification.close === 'function') {
+          uploadingNotification.close();
+        }
+
+        // 显示成功通知
+        Notify.create({
+          message: t('upload_success'),
+          color: 'positive',
+          timeout: 2000
+        });
+
+        // 检查响应格式
+        if (response.data && Array.isArray(response.data) && response.data.length > 0) {
+          const uploadedFile = response.data[0];
+          console.log('解析上传文件:', uploadedFile);
+
+          // 保存图片的 id 到 picture_profile 字段
+          if (uploadedFile.id) {
+            formData.value.picture_profile = uploadedFile.id;
+            console.log('图片上传成功，保存图片ID到 picture_profile:', uploadedFile.id);
+            // 从服务器获取完整的图片URL
+            previewUrl.value = getImageUrl(formData.value.picture_profile);
+          } else {
+            console.error('上传文件缺少 id 字段:', uploadedFile);
+            throw new Error('上传文件响应缺少 id 字段');
+          }
+
+          // 清空选择的文件
+          selectedFile.value = null;
+
+        } else if (response.data && !Array.isArray(response.data)) {
+          // 如果响应不是数组格式，尝试直接使用
+          console.log('响应不是数组格式，尝试直接使用:', response.data);
+
+          // 保存图片的 id
+          if (response.data.id) {
+            formData.value.picture_profile = response.data.id;
+            console.log('图片上传成功，保存图片ID到 picture_profile:', response.data.id);
+            // 从服务器获取完整的图片URL
+            previewUrl.value = getImageUrl(formData.value.picture_profile);
+          } else {
+            console.error('上传文件缺少 id 字段:', response.data);
+            throw new Error('上传文件响应缺少 id 字段');
+          }
+
+          selectedFile.value = null;
+        } else {
+          console.error('上传响应格式错误:', response.data);
+          throw new Error('上传响应格式错误: ' + JSON.stringify(response.data));
+        }
+
+      } catch (error) {
+        console.error('上传文件失败:', error);
+
+        // 关闭上传中通知 - 添加类型检查
+        if (uploadingNotification && typeof uploadingNotification.close === 'function') {
+          uploadingNotification.close();
+        }
+
+        if (error.response) {
+          console.error('响应错误:');
+          console.error('- 状态码:', error.response.status);
+          console.error('- 状态文本:', error.response.statusText);
+          console.error('- 响应数据:', error.response.data);
+          console.error('- 响应头:', error.response.headers);
+        } else if (error.request) {
+          console.error('请求错误:', error.request);
+          console.error('没有收到响应');
+        } else {
+          console.error('请求设置错误:', error.message);
+        }
+
+        // 显示错误通知
+        Notify.create({
+          message: t('upload_failed') + ': ' + (error.response?.data?.error?.message || error.message || t('unknown_error')),
+          color: 'negative',
+          timeout: 5000
+        });
+
+        throw error;
+      } finally {
+        console.log('上传流程结束');
+        isUploading.value = false;
+      }
+    };
+
     // 预览图片
     const previewImage = () => {
-      if (formData.value.fisrt_pic) {
-        previewUrl.value = getImageUrl(formData.value.fisrt_pic);
+      if (formData.value.picture_profile) {
+        previewUrl.value = getImageUrl(formData.value.picture_profile);
       }
     };
 
     // 清除图片
     const clearImage = () => {
-      formData.value.fisrt_pic = null;
+      formData.value.picture_profile = null;
       previewUrl.value = '';
     };
 
@@ -417,11 +582,11 @@ export default defineComponent({
     const handleContentChange = (event) => {
       const content = event.target.innerHTML;
       formData.value.content = content;
-      
+
       // 计算字数
       const textContent = content.replace(/<[^>]*>/g, '').trim();
       formData.value.words = textContent.length;
-      
+
       // 估算阅读时间（假设每分钟300字）
       formData.value.read_time = Math.ceil(textContent.length / 300) || 1;
     };
@@ -444,8 +609,8 @@ export default defineComponent({
         // 准备提交数据
         const submitData = {
           ...formData.value,
-          // 确保fisrt_pic是null或字符串
-          fisrt_pic: formData.value.fisrt_pic || null,
+          // 确保picture_profile是null或字符串
+          picture_profile: formData.value.picture_profile || null,
           // 如果是null，应该转换为空字符串
           description: formData.value.description || '',
           content: formData.value.content || '',
@@ -456,7 +621,7 @@ export default defineComponent({
         // 计算字数
         const textContent = submitData.content.replace(/<[^>]*>/g, '').trim();
         submitData.words = textContent.length;
-        
+
         // 估算阅读时间（假设每分钟300字）
         if (!submitData.read_time || submitData.read_time < 1) {
           submitData.read_time = Math.ceil(textContent.length / 300) || 1;
@@ -469,8 +634,8 @@ export default defineComponent({
           // 将数据包装在data对象下
           response = await request.post(API.NEWS.NEWS.CREATE, { data: submitData });
         } else {
-          // 更新新闻
-          const updateUrl = API.NEWS.NEWS.UPDATE(props.news.documentId || props.news.id);
+          // 更新新闻 - 使用new_id作为主键
+          const updateUrl = API.NEWS.NEWS.UPDATE(props.news.new_id);
           console.log('更新新闻URL:', updateUrl);
           console.log('更新新闻数据:', submitData);
           // 将数据包装在data对象下
@@ -534,6 +699,8 @@ export default defineComponent({
       formData,
       isNew,
       fileInput,
+      selectedFile,
+      isUploading,
       handleSubmit,
       closeDialog,
       handleVisibleChange,
@@ -541,6 +708,7 @@ export default defineComponent({
       handleImageUrlChange,
       triggerFileInput,
       handleFileSelect,
+      uploadImage,
       previewImage,
       clearImage,
       handleContentChange
@@ -598,13 +766,14 @@ export default defineComponent({
     max-width: 95vw !important;
     max-height: 95vh !important;
   }
-  
+
   .q-pa-lg {
     padding: 16px;
   }
-  
+
   .grid-cols-1.md\:grid-cols-2 {
     grid-template-columns: 1fr;
   }
 }
 </style>
+

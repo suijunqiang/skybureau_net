@@ -5,7 +5,9 @@
       <img src="../assets/img/skybureau/favicon-32x32.png" />
     </div>
       -->
-    <RouterLink class="el-menu-item" to="/" :style="getMenuItemStyle()">{{ $t("homePage") }}</RouterLink>
+    <RouterLink class="el-menu-item" to="/" :style="getMenuItemStyle()">
+      <q-icon name="home" />
+    </RouterLink>
     <!--
     <RouterLink class="el-menu-item" to="/news">{{ $t("newsPage") }}</RouterLink>
     -->
@@ -94,6 +96,7 @@ import { usePositionInfoStore } from "../stores/positionInfo";
 import { useThemeStore } from "../stores/theme";
 import { computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
+import { QIcon } from "quasar";
 export default {
   setup() {
     const { locale, t } = useI18n({ useScope: "global" });

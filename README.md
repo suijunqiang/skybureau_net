@@ -25,7 +25,7 @@ ios: http://www.skybureau.net:10000/sbn/sbn.apk
   - [x] Blog management module edit/delete/add Frontend/Backend
     - [x] Polish Blog comments management module edit/delete/add
     - [x] Polish Iot Devices management module edit/delete/add
-- [x] Pulbish the test APK for Android
+- [x] Publish the test APK for Android
 - [x] News management module Frontend/Backend edit/delete/add
 - [x] Iot devices review module Frontend/Backend online/offline
 
