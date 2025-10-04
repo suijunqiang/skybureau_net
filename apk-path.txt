@@ -1,1 +1,1 @@
-D:\src\trace\skybureau_net\src-cordova\platforms\android\app\build\outputs\apk\debug\app-debug.apk
+src-cordova\platforms\android\app\build\outputs\apk\debug\app-debug.apk

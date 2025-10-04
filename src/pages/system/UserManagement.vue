@@ -1,7 +1,11 @@
 <template>
-  <q-page class="h-full flex">
-    <!-- 左侧导航菜单 -->
-    <div class="h-full theme-surface border-r border-grey-200 flex-shrink-0 z-10 mobile-menu-container" :style="{ width: sidebarWidth + 'px' + ' !important', flexBasis: sidebarWidth + 'px', display: sidebarHidden && !isMobile ? 'none' : 'block', borderRightColor: 'var(--theme-border) !important' }" :class="[ 'show', { show: mobileDrawerOpen && isMobile }, { 'tech-theme-left-menu': themeStore.isTech }]">
+  <q-page class="h-full overflow-hidden flex">
+    <!-- 左侧菜单容器 -->
+    <!-- 移动设备模式下菜单固定定位 -->
+    <div class="h-full theme-surface border-r border-grey-200 flex-shrink-0 z-10 mobile-menu-container" :style="{ width: sidebarWidth + 'px' + ' !important', flexBasis: sidebarWidth + 'px', display: sidebarHidden && !isMobile ? 'none' : 'block', borderRightColor: 'var(--theme-border) !important' }" :class="[ { show: mobileDrawerOpen && isMobile }, { 'tech-theme-left-menu': themeStore.isTech }]"
+      @touchstart="handleTouchStart"
+      @touchmove="handleTouchMove"
+      @touchend="handleTouchEnd">
       <div class="h-full left-menu-content" style="height: 100%; overflow-y: auto;">
         <q-list style="min-height: 100%;">
             <template v-for="node in menuTree" :key="node.label">
@@ -83,10 +87,14 @@
     ></div>
 
     <!-- 主内容区域 -->
+    <!-- 移除触摸事件监听器，避免与菜单滑动手势冲突 -->
     <div class="flex-1 flex flex-col h-full overflow-hidden" :style="{ marginLeft: sidebarHidden ? '0px' : (isMobile ? '0px' : sidebarWidth + 'px') }" @click="() => {
-      if (mobileDrawerOpen && isMobile) {
+      // 只有在不是滑动状态时才关闭菜单
+      if (mobileDrawerOpen && isMobile && !isSliding) {
         console.log('外层主内容区域点击事件触发 - 调用toggleDrawer()');
         toggleDrawer();
+      } else if (isSliding) {
+        console.log('外层主内容区域点击事件触发 - 滑动状态中，不关闭菜单');
       }
     }">
         <!-- 顶部标题栏 -->
@@ -99,7 +107,12 @@
             class="mr-2 theme-menu-btn"
             @click="(e) => {
               e.stopPropagation(); // 阻止事件冒泡到全局点击监听器
-              isMobile ? toggleDrawer() : toggleSidebar();
+              console.log('菜单按钮点击事件触发 - 当前状态:', {isMobile: isMobile, mobileDrawerOpen: mobileDrawerOpen});
+              if (isMobile) {
+                toggleDrawer();
+              } else {
+                toggleSidebar();
+              }
             }"
           />
           <h2 class="text-lg font-semibold theme-title">
@@ -108,11 +121,9 @@
         </div>
 
         <!-- 内容区域 -->
-      <div class="flex-1 h-full w-full overflow-auto content-area" :class="['users', 'userList', 'menu', 'position', 'branch', 'blogCreate', 'create', 'blogManagement', 'blogList'].includes(activePage) ? 'no-padding' : 'p-6'" @click="() => {
-        if (mobileDrawerOpen && isMobile) {
-          console.log('内容区域点击事件触发 - 调用toggleDrawer()');
-          toggleDrawer();
-        }
+      <div class="flex-1 h-full w-full overflow-auto content-area" :class="['users', 'userList', 'menu', 'position', 'branch', 'blogCreate', 'create', 'blogManagement', 'blogList'].includes(activePage) ? 'no-padding' : 'p-6'" @click="(e) => {
+        e.stopPropagation();
+        console.log('右侧内容区域点击事件触发 - 当前菜单状态:', mobileDrawerOpen);
       }">
         <!-- 使用渲染函数直接创建组件 -->
         <div class="h-full w-full component-wrapper">
@@ -186,17 +197,27 @@ export default {
       switchPage('welcome');
     };
 
-    // 移动设备上的抽屉状态
+    // 移动设备上的抽屉状态 - 默认强制关闭
     const mobileDrawerOpen = ref(false);
+    console.log('初始化时菜单状态:', mobileDrawerOpen.value);
 
     // 检测是否为移动设备
     const isMobile = ref(window.innerWidth < 768);
+    console.log('是否为移动设备:', isMobile.value);
+
+    // 滑动状态标志 - 用于防止滑动操作被外层点击事件干扰
+    const isSliding = ref(false);
 
     // 侧边栏宽度（默认12rem = 192px，是原来128的一半）
     const sidebarWidth = ref(192);
 
     // 侧边栏隐藏状态
     const sidebarHidden = ref(false);
+
+    // 触摸事件相关变量
+    const touchStartX = ref(0);
+    const touchEndX = ref(0);
+    const minSwipeDistance = 50; // 最小滑动距离
 
     // 选中的节点
     const selectedNode = ref("");
@@ -580,13 +601,13 @@ export default {
       console.log('组件更新后的activePage值:', activePage.value);
       console.log('======================= 页面切换结束 =======================');
 
-      return true;
-
       // 在移动设备上切换页面后关闭抽屉
       if (isMobile.value) {
         mobileDrawerOpen.value = false;
         console.log('移动设备：已关闭侧边抽屉');
       }
+
+      return true;
     };
 
 
@@ -888,12 +909,75 @@ export default {
       console.log('toggleDrawer调用前 - mobileDrawerOpen:', mobileDrawerOpen.value, 'isMobile:', isMobile.value);
       mobileDrawerOpen.value = !mobileDrawerOpen.value;
       console.log('toggleDrawer调用后 - mobileDrawerOpen:', mobileDrawerOpen.value);
-      // 在移动设备上强制显示/隐藏侧边栏
+      // 在移动设备上，不需要设置sidebarHidden，因为显示/隐藏由mobileDrawerOpen控制
+    };
+
+    // 处理触摸开始事件
+    const handleTouchStart = (e) => {
       if (isMobile.value) {
-        sidebarHidden.value = false; // 确保侧边栏不被隐藏
-        console.log('移动设备模式 - sidebarHidden设置为:', sidebarHidden.value);
+        touchStartX.value = e.touches[0].clientX;
+        isSliding.value = true;
+        console.log('触摸开始 - X坐标:', touchStartX.value, '当前菜单状态:', mobileDrawerOpen.value, '滑动状态:', isSliding.value);
       }
     };
+
+    // 处理触摸移动事件
+    const handleTouchMove = (e) => {
+      if (isMobile.value) {
+        touchEndX.value = e.touches[0].clientX;
+        console.log('触摸移动 - X坐标:', touchEndX.value, '当前菜单状态:', mobileDrawerOpen.value);
+      }
+    };
+
+    // 处理触摸结束事件 - 实现左滑隐藏菜单/右滑显示菜单
+    const handleTouchEnd = () => {
+      console.log('handleTouchEnd调用 - isMobile:', isMobile.value, 'mobileDrawerOpen:', mobileDrawerOpen.value, '滑动状态:', isSliding.value);
+
+      // 直接检查是否为移动设备
+      if (isMobile.value) {
+        // 即使菜单已经关闭，也记录相关信息，帮助调试
+        console.log('touchStartX:', touchStartX.value, 'touchEndX:', touchEndX.value);
+        // 计算滑动距离
+        const swipeDistance = touchEndX.value - touchStartX.value;
+        console.log('触摸结束 - 滑动距离:', swipeDistance);
+
+        // 检查是否是左滑（负值表示向左滑动）
+        if (swipeDistance < -minSwipeDistance) {
+          console.log('检测到有效左滑，滑动距离:', swipeDistance);
+          // 无论菜单当前状态如何，都尝试关闭它
+          if (mobileDrawerOpen.value) {
+            console.log('菜单当前是打开状态，执行关闭操作');
+            mobileDrawerOpen.value = false;
+          } else {
+            console.log('菜单已经是关闭状态，无需操作');
+          }
+        } else if (swipeDistance > minSwipeDistance) {
+          // 添加右滑显示菜单的功能
+          console.log('检测到有效右滑，滑动距离:', swipeDistance);
+          if (!mobileDrawerOpen.value) {
+            console.log('菜单当前是关闭状态，执行打开操作');
+            mobileDrawerOpen.value = true;
+            // 添加一个小延迟，确保菜单有时间显示
+            setTimeout(() => {
+              console.log('右滑打开菜单后状态检查:', mobileDrawerOpen.value);
+            }, 100);
+          } else {
+            console.log('菜单已经是打开状态，无需操作');
+          }
+        } else if (swipeDistance < 0) {
+          console.log('检测到左滑，但滑动距离不足，需要滑动超过', minSwipeDistance, '像素');
+        } else if (swipeDistance > 0) {
+          console.log('检测到右滑，但滑动距离不足，需要滑动超过', minSwipeDistance, '像素');
+        }
+
+        // 重置滑动状态标志
+        // 添加一个小延迟，确保滑动操作完成后再重置状态
+        setTimeout(() => {
+          isSliding.value = false;
+          console.log('滑动操作完成，重置滑动状态标志:', isSliding.value);
+        }, 200);
+      }
+    }
 
     // 切换侧边栏显示/隐藏
     const toggleSidebar = () => {
@@ -919,6 +1003,7 @@ export default {
         // 在移动设备上自动隐藏侧边栏
         if (isMobile.value) {
           mobileDrawerOpen.value = false;
+          console.log('移动设备模式 - 自动隐藏侧边栏');
         }
       }
     };
@@ -926,22 +1011,24 @@ export default {
     // 全局点击事件监听器 - 专门处理移动设备上点击非菜单区域关闭菜单
     const handleGlobalClick = (event) => {
       if (isMobile.value && mobileDrawerOpen.value) {
-        console.log('全局点击事件触发 - isMobile:', isMobile.value, 'mobileDrawerOpen:', mobileDrawerOpen.value);
-        
-        const isMobileMenu = event.target.closest('.mobile-menu-container');
+        // 记录触发全局点击事件时的菜单状态和事件目标
+        console.log('全局点击事件触发 - 当前菜单状态:', mobileDrawerOpen.value, '事件目标:', event.target.tagName, '类名:', event.target.className);
+
+        // 使用更直接的选择器检查
+        const isInMenuContainer = event.target.closest('.mobile-menu-container, .left-menu-content, .q-list, .q-expansion-item, .q-item');
         const isMenuButton = event.target.closest('.theme-menu-btn');
-        const isContentArea = event.target.closest('.content-area');
-        const isOverlay = event.target.closest('.mobile-menu-overlay');
-        
-        console.log('点击事件目标分析 - 是菜单容器:', !!isMobileMenu, '是菜单按钮:', !!isMenuButton, '是内容区域:', !!isContentArea, '是遮罩层:', !!isOverlay);
-        
-        // 如果点击的不是菜单容器也不是菜单按钮，则关闭菜单
-        if (!isMobileMenu && !isMenuButton) {
-          console.log('触发菜单关闭 - toggleDrawer()');
+
+        console.log('全局点击事件判断 - isInMenuContainer:', !!isInMenuContainer, 'isMenuButton:', !!isMenuButton);
+
+        // 点击非菜单区域都关闭菜单
+        if (!isInMenuContainer && !isMenuButton) {
+          console.log('全局点击事件触发 - 关闭菜单');
           toggleDrawer();
+        } else {
+          console.log('全局点击事件触发 - 点击的是菜单相关元素，不关闭菜单');
         }
       }
-    };
+    }
 
     // 从URL初始化页面
     const initializePageFromUrl = function() {
@@ -1008,12 +1095,31 @@ export default {
       validateAndFixMenuTree(menuTree.value);
       initializePageFromUrl();
 
+      // 立即强制关闭菜单，不等待
+      if (isMobile.value) {
+        mobileDrawerOpen.value = false;
+        console.log('移动设备初始化 - 立即强制关闭菜单');
+      }
+
+      // 再次确保移动设备上菜单默认是关闭的
+      setTimeout(() => {
+        if (isMobile.value) {
+          mobileDrawerOpen.value = false;
+          console.log('移动设备初始化 - setTimeout强制关闭菜单');
+        }
+      }, 100);
+
       let lastRouteChangeTime = 0;
       routeListener = function() {
         const currentTime = Date.now();
         if (currentTime - lastRouteChangeTime > 300) {
           if (!window.location.hash.includes('fromSwitchPage=true')) {
             initializePageFromUrl();
+            // 路由变化后再次确保移动设备菜单关闭
+            if (isMobile.value) {
+              mobileDrawerOpen.value = false;
+              console.log('路由变化 - 强制关闭菜单');
+            }
           }
           lastRouteChangeTime = currentTime;
         }
@@ -1247,6 +1353,7 @@ export default {
       activePage,
       mobileDrawerOpen,
       isMobile,
+      isSliding,  // 添加isSliding变量到返回对象中
       menuTree,
       expandedNodes,
       selectedNode,
@@ -1269,7 +1376,10 @@ export default {
       componentKey,
       handleGoBackToWelcome,
       renderCurrentPage,
-      themeStore
+      themeStore,
+      handleTouchStart,
+      handleTouchMove,
+      handleTouchEnd
     };
   }
 };
@@ -1289,16 +1399,16 @@ export default {
 }
 
 /* 确保左侧菜单正确显示 */
-.mobile-menu-container {
-  position: fixed !important;
-  top: 0;
-  left: 0;
-  height: 100vh !important;
-  background: #ffffff !important;
-  z-index: 10 !important;
-  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
-  padding-top: 60px; /* 添加顶部间距 */
-}
+  .mobile-menu-container {
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    height: 100vh !important;
+    background: #ffffff !important;
+    z-index: 10 !important;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+    padding-top: 60px; /* 添加顶部间距 */
+  }
 
 /* 确保菜单项文本不会溢出 */
 .menu-expansion-item span, .menu-item span {
@@ -1391,8 +1501,22 @@ export default {
 }
 
 /* 移动设备菜单背景遮罩层 */
-.mobile-menu-overlay { position: fixed !important; top: 0 !important; left: 0 !important; right: 0 !important; bottom: 0 !important; background-color: rgba(0, 0, 0, 0.5) !important; z-index: 20 !important; display: none; pointer-events: auto; }
-.mobile-menu-overlay.show { display: block; }
+.mobile-menu-overlay {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  z-index: 5 !important; /* 确保在菜单下方，但在内容上方 */
+  display: none;
+  pointer-events: auto;
+  transition: opacity 0.3s ease;
+}
+.mobile-menu-overlay.show {
+  display: block;
+  opacity: 1;
+}
 
 /* 响应式布局调整 - 移动设备 */
 @media (max-width: 767px) {
@@ -1663,5 +1787,30 @@ body.theme-default .theme-menu-btn,
 .menu-content {
   flex: 1;
   overflow: auto;
+}
+
+/* 移动设备菜单背景遮罩层样式 */
+.mobile-menu-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 5;
+  display: none;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.mobile-menu-overlay.show {
+  display: block;
+  pointer-events: auto;
+}
+
+/* 确保遮罩层在Tech主题下有正确的样式 */
+body.theme-tech .mobile-menu-overlay,
+.theme-tech .mobile-menu-overlay {
+  background-color: rgba(26, 26, 46, 0.8);
 }
 </style>
