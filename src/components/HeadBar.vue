@@ -12,7 +12,7 @@
     <RouterLink class="el-menu-item" to="/news">{{ $t("newsPage") }}</RouterLink>
     -->
     <RouterLink class="el-menu-item" to="/blog" :style="getMenuItemStyle()">{{ $t("blogPage") }}</RouterLink>
-    <RouterLink class="el-menu-item" to="/live" :style="getMenuItemStyle()">{{ $t("liveStreamPage") }}</RouterLink>
+    <!-- <RouterLink class="el-menu-item" to="/live" :style="getMenuItemStyle()">{{ $t("liveStreamPage") }}</RouterLink> -->
     <!-- Theme Menu -->
     <div class="el-menu-item theme-menu" :style="getMenuItemStyle()">
       <q-btn-dropdown
