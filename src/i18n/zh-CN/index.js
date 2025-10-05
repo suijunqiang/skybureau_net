@@ -593,5 +593,15 @@ export default {
   no_blogs_found: "未找到博客文章",
   
   // 通用表格列
-  actions: "操作"
+  actions: "操作",
+  
+  // 直播页面
+  liveStreamPage: "直播",
+  live_stream_title: "视频直播",
+  live_stream_description: "观看来自我们摄像头的实时视频流。",
+  player_load_failed: "视频播放器加载失败",
+  stream_play_failed: "直播播放失败！请检查M3U8地址是否正确或HTTP服务是否正常",
+  stream_load_success: "直播流加载成功",
+  player_init_failed: "视频播放器初始化失败",
+  player_resource_timeout: "等待视频播放器资源超时"
 };

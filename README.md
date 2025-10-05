@@ -28,13 +28,13 @@ ios: http://www.skybureau.net:10000/sbn/sbn.apk
 - [x] Publish the test APK for Android
 - [x] News management module Frontend/Backend edit/delete/add
 - [x] Iot devices review module Frontend/Backend online/offline
+- [x] WebRTC/Live simple way module Frontend
 
 ### Features To Do
 - [x] News management module for public access
-- [x] WebRTC management module Frontend/Backend
 - [x] Iot devices firmware update module Frontend/Backend
-- [x] AI Agnet ask system for Skybureau Net
 - [x] Publish the iOS for Iphone app
+- [x] AI Agnet ask system for Skybureau Net
 
 ### Getting Started
 How to start the project and run it locally.

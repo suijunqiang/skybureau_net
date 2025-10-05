@@ -670,5 +670,15 @@ export default {
   filter_by_recommend: "Filter by recommended",
   total_news: "Total {count} news articles",
   news_title: "News Title",
-  uncategorized: "Uncategorized"
+  uncategorized: "Uncategorized",
+
+  // Live streaming page
+  liveStreamPage: "Live Stream",
+  live_stream_title: "Live Video Stream",
+  live_stream_description: "Watch real-time video stream from our cameras.",
+  player_load_failed: "Failed to load video player",
+  stream_play_failed: "Live stream playback failed! Please check if the M3U8 address is correct or if the HTTP service is running normally",
+  stream_load_success: "Live stream loaded successfully",
+  player_init_failed: "Failed to initialize video player",
+  player_resource_timeout: "Timeout waiting for video player resources"
 };

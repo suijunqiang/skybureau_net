@@ -88,6 +88,13 @@ component: () => import("layouts/MainLayout.vue"),
        children: [
         { path: "", component: () => import("pages/blog/BlogTagPage.vue") }
       ],  },
+  // Live streaming route
+  {    
+    path: "/live",
+    component: () => import("layouts/BlogLayout.vue"),
+    children: [
+      { path: "", component: () => import("pages/live/LivePlayer.vue") },
+    ],  },
 
   /*
   {

@@ -607,16 +607,34 @@ export default defineComponent({
         saving.value = true;
 
         // 准备提交数据
-        const submitData = {
-          ...formData.value,
-          // 确保picture_profile是null或字符串
-          picture_profile: formData.value.picture_profile || null,
-          // 如果是null，应该转换为空字符串
-          description: formData.value.description || '',
-          content: formData.value.content || '',
-          // 如果是空字符串，应该转换为null
-          password: formData.value.password === '' ? null : formData.value.password
-        };
+          const submitData = {
+            ...formData.value,
+            // 确保picture_profile是null或字符串
+            picture_profile: formData.value.picture_profile || null,
+            // 如果是null，应该转换为空字符串
+            description: formData.value.description || '',
+            content: formData.value.content || '',
+            // 如果是空字符串，应该转换为null
+            password: formData.value.password === '' ? null : formData.value.password,
+            // 确保所有需要的字段都存在，参考用户提供的JSON格式
+            is_published: formData.value.is_published || false,
+            is_recommend: formData.value.is_recommend || false,
+            is_appreciation: formData.value.is_appreciation || false,
+            views: formData.value.views || 0,
+            words: 0, // 将在下面计算
+            read_time: 0, // 将在下面计算
+            category_id: formData.value.category_id || 0,
+            is_top: formData.value.is_top || false,
+            user_id: formData.value.user_id || 0,
+            new_id: formData.value.new_id || 0,
+            id: formData.value.id || 0,
+            documentId: formData.value.documentId || '',
+            createdAt: formData.value.createdAt || '',
+            updatedAt: formData.value.updatedAt || '',
+            publishedAt: formData.value.publishedAt || '',
+            fisrt_pic: formData.value.fisrt_pic || null,
+            is_comment_enable: formData.value.is_comment_enable !== undefined ? formData.value.is_comment_enable : true
+          };
 
         // 计算字数
         const textContent = submitData.content.replace(/<[^>]*>/g, '').trim();
@@ -629,17 +647,22 @@ export default defineComponent({
 
         let response;
         if (isNew.value) {
-          // 新建新闻
-          console.log('新建新闻数据:', submitData);
+          // 新建新闻 - 移除new_id字段
+          const { new_id, ...createData } = submitData;
+          const createRequestData = { data: createData };
+          console.log('新建新闻数据:', createRequestData);
           // 将数据包装在data对象下
-          response = await request.post(API.NEWS.NEWS.CREATE, { data: submitData });
+          response = await request.post(API.NEWS.NEWS.CREATE, createRequestData);
         } else {
-          // 更新新闻 - 使用new_id作为主键
-          const updateUrl = API.NEWS.NEWS.UPDATE(props.news.new_id);
+          // 更新新闻 - 使用id作为主键，但确保提交正确的new_id
+          const updateUrl = API.NEWS.NEWS.UPDATE(props.news.id);
+          // 确保submitData中的new_id与props.news中的一致
+          submitData.new_id = props.news.new_id;
+          const updateRequestData = { data: submitData };
           console.log('更新新闻URL:', updateUrl);
-          console.log('更新新闻数据:', submitData);
+          console.log('更新新闻数据:', updateRequestData);
           // 将数据包装在data对象下
-          response = await request.put(updateUrl, { data: submitData });
+          response = await request.put(updateUrl, updateRequestData);
         }
 
         if (response.data) {
