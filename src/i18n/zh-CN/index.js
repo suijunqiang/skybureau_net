@@ -597,6 +597,27 @@ export default {
   
   // 直播页面
   liveStreamPage: "直播",
+  
+  // Tracker页面
+tracker_title: "追踪器",
+tracker_description: "输入视频URL以播放流媒体内容",
+enter_video_url: "输入视频URL（HLS、MP4等）",
+play_button: "播放",
+url_cannot_be_empty: "URL不能为空",
+loading_video: "正在加载视频...",
+update_source_failed: "更新视频源失败",
+video_started: "视频开始播放",
+video_ended: "视频播放结束",
+video_ready: "视频已准备好播放",
+video_playback_error: "视频播放错误",
+video_aborted: "视频加载已中止",
+video_network_error: "网络错误",
+video_decode_error: "视频解码错误",
+video_format_not_supported: "视频格式不支持",
+player_element_not_found: "未找到视频播放器元素",
+invalid_url_format: "URL格式无效",
+set_source_failed: "设置视频源失败",
+player_container_not_found: "未找到视频播放器容器",
   live_stream_title: "视频直播",
   live_stream_description: "观看来自我们摄像头的实时视频流。",
   player_load_failed: "视频播放器加载失败",

@@ -89,11 +89,19 @@ component: () => import("layouts/MainLayout.vue"),
         { path: "", component: () => import("pages/blog/BlogTagPage.vue") }
       ],  },
   // Live streaming route
-  {    
+  {
     path: "/live",
     component: () => import("layouts/BlogLayout.vue"),
     children: [
       { path: "", component: () => import("pages/live/LivePlayer.vue") },
+    ],  },
+  
+  // Tracker route with video player
+  {
+    path: "/tracker",
+    component: () => import("layouts/BlogLayout.vue"),
+    children: [
+      { path: "", component: () => import("pages/live/Tracker.vue") },
     ],  },
 
   /*

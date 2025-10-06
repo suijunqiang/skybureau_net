@@ -673,12 +673,33 @@ export default {
   uncategorized: "Uncategorized",
 
   // Live streaming page
-  liveStreamPage: "Live Stream",
-  live_stream_title: "Live Video Stream",
-  live_stream_description: "Watch real-time video stream from our cameras.",
-  player_load_failed: "Failed to load video player",
-  stream_play_failed: "Live stream playback failed! Please check if the M3U8 address is correct or if the HTTP service is running normally",
-  stream_load_success: "Live stream loaded successfully",
-  player_init_failed: "Failed to initialize video player",
-  player_resource_timeout: "Timeout waiting for video player resources"
+liveStreamPage: "Live Stream",
+live_stream_title: "Live Video Stream",
+live_stream_description: "Watch real-time video stream from our cameras.",
+player_load_failed: "Failed to load video player",
+stream_play_failed: "Live stream playback failed! Please check if the M3U8 address is correct or if the HTTP service is running normally",
+stream_load_success: "Live stream loaded successfully",
+player_init_failed: "Failed to initialize video player",
+player_resource_timeout: "Timeout waiting for video player resources",
+
+// Tracker page
+tracker_title: "Tracker",
+tracker_description: "Enter a video URL to play streaming content",
+enter_video_url: "Enter video URL (HLS, MP4, etc.)",
+play_button: "Play",
+url_cannot_be_empty: "URL cannot be empty",
+loading_video: "Loading video...",
+update_source_failed: "Failed to update video source",
+video_started: "Video started playing",
+video_ended: "Video playback ended",
+video_ready: "Video is ready to play",
+video_playback_error: "Video playback error",
+video_aborted: "Video loading aborted",
+video_network_error: "Network error occurred",
+video_decode_error: "Video decoding error",
+video_format_not_supported: "Video format not supported",
+player_element_not_found: "Video player element not found",
+invalid_url_format: "Invalid URL format",
+set_source_failed: "Failed to set video source",
+player_container_not_found: "Video player container not found"
 };
