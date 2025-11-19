@@ -16,6 +16,7 @@
     "@quasar/extras": "^1.16.17",
     "axios": "^1.2.1",
     "mavon-editor": "^2.10.4",
+    "opencv.js": "^1.2.1",
     "pinia": "^2.0.11",
     "quasar": "^2.18.5",
     "vue": "^3.0.0",

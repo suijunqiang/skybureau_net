@@ -1,27 +1,19 @@
 <template>
-  <nav>
     <!--
     <div class="logo">
       <img src="../assets/img/skybureau/favicon-32x32.png" />
     </div>
       -->
-    <RouterLink class="el-menu-item" to="/" :style="getMenuItemStyle()">
+    <RouterLink  to="/" >
       <q-icon name="home" />
     </RouterLink>
     <!--
     <RouterLink class="el-menu-item" to="/news">{{ $t("newsPage") }}</RouterLink>
     -->
-    <RouterLink class="el-menu-item" to="/blog" :style="getMenuItemStyle()">{{ $t("blogPage") }}</RouterLink>
     <!-- <RouterLink class="el-menu-item" to="/live" :style="getMenuItemStyle()">{{ $t("liveStreamPage") }}</RouterLink> -->
     <!-- Theme Menu -->
-    <div class="el-menu-item theme-menu" :style="getMenuItemStyle()">
-      <q-btn-dropdown
-        flat
-        no-caps
-        icon="palette"
-        class="theme-dropdown"
-        :style="getDropdownStyle()"
-      >
+    <div>
+      <q-btn-dropdown flat no-caps icon="palette" :style="getDropdownStyle()" >
         <q-list>
           <q-item
             clickable
@@ -35,7 +27,7 @@
               <q-item-label>{{ $t('classic_style') }}</q-item-label>
             </q-item-section>
           </q-item>
-          
+
           <q-item
             clickable
             @click="setTheme('tech')"
@@ -51,16 +43,32 @@
         </q-list>
       </q-btn-dropdown>
     </div>
-    <RouterLink class="el-menu-item" to="/aboutus">{{ $t("about_us") }}</RouterLink>
-    <RouterLink class="el-menu-item" to="/loginRegister">{{ $t("loginPage") }}</RouterLink>
-    <div class="el-menu-item" href="">
+
+    <!-- APP Download Menu -->
+    <div>
+      <q-btn-dropdown flat no-caps icon="apps" :style="getDropdownStyle()" >
+        <q-list>
+          <q-item clickable @click="downloadApp('Android')" >
+            <q-item-section>
+              <q-item-label>Android</q-item-label>
+            </q-item-section>
+          </q-item>
+          <q-item clickable @click="downloadApp('iOS')" >
+            <q-item-section>
+              <q-item-label>iOS</q-item-label>
+            </q-item-section>
+          </q-item>
+        </q-list>
+      </q-btn-dropdown>
+    </div>
+    <div  href="">
       <q-select
         class="language-selector"
         color="primary"
         v-model="locale"
         :options="localeOptions"
         dense
-        default-label="选择语言"
+        default-label="En"
         borderless
         emit-value
         map-options
@@ -68,26 +76,20 @@
         behavior="menu"
       />
     </div>
-    <div 
-      v-if="userInfoStore.hasUserInfo"
-      class="el-menu-item user-name cursor-pointer"
-      @click="navigateToWelcome"
-    >
+
+    <RouterLink  to="/blog" :style="getMenuItemStyle()">{{ $t("blogPage") }}</RouterLink>
+    <RouterLink  to="/aboutus" :style="getMenuItemStyle()">{{ $t("about_us") }}</RouterLink>
+    <RouterLink  to="/loginRegister" :style="getMenuItemStyle()">{{ $t("loginPage") }}</RouterLink>
+    <div  :style="getMenuItemStyle()" v-if="userInfoStore.hasUserInfo" @click="navigateToWelcome" >
       {{ displayUserName }}
     </div>
-    <div v-else class="el-menu-item user-name">
+    <div v-else >
       {{ displayUserName }}
     </div>
-    <!-- 退出按钮，仅在登录状态下显示 -->
-    <div
-      v-if="userInfoStore.hasUserInfo"
-      class="el-menu-item logout-button"
-      @click="handleLogout"
-    >
-      <q-icon name="logout" class="mr-1" />
+    <div v-if="userInfoStore.hasUserInfo" @click="handleLogout" >
+      <q-icon margin-left="5px" name="logout" class="mr-1" />
       {{ $t("logout") }}
     </div>
-  </nav>
 </template>
 <script>
 import { useI18n } from "vue-i18n";
@@ -115,7 +117,7 @@ export default {
     // Theme functions
     const setTheme = (themeName) => {
       themeStore.setTheme(themeName);
-      
+
       // Force immediate style update with highest priority
       setTimeout(() => {
         const nav = document.querySelector('nav');
@@ -123,7 +125,7 @@ export default {
           // Remove all existing theme classes and add the new one
           nav.className = nav.className.replace(/theme-\w+/g, '');
           nav.classList.add(`theme-${themeName}`);
-          
+
           // Apply direct styles
           if (themeName === 'tech') {
             nav.style.cssText = `
@@ -157,16 +159,15 @@ export default {
             `;
           }
         }
-        
+
         // Also update all menu items
         const menuItems = document.querySelectorAll('nav .el-menu-item');
         const themeMenuItem = document.querySelector('nav .el-menu-item.theme-menu');
         const languageMenuItem = document.querySelector('nav .el-menu-item:nth-last-child(2)');
-        
+
         menuItems.forEach(item => {
-          // 检查是否是Theme菜单或语言选择器
           const isSpecialItem = item === themeMenuItem || item === languageMenuItem;
-          
+
           if (themeName === 'tech') {
             item.style.cssText = `
               color: #00ffff !important;
@@ -211,7 +212,6 @@ export default {
       }, 0);
     };
 
-    // 计算显示的用户名：未登录时显示多语言的"游客"，登录后显示用户名
     const displayUserName = computed(() => {
       if (userInfoStore.hasUserInfo && userInfoStore.userInfo?.user?.username) {
         return userInfoStore.userInfo.user.username;
@@ -219,19 +219,13 @@ export default {
       return t('visitor');
     });
 
-    // 处理退出登录
     const handleLogout = () => {
-      // 清除用户信息
       userInfoStore.clearUserInfo();
-      // 清除token
       tokenStore.removeToken();
-      // 清除职位信息
       positionInfoStore.clearPositionInfo();
-      // 跳转到首页
       router.push('/');
     };
 
-    // 导航到欢迎页面
     const navigateToWelcome = () => {
       router.push('/system/userManagement/welcome');
     };
@@ -242,19 +236,21 @@ export default {
       if (currentTheme === 'tech') {
         return {
           color: '#00ffff !important',
+          marginLeft: '5px !important',
           fontFamily: 'Courier New, monospace !important',
           background: 'rgba(0, 255, 255, 0.05) !important',
-          border: '1px solid rgba(0, 255, 255, 0.3) !important',
-          borderRadius: '4px !important',
+          border: '0px solid rgba(0, 255, 255, 0) !important',
+          borderRadius: '0px !important',
           textShadow: '0 0 5px rgba(0, 255, 255, 0.5) !important',
           transition: 'all 0.3s ease !important'
         };
       } else {
         return {
           color: 'white !important',
+          marginLeft: '5px !important',
           background: 'rgba(255, 255, 255, 0.1) !important',
-          border: '1px solid rgba(255, 255, 255, 0.2) !important',
-          borderRadius: '8px !important',
+          border: '0px solid rgba(255, 255, 255, 0.2) !important',
+          borderRadius: '0px !important',
           textShadow: '0 1px 3px rgba(0, 0, 0, 0.3) !important',
           transition: 'all 0.3s ease !important'
         };
@@ -267,20 +263,24 @@ export default {
         return {
           color: '#00ffff !important',
           fontFamily: 'Courier New, monospace !important',
-          background: 'rgba(0, 255, 255, 0.05) !important',
-          border: '1px solid rgba(0, 255, 255, 0.3) !important',
-          borderRadius: '4px !important',
-          boxShadow: '0 0 10px rgba(0, 255, 255, 0.3) !important'
+          background: 'rgba(0, 255, 255, 0) !important',
+          border: '0px solid rgba(0, 255, 255, 0) !important',
+          borderRadius: '0px !important',
+          boxShadow: '0 0 0px rgba(0, 255, 255, 0) !important'
         };
       } else {
         return {
           color: 'white !important',
-          background: 'rgba(255, 255, 255, 0.1) !important',
-          border: '1px solid rgba(255, 255, 255, 0.2) !important',
-          borderRadius: '8px !important',
-          textShadow: '0 1px 3px rgba(0, 0, 0, 0.3) !important'
+          background: 'rgba(255, 255, 255, 0) !important',
+          border: '0px solid rgba(255, 255, 255, 0) !important',
+          borderRadius: '0px !important',
+          textShadow: '0 0px 0px rgba(0, 0, 0, 0) !important'
         };
       }
+    };
+
+    const downloadApp = (platform) => {
+      window.open('http://www.skybureau.net:10000/sbn/sbn.apk', '_blank');
     };
 
     return {
@@ -293,9 +293,10 @@ export default {
       setTheme,
       getMenuItemStyle,
       getDropdownStyle,
+      downloadApp,
       localeOptions: [
         { label: "中文", value: "zh-CN" },
-        { label: "English", value: "en-US" },
+        { label: "En", value: "en-US" },
       ],
     };
   },
@@ -359,7 +360,7 @@ body.theme-default nav .el-menu-item,
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3) !important;
   border: 1px solid rgba(255, 255, 255, 0.2) !important;
   border-radius: 6px !important;
-/* 恢复默认内边距 */
+/* 鎭㈠榛樿鍐呰竟璺� */
   padding: 6px 12px !important;
   margin: 0 1px !important;
   transition: all 0.3s ease !important;
@@ -411,34 +412,34 @@ body.theme-tech nav .el-menu-item:hover,
   color: #00ffff !important;
 }
 
-/* Theme菜单和语言选择器的专用样式 */
-/* Theme菜单 - 左右内边距为0，上下内边距保持正常 */
+/* Theme鑿滃崟鍜岃瑷€閫夋嫨鍣ㄧ殑涓撶敤鏍峰紡 */
+/* Theme鑿滃崟 - 宸﹀彸鍐呰竟璺濅负0锛屼笂涓嬪唴杈硅窛淇濇寔姝ｅ父 */
 body.theme-default nav .el-menu-item.theme-menu,
 .theme-default nav .el-menu-item.theme-menu {
-  padding: 6px 0 !important; /* 左右内边距为0，上下内边距6px */
-  min-height: 32px !important; /* 确保高度正常 */
+  padding: 6px 0 !important; /* 宸﹀彸鍐呰竟璺濅负0锛屼笂涓嬪唴杈硅窛6px */
+  min-height: 32px !important; /* 纭繚楂樺害姝ｅ父 */
 }
 
 body.theme-tech nav .el-menu-item.theme-menu,
 .theme-tech nav .el-menu-item.theme-menu {
-  padding: 6px 0 !important; /* 左右内边距为0，上下内边距6px */
-  min-height: 32px !important; /* 确保高度正常 */
+  padding: 6px 0 !important; /* 宸﹀彸鍐呰竟璺濅负0锛屼笂涓嬪唴杈硅窛6px */
+  min-height: 32px !important; /* 纭繚楂樺害姝ｅ父 */
 }
 
-/* 语言选择器容器 - 左右内边距为0，上下内边距保持正常 */
+/* 璇█閫夋嫨鍣ㄥ鍣� - 宸﹀彸鍐呰竟璺濅负0锛屼笂涓嬪唴杈硅窛淇濇寔姝ｅ父 */
 body.theme-default nav .el-menu-item:nth-last-child(2),
 .theme-default nav .el-menu-item:nth-last-child(2) {
-  padding: 6px 0 !important; /* 左右内边距为0，上下内边距6px */
-  min-height: 32px !important; /* 确保高度正常 */
+  padding: 6px 0 !important; /* 宸﹀彸鍐呰竟璺濅负0锛屼笂涓嬪唴杈硅窛6px */
+  min-height: 32px !important; /* 纭繚楂樺害姝ｅ父 */
 }
 
 body.theme-tech nav .el-menu-item:nth-last-child(2),
 .theme-tech nav .el-menu-item:nth-last-child(2) {
-  padding: 6px 0 !important; /* 左右内边距为0，上下内边距6px */
-  min-height: 32px !important; /* 确保高度正常 */
+  padding: 6px 0 !important; /* 宸﹀彸鍐呰竟璺濅负0锛屼笂涓嬪唴杈硅窛6px */
+  min-height: 32px !important; /* 纭繚楂樺害姝ｅ父 */
 }
 
-/* 移除语言选择器内部元素的el-menu-item类样式影响 */
+/* 绉婚櫎璇█閫夋嫨鍣ㄥ唴閮ㄥ厓绱犵殑el-menu-item绫绘牱寮忓奖鍝� */
 body.theme-default nav .language-selector,
 .theme-default nav .language-selector,
 body.theme-tech nav .language-selector,
@@ -451,7 +452,7 @@ body.theme-tech nav .language-selector,
   height: auto !important;
 }
 
-/* 确保Theme按钮和语言选择器按钮的内容居中 */
+/* 纭繚Theme鎸夐挳鍜岃瑷€閫夋嫨鍣ㄦ寜閽殑鍐呭灞呬腑 */
 body.theme-default nav .el-menu-item.theme-menu .q-btn,
 .theme-default nav .el-menu-item.theme-menu .q-btn,
 body.theme-tech nav .el-menu-item.theme-menu .q-btn,
@@ -628,13 +629,13 @@ body.theme-default nav .q-select,
   color: white !important;
 }
 
-body.theme-tech nav .q-select, 
+body.theme-tech nav .q-select,
 .theme-tech nav .q-select {
   color: #00ffff !important;
   font-family: 'Courier New', monospace !important;
 }
 
-/* 主题选择器下拉三角 - 增强选择器优先级 */
+/* 涓婚閫夋嫨鍣ㄤ笅鎷変笁瑙� - 澧炲己閫夋嫨鍣ㄤ紭鍏堢骇 */
 body.theme-default nav .theme-menu .theme-dropdown .q-icon,
 body.theme-default nav .theme-menu .theme-dropdown .q-btn-dropdown__dropdown-icon,
 .theme-default nav .theme-menu .theme-dropdown .q-icon,
@@ -661,7 +662,7 @@ body.theme-tech nav .theme-menu .theme-dropdown .q-btn-dropdown__dropdown-icon,
   align-items: center !important;
 }
 
-/* 语言选择器下拉三角 - 增强选择器优先级 */
+/* 璇█閫夋嫨鍣ㄤ笅鎷変笁瑙� - 澧炲己閫夋嫨鍣ㄤ紭鍏堢骇 */
 body.theme-default nav .language-selector .q-icon,
 body.theme-default nav .language-selector .q-select__dropdown-icon,
 .theme-default nav .language-selector .q-icon,
@@ -692,7 +693,7 @@ body.theme-tech nav .language-selector .q-select__dropdown-icon,
   background-color: rgba(255, 255, 255, 0.1) !important;
 }
 
-/* 响应式处理 - 确保小屏设备上顶部菜单可以横向滚动 */
+/* 鍝嶅簲寮忓鐞� - 纭繚灏忓睆璁惧涓婇《閮ㄨ彍鍗曞彲浠ユí鍚戞粴鍔� */
   @media (max-width: 1024px) {
     nav {
       display: flex !important;
@@ -703,46 +704,46 @@ body.theme-tech nav .language-selector .q-select__dropdown-icon,
       min-width: 100% !important;
       padding-right: 10px !important;
     }
-    
+
     nav::-webkit-scrollbar {
       display: none !important; /* Chrome, Safari, Edge */
     }
-    
+
     .el-menu-item {
       white-space: nowrap !important;
       flex-shrink: 0 !important;
       padding: 0 6px !important;
       font-size: 13px !important;
     }
-    
-    /* 确保所有菜单项在移动设备上正确显示 */
+
+    /* 纭繚鎵€鏈夎彍鍗曢」鍦ㄧЩ鍔ㄨ澶囦笂姝ｇ‘鏄剧ず */
     .theme-menu, .logout-button {
       flex-shrink: 0 !important;
     }
-    
-    /* 调整下拉按钮大小以适应小屏幕 */
+
+    /* 璋冩暣涓嬫媺鎸夐挳澶у皬浠ラ€傚簲灏忓睆骞� */
     .theme-dropdown, .q-select {
       min-height: 26px !important;
       font-size: 11px !important;
       padding: 3px 6px !important;
     }
   }
-  
-  /* 针对更小屏幕的特别优化 (iPhone Pro 7等) */
+
+  /* 閽堝鏇村皬灞忓箷鐨勭壒鍒紭鍖� (iPhone Pro 7绛�) */
   @media (max-width: 768px) {
     nav {
       padding-left: 5px !important;
       padding-right: 5px !important;
     }
-    
+
     .el-menu-item {
       padding: 0 5px !important;
       font-size: 12px !important;
       height: 36px !important;
       line-height: 36px !important;
     }
-    
-    /* 进一步减小按钮和选择器尺寸 */
+
+    /* 杩涗竴姝ュ噺灏忔寜閽拰閫夋嫨鍣ㄥ昂瀵� */
     .theme-dropdown, .q-select, .logout-button {
       min-height: 24px !important;
       font-size: 10px !important;
@@ -750,8 +751,8 @@ body.theme-tech nav .language-selector .q-select__dropdown-icon,
       margin-left: 2px !important;
       margin-right: 2px !important;
     }
-    
-    /* 确保所有导航元素都不会被隐藏 */
+
+    /* 纭繚鎵€鏈夊鑸厓绱犻兘涓嶄細琚殣钘� */
     .nav-item {
       display: flex !important;
       align-items: center !important;

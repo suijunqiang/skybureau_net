@@ -39,9 +39,8 @@
       <router-view />
     </q-page-container>
 
-    <q-footer elevated class="theme-surface">
+    <q-footer >
       <q-toolbar class="flex flex-center theme-surface">
-        <FootBar />
         <!--
         <div>Quasar v{{ $q.version }}</div>
         -->
@@ -55,7 +54,7 @@
 import { defineComponent, ref } from "vue";
 import EssentialLink from "components/EssentialLink.vue";
 import HeadBar from "components/HeadBar.vue";
-import FootBar from "components/FootBar.vue";
+//import FootBar from "components/FootBar.vue";
 //import QMFilterNode from "components/QMFilterNode.vue";
 //import MenuTree from "components/myMenu.vue";
 //import MenuTree from "components/my-q-menu-item.vue";
@@ -84,59 +83,93 @@ const linksList = [
     title: "Forum",
     caption: "forum.quasar.dev",
     icon: "record_voice_over",
+
     link: "https://forum.quasar.dev",
+
   },
+
   {
+
     title: "Twitter",
+
     caption: "@quasarframework",
+
     icon: "rss_feed",
+
     link: "https://twitter.quasar.dev",
+
   },
+
   {
+
     title: "Facebook",
+
     caption: "@QuasarFramework",
+
     icon: "public",
+
     link: "https://facebook.quasar.dev",
+
   },
+
   {
+
     title: "Quasar Awesome",
+
     caption: "Community Quasar projects",
+
     icon: "favorite",
+
     link: "https://awesome.quasar.dev",
+
   },
+
   {
+
     title: "Login / Register",
+
     caption: "Login / Register",
+
     icon: "public",
+
     link: "/login",
+
   },
+
 ];
 
+
+
 export default defineComponent({
+
   name: "MainLayout",
+
+
 
   components: {
     EssentialLink,
     HeadBar,
-    FootBar,
+    //FootBar,
     //QMFilterNode,
   },
-
   setup() {
     const leftDrawerOpen = ref(false);
-
     return {
       essentialLinks: linksList,
       leftDrawerOpen,
       toggleLeftDrawer() {
         leftDrawerOpen.value = !leftDrawerOpen.value;
       },
-
       toLogin() {
         //alert("Login");
         this.$router.push("/loginRegister");
       },
+
     };
+
   },
+
 });
+
 </script>
+

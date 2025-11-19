@@ -22,7 +22,6 @@
 
     <q-footer elevated class="theme-surface">
       <q-toolbar class="flex flex-center theme-surface">
-        <FootBar />
         <div>Skybureau Net @Copyright 2001-2025</div>
       </q-toolbar>
     </q-footer>
@@ -32,14 +31,14 @@
 <script>
 import { defineComponent, ref } from "vue";
 import HeadBar from "components/HeadBar.vue";
-import FootBar from "components/FootBar.vue";
+//import FootBar from "components/FootBar.vue";
 
 export default defineComponent({
   name: "BlogLayout",
 
   components: {
     HeadBar,
-    FootBar,
+    //FootBar,
   },
 
   setup() {
