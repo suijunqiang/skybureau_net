@@ -4,9 +4,18 @@
       <img src="../assets/img/skybureau/favicon-32x32.png" />
     </div>
       -->
-    <RouterLink  to="/" >
+    <RouterLink  to="/"  :style="getMenuItemStyle()">
       <q-icon name="home" />
     </RouterLink>
+    <RouterLink  to="/blog" :style="getMenuItemStyle()">{{ $t("blogPage") }}</RouterLink>
+    <RouterLink  to="/aboutus" :style="getMenuItemStyle()">{{ $t("about_us") }}</RouterLink>
+    <RouterLink  to="/loginRegister" :style="getMenuItemStyle()">{{ $t("loginPage") }}</RouterLink>
+    <div  :style="getMenuItemStyle()" v-if="userInfoStore.hasUserInfo" @click="navigateToWelcome" >
+      {{ displayUserName }}
+    </div>
+    <div v-else >
+      {{ displayUserName }}
+    </div>
     <!--
     <RouterLink class="el-menu-item" to="/news">{{ $t("newsPage") }}</RouterLink>
     -->
@@ -77,15 +86,6 @@
       />
     </div>
 
-    <RouterLink  to="/blog" :style="getMenuItemStyle()">{{ $t("blogPage") }}</RouterLink>
-    <RouterLink  to="/aboutus" :style="getMenuItemStyle()">{{ $t("about_us") }}</RouterLink>
-    <RouterLink  to="/loginRegister" :style="getMenuItemStyle()">{{ $t("loginPage") }}</RouterLink>
-    <div  :style="getMenuItemStyle()" v-if="userInfoStore.hasUserInfo" @click="navigateToWelcome" >
-      {{ displayUserName }}
-    </div>
-    <div v-else >
-      {{ displayUserName }}
-    </div>
     <div v-if="userInfoStore.hasUserInfo" @click="handleLogout" >
       <q-icon margin-left="5px" name="logout" class="mr-1" />
       {{ $t("logout") }}
